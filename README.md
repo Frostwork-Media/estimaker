@@ -1,42 +1,23 @@
-# vite-vercel-serverless
+# Estimaker
 
-This is a boilerplate for vite + vercel serverless. It uses turborepo and vercel which should be globally installed:
+This is a monorepo
 
-```bash
-pnpm add -g turbo vercel
-```
+# App
 
-## Usage
+Vite react
 
-```bash
-vercel dev
-```
+# Api
 
-When you first run this you will need to link-to or create a vercel project.
+Vercel serverless + edge functions
 
-## Deployment
+# Db
 
-To make sure deploying works correctly, make sure you've set the output directory in the vercel project settings.
+Prisma client, pointed to a postgres db on Railway
 
-![vercel settings](./build-settings.png)
+# Partykit
 
-## Shared Workspace
+A partykit server for multiplayer, realtime stuff.
 
-It contains a package called `shared` which is a workspace that can be used by other packages.
+Start it in local development with `pnpm partykit dev`.
 
----
-
-I built this because I was tired of scaffolding vite/vercel projects by myself.
-
-## Contributing
-
-If you have any questions, feel free to open an issue or a PR.
-
----
-
-## To Do
-
-Keeping notes here for things I'm always doing in these projects.
-
-- Add vercel.json for deployments
-- Add and link node types to /api
+The partykit server must be manually deployed right now with `pnpm partykit deploy`.
