@@ -3,3 +3,4 @@ packages:
   - "api"
   - "db"
   - "shared"
+  - "partykit"
