@@ -1,0 +1,36 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Project {
+  id              String            @id @default(uuid())
+  ownerId         String
+  name            String
+  projectEstimate ProjectEstimate[]
+  state           Json
+}
+
+model Estimate {
+  id              String            @id @default(uuid())
+  ownerId         String
+  description     String
+  value           String
+  projectEstimate ProjectEstimate[]
+}
+
+model ProjectEstimate {
+  project    Project  @relation(fields: [projectId], references: [id])
+  projectId  String
+  estimate   Estimate @relation(fields: [estimateId], references: [id])
+  estimateId String
+
+  @@id([projectId, estimateId])
+}
