@@ -19,19 +19,20 @@
     "@tanstack/react-query": "^5.8.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
+    "db": "workspace:*",
     "lucide-react": "^0.292.0",
+    "nanoid": "3.3.4",
     "partysocket": "0.0.14",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.18.0",
     "reactflow": "^11.9.4",
+    "shared": "workspace:*",
     "tailwind-merge": "^2.0.0",
     "tailwindcss-animate": "^1.0.7",
     "tinybase": "^4.4.0",
     "toposort": "^2.0.2",
-    "zustand": "^4.4.6",
-    "shared": "workspace:*",
-    "db": "workspace:*"
+    "zustand": "^4.4.6"
   },
   "devDependencies": {
     "@types/node": "^20.6.0",

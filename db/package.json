@@ -2,8 +2,11 @@
   "name": "db",
   "version": "1.0.0",
   "description": "",
-  "main": "index.ts",
   "exports": {
+    ".": {
+      "import": "./index.ts",
+      "default": "./index.ts"
+    },
     "./types": {
       "import": {
         "types": "./src/types.ts",
