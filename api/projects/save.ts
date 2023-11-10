@@ -1,4 +1,5 @@
 import { VercelApiHandler } from "@vercel/node";
+import { save, toDatabase } from "db";
 
 /**
  * This is a webhook to store the project state in the database.
@@ -14,7 +15,12 @@ const handler: VercelApiHandler = async (req, res) => {
     return;
   }
 
-  console.log(`Saving state: ${id}`);
+  const db = toDatabase(id, state);
+  const success = await save(db);
+
+  if (!success) {
+    console.log("Error saving to database");
+  }
 
   // send a silent 200
   res.status(200).end();

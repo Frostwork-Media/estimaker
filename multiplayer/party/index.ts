@@ -7,10 +7,12 @@ import { Connection } from "partykit/server";
 
 export default class CustomServer extends TinyBasePartyKitServer {
   id: string;
+  saveTo: string;
 
   constructor(readonly party: Party.Party) {
     super(party);
     this.id = party.id;
+    this.saveTo = party.env.SAVE_ENDPOINT as string;
   }
 
   async onMessage(message: string, connection: Connection): Promise<void> {
@@ -27,21 +29,19 @@ const sendStateToWebhook = debounce(
       (async () => {
         const state = await loadStore(that);
         if (state && that.id) {
-          console.log(`Saving state: ${that.id}`);
-          console.log(state);
-          // fetch(`http://localhost:3002/save/${that.id}`, {
-          //   method: "POST",
-          //   headers: {
-          //     "Content-Type": "application/json",
-          //   },
-          //   body: JSON.stringify({ state }),
-          // })
-          //   .catch((err) => {
-          //     console.error("MY ERROR _ ", err);
-          //   })
-          //   .then(() => {
-          //     console.log("Sent state to webhook");
-          //   });
+          fetch(that.saveTo, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ state, id: that.id }),
+          })
+            .catch((err) => {
+              console.error("Error hitting /save webhook", err);
+            })
+            .then(() => {
+              // console.log("Sent state to webhook");
+            });
         }
       })();
     },
