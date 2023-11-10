@@ -10,10 +10,14 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@clerk/clerk-sdk-node": "^4.12.20",
     "dotenv": "^16.3.1",
-    "shared": "workspace:*"
+    "jsonwebtoken": "^9.0.2",
+    "shared": "workspace:*",
+    "db": "workspace:*"
   },
   "devDependencies": {
+    "@types/jsonwebtoken": "^9.0.5",
     "@types/node": "^20.6.0",
     "@vercel/node": "^2.15.1",
     "typescript": "^5.2.2"
