@@ -1,11 +1,5 @@
-import { Button } from "@/components/button";
-import {
-  useAuth,
-  SignInButton,
-  SignedIn,
-  SignedOut,
-  RedirectToSignIn,
-} from "@clerk/clerk-react";
+import { Button } from "@/components/ui/button";
+import { useAuth, SignInButton } from "@clerk/clerk-react";
 
 export default function Landing() {
   const { isSignedIn } = useAuth();

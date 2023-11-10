@@ -1,9 +1,10 @@
+import { StoreProvider } from "@/components/StoreProvider";
 import { Suspense } from "react";
 import { Await, useLoaderData, useParams } from "react-router-dom";
+import { ReactFlowProvider } from "reactflow";
 
-function Project(props) {
-  console.log(props);
-  return <div>hi there</div>;
+function Project() {
+  return <div>You made it!</div>;
 }
 
 export default function Page() {
@@ -18,14 +19,13 @@ export default function Page() {
         errorElement={<p>We had trouble finding your project.</p>}
       >
         {(project) => {
-          return <Project project={project} />;
-          // return (
-          //   <StoreProvider roomId={roomId} initialData={initialData}>
-          //     <ReactFlowProvider>
-          //       <LivingRoom />
-          //     </ReactFlowProvider>
-          //   </StoreProvider>
-          // );
+          return (
+            <StoreProvider id={id} initial={JSON.stringify(project.state)}>
+              <ReactFlowProvider>
+                <Project />
+              </ReactFlowProvider>
+            </StoreProvider>
+          );
         }}
       </Await>
     </Suspense>

@@ -1,4 +1,4 @@
-import { Button } from "@/components/button";
+import { Button } from "@/components/ui/button";
 import { useCreateProject } from "@/lib/mutations";
 import { useProjects } from "@/lib/queries";
 import { SignOutButton } from "@clerk/clerk-react";
@@ -18,6 +18,8 @@ export default function Dashboard() {
       </div>
       {projects.isLoading ? (
         <span>Loading...</span>
+      ) : projects.data?.length === 0 ? (
+        <span>No projects yet</span>
       ) : (
         projects.data?.map((project) => (
           <Link key={project.id} className="text-lg" to={project.id}>
