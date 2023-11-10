@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import type { Project } from "db/types";
+import type { Project } from "db";
 
 export function useProjects() {
   return useQuery({

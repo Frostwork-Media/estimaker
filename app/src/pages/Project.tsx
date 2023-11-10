@@ -1,12 +1,13 @@
-import { Canvas } from "@/components/Canvas";
-import { StoreProvider } from "@/components/StoreProvider";
-import { Tables } from "@/lib/store";
-import { toNodesAndEdges } from "@/lib/toNodesAndEdges";
-import { Project as P } from "db/types";
+import type { Project as P } from "db";
 import { Suspense } from "react";
 import { Await, useLoaderData, useParams } from "react-router-dom";
 import { ReactFlowProvider } from "reactflow";
 import { useTables } from "tinybase/debug/ui-react";
+
+import { Canvas } from "@/components/Canvas";
+import { StoreProvider } from "@/components/StoreProvider";
+import { Tables } from "@/lib/store";
+import { toNodesAndEdges } from "@/lib/toNodesAndEdges";
 
 function Project() {
   const tables = useTables();

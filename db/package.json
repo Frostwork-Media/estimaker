@@ -6,12 +6,6 @@
     ".": {
       "import": "./index.ts",
       "default": "./index.ts"
-    },
-    "./types": {
-      "import": {
-        "types": "./src/types.ts",
-        "default": "./src/types.ts"
-      }
     }
   },
   "scripts": {

@@ -1,8 +1,9 @@
 import { Handle, Position } from "reactflow";
-import { Wrapper } from "./shared";
-import { EstimateNodeProps } from "../../lib/canvasTypes";
 import { useTable } from "tinybase/debug/ui-react";
+
+import { EstimateNodeProps } from "../../lib/canvasTypes";
 import { User } from "../../lib/store";
+import { Wrapper } from "./shared";
 
 export function EstimateNode(props: EstimateNodeProps) {
   return (

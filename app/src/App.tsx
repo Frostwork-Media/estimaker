@@ -5,8 +5,9 @@ import {
   SignedOut,
 } from "@clerk/clerk-react";
 import { QueryClientProvider } from "@tanstack/react-query";
-import { lazy, Suspense } from "react";
-import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
+import { lazy,Suspense } from "react";
+import { createBrowserRouter,Outlet, RouterProvider } from "react-router-dom";
+
 import { queryClient } from "./lib/queryClient";
 const Landing = lazy(() => import("./pages/Landing"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));

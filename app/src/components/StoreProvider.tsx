@@ -1,13 +1,12 @@
+import PartySocket from "partysocket";
+import { initialState } from "shared";
+import { createStore } from "tinybase/debug";
 import {
-  useCreateStore,
   Provider,
   useCreatePersister,
+  useCreateStore,
 } from "tinybase/debug/ui-react";
-import { createStore } from "tinybase/debug";
 import { createPartyKitPersister } from "tinybase/persisters/persister-partykit-client";
-import PartySocket from "partysocket";
-
-import { initialState } from "shared";
 
 export function StoreProvider({
   children,

@@ -1,6 +1,7 @@
-import { Node, Edge } from "reactflow";
-import { Link, Tables } from "./store";
+import { Edge, Node } from "reactflow";
+
 import { EstimateNodeType } from "./canvasTypes";
+import { Link, Tables } from "./store";
 
 /**
  * Real-time Document is the input

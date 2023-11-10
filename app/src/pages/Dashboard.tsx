@@ -1,8 +1,9 @@
+import { SignOutButton } from "@clerk/clerk-react";
+import { Link, useNavigate } from "react-router-dom";
+
 import { Button } from "@/components/ui/button";
 import { useCreateProject } from "@/lib/mutations";
 import { useProjects } from "@/lib/queries";
-import { SignOutButton } from "@clerk/clerk-react";
-import { Link, useNavigate } from "react-router-dom";
 
 export default function Dashboard() {
   const createProject = useCreateProject();

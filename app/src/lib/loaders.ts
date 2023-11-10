@@ -1,4 +1,4 @@
-import { LoaderFunction, defer } from "react-router-dom";
+import { defer,LoaderFunction } from "react-router-dom";
 
 async function getProject(id: string) {
   const response = await fetch(`/api/projects/get?id=${id}`);
