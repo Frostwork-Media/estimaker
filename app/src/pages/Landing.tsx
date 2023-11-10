@@ -1,6 +1,5 @@
 import { SignInButton, useAuth } from "@clerk/clerk-react";
-
-import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 export default function Landing() {
   const { isSignedIn } = useAuth();
@@ -8,7 +7,7 @@ export default function Landing() {
     <div className="p-12">
       <h1 className="text-3xl font-extrabold mb-6">estimaker</h1>
       {isSignedIn ? (
-        <Button>Go To Dashboard</Button>
+        <Link to="/projects">Go To Dashboard</Link>
       ) : (
         <SignInButton afterSignInUrl="/projects" afterSignUpUrl="/projects">
           Log In
