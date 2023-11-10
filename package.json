@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "env:pull": "vercel env pull && cp .env.local ./db/.env",
-    "build": "turbo run build",
+    "build": "pnpm -F app build",
     "dev": "concurrently \"pnpm -F multiplayer dev\" \"pnpm -F app dev --\" --names \"multiplayer,app\" --prefix-colors \"cyan,magenta\"",
     "check": "pnpm -F '*' check"
   },
