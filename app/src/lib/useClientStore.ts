@@ -4,6 +4,6 @@ type ClientStore = {
   selectedNodes: string[];
 };
 
-export const useClientStore = create<ClientStore>()((set) => ({
+export const useClientStore = create<ClientStore>()((_set) => ({
   selectedNodes: [],
 }));

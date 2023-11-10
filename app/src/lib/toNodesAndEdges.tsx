@@ -1,5 +1,5 @@
 import { Node, Edge } from "reactflow";
-import { Link, Tables } from "./tinybase-store";
+import { Link, Tables } from "./store";
 import { EstimateNodeType } from "./canvasTypes";
 
 /**

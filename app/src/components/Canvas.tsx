@@ -13,7 +13,7 @@ import {
   useAddEstimateNode,
   useDeleteNode,
   useMoveNode,
-} from "../lib/tinybase-store";
+} from "../lib/store";
 import { useStore } from "tinybase/debug/ui-react";
 import { useClientStore } from "../lib/useClientStore";
 import { toNodesAndEdges } from "../lib/toNodesAndEdges";

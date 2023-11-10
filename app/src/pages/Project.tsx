@@ -1,6 +1,6 @@
 import { Canvas } from "@/components/Canvas";
 import { StoreProvider } from "@/components/StoreProvider";
-import { Tables } from "@/lib/tinybase-store";
+import { Tables } from "@/lib/store";
 import { toNodesAndEdges } from "@/lib/toNodesAndEdges";
 import { Project as P } from "db/types";
 import { Suspense } from "react";

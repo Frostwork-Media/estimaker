@@ -1,8 +1,11 @@
-import { NodeProps } from "reactflow";
-import { Link } from "./tinybase-store";
+import { Node, NodeProps } from "reactflow";
+import { Link } from "./store";
 
-export type EstimateNodeType = NodeProps<{
+type Estimate = {
   label: string;
   variableName: string;
   links: Link[];
-}>;
+};
+
+export type EstimateNodeProps = NodeProps<Estimate>;
+export type EstimateNodeType = Node<Estimate>;

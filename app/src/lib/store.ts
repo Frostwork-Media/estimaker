@@ -1,7 +1,6 @@
 import { useStore } from "tinybase/debug/ui-react";
 import { nanoid } from "nanoid";
 import { useCallback } from "react";
-import type { Store } from "tinybase/debug";
 import { useClerk } from "@clerk/clerk-react";
 
 type Node = {
@@ -78,19 +77,12 @@ export type Tables = {
   users?: Record<string, User>;
 };
 
-type Values = {
+export type Values = {
   /**
    * The name of the project
    */
   name: string;
 };
-
-/**
- * This is the final state of what is synced from tinybase
- *
- * https://tinybase.org/api/store/interfaces/store/store/methods/getter/getjson/
- */
-type RealtimeSync = [Tables, Values];
 
 function createEstimate({
   uid,
@@ -245,14 +237,14 @@ export function useDeleteNode() {
   );
 }
 
-function getRowIdByInnerId(store: Store, table: string, innerId: string) {
-  if (!store) return;
-  const rows = store.getTable(table);
-  const idx = Object.entries(rows).find(([_, row]) => {
-    return row.id === innerId;
-  })?.[0];
-  return idx;
-}
+// function getRowIdByInnerId(store: Store, table: string, innerId: string) {
+//   if (!store) return;
+//   const rows = store.getTable(table);
+//   const idx = Object.entries(rows).find(([_, row]) => {
+//     return row.id === innerId;
+//   })?.[0];
+//   return idx;
+// }
 
 /**
  * Rename a node of a given id
