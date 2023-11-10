@@ -1,158 +1,160 @@
-import { Tables, Values, Row, Cell } from "tinybase";
 import { TinyBasePartyKitServer } from "tinybase/persisters/persister-partykit-server";
-import throttle from "lodash.throttle";
-import debounce from "lodash.debounce";
-import type * as Party from "partykit/server";
-import { Connection } from "partykit/server";
+export default class extends TinyBasePartyKitServer {}
 
-export default class CustomServer extends TinyBasePartyKitServer {
-  id: string;
-  saveTo: string;
+// import { Tables, Values, Row, Cell } from "tinybase";
+// import { TinyBasePartyKitServer } from "tinybase/persisters/persister-partykit-server";
+// import throttle from "lodash.throttle";
+// import debounce from "lodash.debounce";
+// import type * as Party from "partykit/server";
+// import { Connection } from "partykit/server";
 
-  constructor(readonly party: Party.Party) {
-    super(party);
-    this.id = party.id;
-    this.saveTo = party.env.SAVE_ENDPOINT as string;
-  }
+// export default class CustomServer extends TinyBasePartyKitServer {
+//   id: string;
+//   saveTo: string;
 
-  async onMessage(message: string, connection: Connection): Promise<void> {
-    await super.onMessage(message, connection);
+//   constructor(readonly party: Party.Party) {
+//     super(party);
+//     this.id = party.id;
+//     this.saveTo = party.env.SAVE_ENDPOINT as string;
+//   }
 
-    sendStateToWebhook(this);
-  }
-}
+//   // async onMessage(message: string, connection: Connection): Promise<void> {
+//   //   super.onMessage(message, connection);
+//   //   sendStateToWebhook(this);
+//   // }
+// }
 
-// Throttled state update
-const sendStateToWebhook = debounce(
-  throttle(
-    (that: CustomServer) => {
-      (async () => {
-        const state = await loadStore(that);
-        if (state && that.id) {
-          fetch(that.saveTo, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ state, id: that.id }),
-          })
-            .catch((err) => {
-              console.error("Error hitting /save webhook", err);
-            })
-            .then(() => {
-              // console.log("Sent state to webhook");
-            });
-        }
-      })();
-    },
-    5000,
-    { trailing: true }
-  ),
-  1000,
-  { trailing: true }
-);
+// // Throttled state update
+// const sendStateToWebhook = debounce(
+//   throttle(
+//     (that: CustomServer) => {
+//       (async () => {
+//         const state = await loadStore(that);
+//         if (state && that.id) {
+//           fetch(that.saveTo, {
+//             method: "POST",
+//             headers: {
+//               "Content-Type": "application/json",
+//             },
+//             body: JSON.stringify({ state, id: that.id }),
+//           })
+//             .catch((err) => {
+//               console.error("Error hitting /save webhook", err);
+//             })
+//             .then(() => {
+//               // console.log("Sent state to webhook");
+//             });
+//         }
+//       })();
+//     },
+//     5000,
+//     { trailing: true }
+//   ),
+//   1000,
+//   { trailing: true }
+// );
 
-const isUndefined = (thing: unknown): thing is undefined | null =>
-  thing == undefined;
+// const isUndefined = (thing: unknown): thing is undefined | null =>
+//   thing == undefined;
 
-const ifNotUndefined = <Value, Return>(
-  value: Value | undefined,
-  then: (value: Value) => Return,
-  otherwise?: () => Return
-): Return | undefined => (isUndefined(value) ? otherwise?.() : then(value));
+// const ifNotUndefined = <Value, Return>(
+//   value: Value | undefined,
+//   then: (value: Value) => Return,
+//   otherwise?: () => Return
+// ): Return | undefined => (isUndefined(value) ? otherwise?.() : then(value));
 
-type Coll<Value> = Map<unknown, Value> | Set<Value>;
+// type Coll<Value> = Map<unknown, Value> | Set<Value>;
 
-const collForEach = <Value>(
-  coll: Coll<Value> | undefined,
-  cb: (value: Value, key: any) => void
-): void => coll?.forEach(cb);
+// const collForEach = <Value>(
+//   coll: Coll<Value> | undefined,
+//   cb: (value: Value, key: any) => void
+// ): void => coll?.forEach(cb);
 
-export const mapForEach = <Key, Value>(
-  map: Map<Key, Value> | undefined,
-  cb: (key: Key, value: Value) => void
-): void => collForEach(map, (value, key) => cb(key, value));
+// export const mapForEach = <Key, Value>(
+//   map: Map<Key, Value> | undefined,
+//   cb: (key: Key, value: Value) => void
+// ): void => collForEach(map, (value, key) => cb(key, value));
 
-const SET_CHANGES = "s";
+// const SET_CHANGES = "s";
 
-type MessageType = typeof SET_CHANGES;
-type StorageKeyType = typeof T | typeof V;
+// type MessageType = typeof SET_CHANGES;
+// type StorageKeyType = typeof T | typeof V;
 
-const size = (arrayOrString: string | any[]): number => arrayOrString.length;
+// const size = (arrayOrString: string | any[]): number => arrayOrString.length;
 
-const strStartsWith = (str: string, prefix: string) => str.startsWith(prefix);
+// const strStartsWith = (str: string, prefix: string) => str.startsWith(prefix);
 
-const slice = <ArrayOrString extends string | any[]>(
-  arrayOrString: ArrayOrString,
-  start: number,
-  end?: number
-): ArrayOrString => arrayOrString.slice(start, end) as ArrayOrString;
+// const slice = <ArrayOrString extends string | any[]>(
+//   arrayOrString: ArrayOrString,
+//   start: number,
+//   end?: number
+// ): ArrayOrString => arrayOrString.slice(start, end) as ArrayOrString;
 
-const deconstruct = (
-  prefix: string,
-  message: string,
-  stringified?: 1
-): [type: MessageType | StorageKeyType, payload: string | any] | undefined => {
-  const prefixSize = size(prefix);
-  return strStartsWith(message, prefix)
-    ? [
-        message[prefixSize] as MessageType | StorageKeyType,
-        (stringified ? JSON.parse : String)(slice(message, prefixSize + 1)),
-      ]
-    : undefined;
-};
+// const deconstruct = (
+//   prefix: string,
+//   message: string,
+//   stringified?: 1
+// ): [type: MessageType | StorageKeyType, payload: string | any] | undefined => {
+//   const prefixSize = size(prefix);
+//   return strStartsWith(message, prefix)
+//     ? [
+//         message[prefixSize] as MessageType | StorageKeyType,
+//         (stringified ? JSON.parse : String)(slice(message, prefixSize + 1)),
+//       ]
+//     : undefined;
+// };
 
-type IdObj<Value> = { [id: string]: Value };
+// type IdObj<Value> = { [id: string]: Value };
 
-type Id = string;
+// type Id = string;
 
-const objGet = <Value>(
-  obj: IdObj<Value> | Value[] | undefined,
-  id: Id
-): Value | undefined => ifNotUndefined(obj, (obj) => (obj as IdObj<Value>)[id]);
+// const objGet = <Value>(
+//   obj: IdObj<Value> | Value[] | undefined,
+//   id: Id
+// ): Value | undefined => ifNotUndefined(obj, (obj) => (obj as IdObj<Value>)[id]);
 
-const objHas = (obj: IdObj<unknown> | undefined, id: Id): boolean =>
-  !isUndefined(objGet(obj, id));
+// const objHas = (obj: IdObj<unknown> | undefined, id: Id): boolean =>
+//   !isUndefined(objGet(obj, id));
 
-const objEnsure = <Value>(
-  obj: IdObj<Value>,
-  id: Id | number,
-  getDefaultValue: () => Value
-): Value => {
-  if (!objHas(obj, id as Id)) {
-    obj[id] = getDefaultValue();
-  }
-  return obj[id] as Value;
-};
+// const objEnsure = <Value>(
+//   obj: IdObj<Value>,
+//   id: Id | number,
+//   getDefaultValue: () => Value
+// ): Value => {
+//   if (!objHas(obj, id as Id)) {
+//     obj[id] = getDefaultValue();
+//   }
+//   return obj[id] as Value;
+// };
 
-const object = Object;
+// const object = Object;
 
-const objNew = <Value>(
-  entries: [id: string, value: Value][] = []
-): IdObj<Value> => object.fromEntries(entries);
+// const objNew = <Value>(
+//   entries: [id: string, value: Value][] = []
+// ): IdObj<Value> => object.fromEntries(entries);
 
-const T = "t";
-const V = "v";
+// const T = "t";
+// const V = "v";
 
-const loadStore = async (that: CustomServer) => {
-  const tables: Tables = {};
-  const values: Values = {};
-  const storagePrefix = that.config.storagePrefix ?? "";
-  mapForEach(
-    await that.party.storage.list<string | number | boolean>(),
-    (key, cellOrValue) =>
-      ifNotUndefined(deconstruct(storagePrefix, key), ([type, ids]) => {
-        if (type == T) {
-          const [tableId, rowId, cellId] = JSON.parse("[" + ids + "]");
-          objEnsure(
-            objEnsure(tables, tableId, objNew<Row>),
-            rowId,
-            objNew<Cell>
-          )[cellId] = cellOrValue;
-        } else if (type == V) {
-          values[ids] = cellOrValue;
-        }
-      })
-  );
-  return [tables, values];
-};
+// const loadStore = async (that: CustomServer) => {
+//   const tables: Tables = {};
+//   const values: Values = {};
+//   const storagePrefix = that.config.storagePrefix ?? "";
+//   mapForEach(
+//     await that.party.storage.list<string | number | boolean>(),
+//     (key, cellOrValue) =>
+//       ifNotUndefined(deconstruct(storagePrefix, key), ([type, ids]) => {
+//         if (type == T) {
+//           const [tableId, rowId, cellId] = JSON.parse("[" + ids + "]");
+//           objEnsure(
+//             objEnsure(tables, tableId, objNew<Row>),
+//             rowId,
+//             objNew<Cell>
+//           )[cellId] = cellOrValue;
+//         } else if (type == V) {
+//           values[ids] = cellOrValue;
+//         }
+//       })
+//   );
+//   return [tables, values];
+// };
