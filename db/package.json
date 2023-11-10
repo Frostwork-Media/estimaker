@@ -10,7 +10,8 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "check": "tsc --noEmit"
+    "check": "tsc --noEmit",
+    "generate": "prisma generate"
   },
   "keywords": [],
   "author": "",

@@ -7,7 +7,8 @@
     "env:pull": "vercel env pull && cp .env.local ./db/.env",
     "build": "pnpm -F app build",
     "dev": "concurrently \"pnpm -F multiplayer dev\" \"pnpm -F app dev --\" --names \"multiplayer,app\" --prefix-colors \"cyan,magenta\"",
-    "check": "pnpm -F '*' check"
+    "check": "pnpm -F '*' check",
+    "postinstall": "pnpm -F db generate"
   },
   "keywords": [],
   "author": "",
