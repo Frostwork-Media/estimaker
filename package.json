@@ -6,7 +6,7 @@
   "scripts": {
     "env:pull": "vercel env pull && cp .env.local ./db/.env",
     "build": "turbo run build",
-    "dev": "concurrently \"pnpm -F partykit dev\" \"pnpm -F app dev --\" --names \"partykit,app\" --prefix-colors \"cyan,magenta\"",
+    "dev": "concurrently \"pnpm -F multiplayer dev\" \"pnpm -F app dev --\" --names \"multiplayer,app\" --prefix-colors \"cyan,magenta\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

@@ -1,23 +1,29 @@
 # Estimaker
 
-This is a monorepo
+This is a monorepo the Frostwork Estimaker project.
 
-# App
+## Packages
 
-Vite react
+#### /app
 
-# Api
+vite react typescript
 
-Vercel serverless + edge functions
+#### /api
 
-# Db
+Vercel Serverless + Edge Functions
 
-Prisma client, pointed to a postgres db on Railway
+#### /db
 
-# Partykit
+Prisma client, pointed to a postgres database hosted on Railway
 
-A partykit server for multiplayer, realtime stuff.
+#### /multiplayer
 
-Start it in local development with `pnpm partykit dev`.
+A partykit server for multiplayer, realtime stuff. The partykit server must be manually deployed right now with `pnpm partykit deploy`.
 
-The partykit server must be manually deployed right now with `pnpm partykit deploy`.
+#### /shared
+
+Shared code between packages
+
+## Development
+
+Must connect to vercel project and run `pnpm env:pull` to get environment variables. Then run `vercel dev` to start the dev server.

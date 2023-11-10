@@ -1,5 +1,5 @@
 {
-  "name": "partykit",
+  "name": "multiplayer",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -10,10 +10,14 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/lodash.debounce": "^4.0.9",
+    "@types/lodash.throttle": "^4.1.9",
     "partykit": "0.0.34",
     "typescript": "^5.2.2"
   },
   "dependencies": {
+    "lodash.debounce": "^4.0.8",
+    "lodash.throttle": "^4.1.1",
     "partysocket": "0.0.14",
     "tinybase": "^4.4.0"
   }
