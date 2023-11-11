@@ -68,7 +68,7 @@ function SingleNodeEditor({ id }: { id: string }) {
   );
 }
 
-function EstimateForm({ node, id }: { node: EstimateNode; id: string }) {
+function EstimateForm({ node: _, id }: { node: EstimateNode; id: string }) {
   const { user } = useUser();
   const clerkId = user?.id;
   const links = useNodeLinks(id) as [string, Link][];

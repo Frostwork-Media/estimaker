@@ -8,12 +8,14 @@
     "build": "pnpm -F app build",
     "dev": "concurrently \"pnpm -F multiplayer dev\" \"pnpm -F app dev --\" --names \"multiplayer,app\" --prefix-colors \"cyan,magenta\"",
     "check": "pnpm -F '*' check",
-    "postinstall": "pnpm -F db generate"
+    "postinstall": "pnpm -F db generate",
+    "prepare": "husky install"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "concurrently": "^8.2.2"
+    "concurrently": "^8.2.2",
+    "husky": "^8.0.0"
   }
 }

@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+pnpm check
+
+# unstage deletion of vercel.json
+# git reset HEAD vercel.json
