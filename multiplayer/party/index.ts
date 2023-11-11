@@ -9,6 +9,8 @@ import {
   Values,
 } from "tinybase";
 import { Connection, Party, Request, Server } from "partykit/server";
+import debounce from "lodash.debounce";
+import throttle from "lodash.throttle";
 
 /**
  * DurableStorage:
@@ -378,7 +380,12 @@ const isInstanceOf = (
 export default class TinyBasePartyKitServer
   implements TinyBasePartyKitServerDecl
 {
-  constructor(readonly party: Party) {}
+  id: string;
+  saveTo: string;
+  constructor(readonly party: Party) {
+    this.id = party.id;
+    this.saveTo = party.env.SAVE_ENDPOINT as string;
+  }
 
   readonly config: TinyBasePartyKitServerConfig = {};
 
@@ -416,6 +423,8 @@ export default class TinyBasePartyKitServer
         }
       }
     );
+    // Throttled state update
+    sendStateToWebhook(this);
   }
 
   canSetTable(
@@ -478,3 +487,33 @@ export default class TinyBasePartyKitServer
     return true;
   }
 }
+
+// Throttled state update
+const sendStateToWebhook = debounce(
+  throttle(
+    (that: TinyBasePartyKitServer) => {
+      (async () => {
+        const state = await loadStore(that);
+        if (state && that.id) {
+          fetch(that.saveTo, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ state, id: that.id }),
+          })
+            .catch((err) => {
+              console.error("Error hitting /save webhook", err);
+            })
+            .then(() => {
+              // console.log("Sent state to webhook");
+            });
+        }
+      })();
+    },
+    5000,
+    { trailing: true }
+  ),
+  1000,
+  { trailing: true }
+);
