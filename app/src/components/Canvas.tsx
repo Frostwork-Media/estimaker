@@ -1,6 +1,7 @@
 import "reactflow/dist/style.css";
 
 import { useRef } from "react";
+import { Link } from "react-router-dom";
 import ReactFlow, {
   Controls,
   NodeTypes,
@@ -18,6 +19,7 @@ import {
 } from "../lib/store";
 import { toNodesAndEdges } from "../lib/toNodesAndEdges";
 import { useClientStore } from "../lib/useClientStore";
+import { CanvasSidebar } from "./CanvasSidebar";
 import { DerivativeNode } from "./graph/DerivativeNode";
 import { EstimateNode } from "./graph/EstimateNode";
 
@@ -148,11 +150,17 @@ export function Canvas({ nodes, edges }: ReturnType<typeof toNodesAndEdges>) {
         }}
       >
         <Panel position="top-left">
+          <Link to="/projects">Projects</Link>
+        </Panel>
+        <Panel position="top-center">
           <input
             type="text"
             placeholder="Search"
             className="border-b bg-transparent focus:outline-none focus:border-neutral-500 w-full"
           />
+        </Panel>
+        <Panel position="top-right">
+          <CanvasSidebar />
         </Panel>
         <Controls />
       </ReactFlow>
