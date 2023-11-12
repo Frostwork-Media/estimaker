@@ -34,6 +34,14 @@ export type DerivativeNode = Node & {
   value: string;
 };
 
+export type MetaforecastNode = Node & {
+  type: "metaforecast";
+  /** The metaforecast slug */
+  slug: string;
+  /** A variable name, currently unused but maybe in the future */
+  variableName: string;
+};
+
 /**
  * This represents a row from the estimates table in the db
  */
@@ -60,7 +68,7 @@ export type User = {
   name: string;
 };
 
-export type AnyNode = EstimateNode | DerivativeNode;
+export type AnyNode = EstimateNode | DerivativeNode | MetaforecastNode;
 
 export type Tables = {
   /**
@@ -188,6 +196,31 @@ export function useAddDerivativeNode() {
           value: initialContent,
         })
       );
+    },
+    [store]
+  );
+}
+
+/**
+ * Adds a metaforecast node to the store
+ */
+export function useAddMetaforecastNode() {
+  const store = useStore();
+  return useCallback(
+    ({ x, y, slug }: { x: number; y: number; slug: string }) => {
+      if (!store) return;
+      const uid = nanoid();
+
+      store.addRow("nodes", {
+        type: "metaforecast",
+        uid,
+        x,
+        y,
+        variableName: getVariableName(
+          store.getTable("nodes") as Tables["nodes"]
+        ),
+        slug,
+      });
     },
     [store]
   );

@@ -1,3 +1,4 @@
+import { Icon24Hours } from "@tabler/icons-react";
 import { cva } from "class-variance-authority";
 
 import { cn } from "@/lib/utils";
@@ -15,6 +16,17 @@ export const Button = ({ children, ...props }: ButtonProps) => {
   return (
     <button className={cn(button())} {...props}>
       {children}
+    </button>
+  );
+};
+
+export const IconButton = ({
+  icon: Icon,
+  ...props
+}: ButtonProps & { icon: typeof Icon24Hours }) => {
+  return (
+    <button className={cn(button(), "p-2 rounded-md")} {...props}>
+      <Icon />
     </button>
   );
 };

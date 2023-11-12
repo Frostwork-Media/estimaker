@@ -12,7 +12,6 @@ function createSquiggleCode(tables: Tables, edges: Edge[], userId: string) {
   const { nodes, links } = tables;
   if (!nodes) return "";
   const deps = edges.map((e) => [e.source, e.target] as [string, string]);
-  console.log(nodes);
   const sorted = t.array(Object.keys(nodes), deps);
   const squiggleCode = sorted
     .map((id) => {

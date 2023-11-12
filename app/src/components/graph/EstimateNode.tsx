@@ -13,12 +13,13 @@ export function EstimateNode(props: EstimateNodeProps) {
         label={props.data.label}
         variableName={props.data.variableName}
         selected={!!props.selected}
+        nodeType="estimate"
       >
         <div className="mt-4 grid gap-1">
           {props.data.links.map((link) => (
             <div
               key={link.id}
-              className="flex items-center justify-start text-slate-500 text-sm gap-2"
+              className="flex items-center justify-start text-blue-500 text-sm gap-2"
             >
               <Avatar userId={link.owner} />
               <span>{link.value}</span>
@@ -46,7 +47,7 @@ function Avatar({ userId }: { userId: string }) {
             }
           : {}
       }
-      className="w-6 h-6 bg-slate-600 rounded-full flex items-center justify-center text-gray-500 text-sm font-semibold"
+      className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center text-gray-500 text-sm font-semibold"
     />
   );
 }

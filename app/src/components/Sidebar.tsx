@@ -1,5 +1,5 @@
 import { useUser } from "@clerk/clerk-react";
-import { useRow, useValue } from "tinybase/debug/ui-react";
+import { useRow } from "tinybase/debug/ui-react";
 
 import {
   AnyNode,
@@ -11,64 +11,42 @@ import {
   useRenameNode,
   useUpdateDerivativeValue,
   useUpdateEstimateLink,
-  useUpdateProjectName,
 } from "../lib/store";
 import { useClientStore } from "../lib/useClientStore";
+import { SearchBar } from "./SearchBar";
 import { SquiggleSidebar } from "./SquiggleSidebar";
 
-export function CanvasSidebar() {
+export function Sidebar() {
   const selectedNodes = useClientStore((state) => state.selectedNodes);
+  const sidebarTab = useClientStore((state) => state.sidebarTab);
+
   return (
-    <aside className="w-[600px] overflow-auto grid gap-2 bg-white p-2 shadow-lg">
+    <aside>
       {selectedNodes.length === 1 ? (
         <SingleNodeEditor key={selectedNodes[0]} id={selectedNodes[0]} />
-      ) : (
-        <ProjectEditor />
-      )}
-      <SquiggleSidebar />
+      ) : sidebarTab === "search" ? (
+        <SearchBar />
+      ) : sidebarTab === "squiggle" ? (
+        <SquiggleSidebar />
+      ) : null}
     </aside>
   );
 }
 
-function ProjectEditor() {
-  const projectName = useValue("name");
-  const updateProjectName = useUpdateProjectName();
-  return (
-    <div className="grid gap-2 p-2">
-      <input
-        type="text"
-        value={projectName as string}
-        className="w-full p-2 border border-gray-300 rounded"
-        onChange={(e) => {
-          updateProjectName(e.target.value);
-        }}
-      />
-    </div>
-  );
-}
-
 function SingleNodeEditor({ id }: { id: string }) {
-  const renameNode = useRenameNode();
   const node = useRow("nodes", id) as AnyNode;
 
   // you would check if the current user has a value for this node, and give them the option to set it
 
   return (
     <div className="p-2 grid gap-2">
-      <textarea
-        className="w-full p-2 border border-gray-300 rounded h-16 resize-none"
-        value={node.name as string}
-        onChange={(e) => {
-          renameNode({ id, name: e.target.value });
-        }}
-      />
       {node.type === "estimate" && <EstimateForm node={node} id={id} />}
       {node.type === "derivative" && <DerivativeForm node={node} id={id} />}
     </div>
   );
 }
 
-function EstimateForm({ node: _, id }: { node: EstimateNode; id: string }) {
+function EstimateForm({ node, id }: { node: EstimateNode; id: string }) {
   const { user } = useUser();
   const clerkId = user?.id;
   const links = useNodeLinks(id) as [string, Link][];
@@ -76,11 +54,19 @@ function EstimateForm({ node: _, id }: { node: EstimateNode; id: string }) {
   const hasUserCreatedEstimate = links
     ? links.some(([_linkId, link]) => link.owner === clerkId)
     : true;
+  const renameNode = useRenameNode();
 
   // Creation
   const createEstimate = useCreateEstimateLink();
   return (
     <>
+      <textarea
+        className="w-full p-2 border border-gray-300 rounded h-16 resize-none"
+        value={node.name as string}
+        onChange={(e) => {
+          renameNode({ id, name: e.target.value });
+        }}
+      />
       {!hasUserCreatedEstimate && (
         <button
           className="py-2 px-5 bg-blue-500 text-white rounded"
@@ -133,8 +119,17 @@ function EstimateLink({
 
 function DerivativeForm({ node, id }: { node: DerivativeNode; id: string }) {
   const updateDerivativeValue = useUpdateDerivativeValue();
+  const renameNode = useRenameNode();
+
   return (
     <div>
+      <textarea
+        className="w-full p-2 border border-gray-300 rounded h-16 resize-none"
+        value={node.name as string}
+        onChange={(e) => {
+          renameNode({ id, name: e.target.value });
+        }}
+      />
       <input
         type="text"
         value={node.value}

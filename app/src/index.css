@@ -8,3 +8,8 @@ html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+.option-amount-fill {
+  @apply top-0 left-0 bottom-0 bg-orange-500 absolute;
+  width: calc(var(--probability) * 100%);
+}

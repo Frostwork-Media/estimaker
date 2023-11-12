@@ -1,11 +1,11 @@
 import "reactflow/dist/style.css";
 
 import { useRef } from "react";
-import { Link } from "react-router-dom";
 import ReactFlow, {
+  Background,
+  BackgroundVariant,
   Controls,
   NodeTypes,
-  Panel,
   SelectionMode,
   useReactFlow,
 } from "reactflow";
@@ -19,13 +19,14 @@ import {
 } from "../lib/store";
 import { toNodesAndEdges } from "../lib/toNodesAndEdges";
 import { useClientStore } from "../lib/useClientStore";
-import { CanvasSidebar } from "./CanvasSidebar";
 import { DerivativeNode } from "./graph/DerivativeNode";
 import { EstimateNode } from "./graph/EstimateNode";
+import { MetaforecastNode } from "./graph/MetaforecastNode";
 
 const nodeTypes: NodeTypes = {
   estimate: EstimateNode,
   derivative: DerivativeNode,
+  metaforecast: MetaforecastNode,
 };
 
 export function Canvas({ nodes, edges }: ReturnType<typeof toNodesAndEdges>) {
@@ -41,10 +42,7 @@ export function Canvas({ nodes, edges }: ReturnType<typeof toNodesAndEdges>) {
   const deleteNode = useDeleteNode();
 
   return (
-    <div
-      className="w-full h-screen mx-auto bg-slate-100"
-      ref={reactFlowWrapper}
-    >
+    <div className="w-full h-full bg-blue-100" ref={reactFlowWrapper}>
       <ReactFlow
         fitView
         proOptions={{
@@ -58,6 +56,8 @@ export function Canvas({ nodes, edges }: ReturnType<typeof toNodesAndEdges>) {
         selectNodesOnDrag={false}
         nodesFocusable={false}
         selectionOnDrag={false}
+        snapToGrid={true}
+        snapGrid={[15, 15]}
         onNodesChange={(changes) => {
           for (const change of changes) {
             switch (change.type) {
@@ -81,10 +81,13 @@ export function Canvas({ nodes, edges }: ReturnType<typeof toNodesAndEdges>) {
                 break;
               }
               default: {
-                // console.log("test", change);
+                console.log("Unhandled Change", change);
               }
             }
           }
+        }}
+        onPaneClick={() => {
+          useClientStore.setState({ selectedNodes: [], sidebarTab: undefined });
         }}
         onDoubleClick={(event) => {
           const targetIsPane =
@@ -149,20 +152,13 @@ export function Canvas({ nodes, edges }: ReturnType<typeof toNodesAndEdges>) {
           useClientStore.setState({ selectedNodes: [] });
         }}
       >
-        <Panel position="top-left">
-          <Link to="/projects">Projects</Link>
-        </Panel>
-        <Panel position="top-center">
-          <input
-            type="text"
-            placeholder="Search"
-            className="border-b bg-transparent focus:outline-none focus:border-neutral-500 w-full"
-          />
-        </Panel>
-        <Panel position="top-right">
-          <CanvasSidebar />
-        </Panel>
         <Controls />
+        <Background
+          variant={BackgroundVariant.Dots}
+          gap={15}
+          size={1}
+          color="#98ccff"
+        />
       </ReactFlow>
     </div>
   );

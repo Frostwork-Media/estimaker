@@ -6,7 +6,10 @@ import { Link, Tables } from "./store";
 /**
  * Real-time Document is the input
  */
-export function toNodesAndEdges(state: Tables): {
+export function toNodesAndEdges(
+  state: Tables,
+  selectedNodes: string[]
+): {
   nodes: Node[];
   edges: Edge[];
 } {
@@ -33,6 +36,7 @@ export function toNodesAndEdges(state: Tables): {
             id,
             position: { x: node.x, y: node.y },
             type: "estimate",
+            selected: selectedNodes.includes(id),
             data: {
               label: node.name,
               variableName: node.variableName,
@@ -49,10 +53,25 @@ export function toNodesAndEdges(state: Tables): {
             id,
             position: { x: node.x, y: node.y },
             type: "derivative",
+            selected: selectedNodes.includes(id),
             data: {
               label: node.name,
               value: node.value,
               variableName: node.variableName,
+            },
+          });
+
+          break;
+        }
+
+        case "metaforecast": {
+          nodes.push({
+            id,
+            position: { x: node.x, y: node.y },
+            type: "metaforecast",
+            selected: selectedNodes.includes(id),
+            data: {
+              slug: node.slug,
             },
           });
 

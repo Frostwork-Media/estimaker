@@ -1,27 +1,48 @@
 import type { Project as P } from "db";
 import { Suspense } from "react";
+import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { Await, useLoaderData, useParams } from "react-router-dom";
 import { ReactFlowProvider } from "reactflow";
 import { useTables } from "tinybase/debug/ui-react";
 
 import { Canvas } from "@/components/Canvas";
+import { ProjectNav } from "@/components/ProjectNav";
+import { Sidebar } from "@/components/Sidebar";
 import { SquiggleProvider } from "@/components/SquiggleProvider";
 import { StoreProvider } from "@/components/StoreProvider";
 import { useUser } from "@/lib/hooks";
 import { Tables } from "@/lib/store";
 import { toNodesAndEdges } from "@/lib/toNodesAndEdges";
+import { useClientStore } from "@/lib/useClientStore";
 import { useSquiggleCode } from "@/lib/useSquiggleCode";
 
 function Project() {
   const tables = useTables();
-  const { nodes, edges } = toNodesAndEdges(tables as Tables);
+  const selectedNodes = useClientStore((state) => state.selectedNodes);
+  const { nodes, edges } = toNodesAndEdges(tables as Tables, selectedNodes);
   const user = useUser();
   const squiggleCode = useSquiggleCode(tables, edges, user.id);
 
+  const sidebarTab = useClientStore((state) => state.sidebarTab);
+  const showSidebar = !!sidebarTab || selectedNodes.length === 1;
+
   return (
     <SquiggleProvider code={squiggleCode}>
-      <div className="w-screen h-screen">
-        <Canvas nodes={nodes} edges={edges} />
+      <div className="w-screen h-screen grid grid-rows-[auto_minmax(0,1fr)]">
+        <ProjectNav />
+        <PanelGroup direction="horizontal" autoSaveId="estimaker-size">
+          <Panel defaultSize={80} order={1}>
+            <Canvas nodes={nodes} edges={edges} />
+          </Panel>
+          {showSidebar && (
+            <>
+              <PanelResizeHandle className="w-2 h-full bg-neutral-100" />
+              <Panel className="bg-background" order={2}>
+                <Sidebar />
+              </Panel>
+            </>
+          )}
+        </PanelGroup>
       </div>
     </SquiggleProvider>
   );
