@@ -1,13 +1,21 @@
 import { SignOutButton } from "@clerk/clerk-react";
-import { IconArrowUpRight, IconTrash } from "@tabler/icons-react";
+import {
+  IconArrowDown,
+  IconArrowUp,
+  IconArrowUpRight,
+  IconTrash,
+} from "@tabler/icons-react";
 import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
+  getSortedRowModel,
+  SortingState,
   useReactTable,
 } from "@tanstack/react-table";
 import { format } from "date-fns";
 import type { Project } from "db";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 import { Button, IconButton } from "@/components/ui/button";
@@ -67,16 +75,58 @@ const columns: ColumnDef<Project>[] = [
   },
   {
     accessorKey: "updatedAt",
-    header: "Last Updated",
+    header: ({ column }) => {
+      return (
+        <div className="flex items-center gap-2">
+          <span>Updated</span>
+          <button
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            {column.getIsSorted() === "asc" ? (
+              <IconArrowDown className="w-4 h-4" />
+            ) : (
+              <IconArrowUp className="w-4 h-4" />
+            )}
+          </button>
+        </div>
+      );
+    },
     accessorFn: (row) => {
       return format(new Date(row.updatedAt), "Pp");
+    },
+    sortingFn: (a, b) => {
+      return (
+        new Date(b.original.updatedAt).getTime() -
+        new Date(a.original.updatedAt).getTime()
+      );
     },
   },
   {
     accessorKey: "createdAt",
-    header: "Created At",
+    header: ({ column }) => {
+      return (
+        <div className="flex items-center gap-2">
+          <span>Created</span>
+          <button
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            {column.getIsSorted() === "asc" ? (
+              <IconArrowDown className="w-4 h-4" />
+            ) : (
+              <IconArrowUp className="w-4 h-4" />
+            )}
+          </button>
+        </div>
+      );
+    },
     accessorFn: (row) => {
       return format(new Date(row.createdAt), "Pp");
+    },
+    sortingFn: (a, b) => {
+      return (
+        new Date(b.original.createdAt).getTime() -
+        new Date(a.original.createdAt).getTime()
+      );
     },
   },
   // add a column for deleting projects
@@ -96,10 +146,17 @@ const columns: ColumnDef<Project>[] = [
 ];
 
 export function ProjectList({ projects }: { projects: Project[] }) {
+  const [sorting, setSorting] = useState<SortingState>([]);
+
   const table = useReactTable({
     data: projects,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    onSortingChange: setSorting,
+    state: {
+      sorting,
+    },
   });
 
   return (
