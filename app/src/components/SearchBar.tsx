@@ -5,7 +5,10 @@ import { useParams } from "react-router-dom";
 import { useReactFlow } from "reactflow";
 
 import { useEstimateSearch, useMetaforecastSearch } from "@/lib/queries";
-import { useAddMetaforecastNode } from "@/lib/store";
+import {
+  useAddMetaforecastNode,
+  useCreateEstimateNodeWithLink,
+} from "@/lib/store";
 
 export function SearchBar() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -29,6 +32,8 @@ export function SearchBar() {
     [addMetaforecastNode, getViewport]
   );
 
+  const createEstimateNodeWithLink = useCreateEstimateNodeWithLink();
+
   return (
     <div className="p-4 grid gap-2">
       <input
@@ -48,7 +53,14 @@ export function SearchBar() {
               key={estimate.id}
               className="text-sm text-left w-full border-b p-2 opacity-70 hover:opacity-100 hover:bg-neutral-100"
               onClick={() => {
-                console.log(estimate.id);
+                createEstimateNodeWithLink({
+                  description: estimate.description,
+                  estimateId: estimate.id,
+                  ownerId: estimate.ownerId,
+                  value: estimate.value,
+                  x: 0,
+                  y: 0,
+                });
               }}
             >
               <span>{estimate.description}</span>

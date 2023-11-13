@@ -45,18 +45,32 @@ type SaveProps = {
 export async function save({ projectId, name, state, estimates }: SaveProps) {
   try {
     // check which estimates exist
-    const existingEstimatesIds = (
-      await prisma.estimate.findMany({
-        where: {
-          id: {
-            in: estimates.map((e) => e.id),
+    const existingEstimates = await prisma.estimate.findMany({
+      where: {
+        id: {
+          in: estimates.map((e) => e.id),
+        },
+      },
+      select: {
+        id: true,
+        projectEstimate: {
+          select: {
+            projectId: true,
           },
         },
-        select: {
-          id: true,
-        },
-      })
-    ).map((e) => e.id);
+      },
+    });
+
+    const existingEstimatesIds = existingEstimates.map((e) => e.id);
+
+    /** Create a list of which estimates have no link to this projectId */
+    let estimatesToLink: string[] = [];
+    for (const estimate of existingEstimates) {
+      const linkedProjects = estimate.projectEstimate.map((pe) => pe.projectId);
+      if (!linkedProjects.includes(projectId)) {
+        estimatesToLink.push(estimate.id);
+      }
+    }
 
     // we can assume the project exists
     const projectUpdate = () =>
@@ -69,12 +83,23 @@ export async function save({ projectId, name, state, estimates }: SaveProps) {
       });
 
     // if they exist, update them
-    const existingEstimates = estimates.filter((e) =>
+    const existingEstimateUpdateValues = estimates.filter((e) =>
       existingEstimatesIds.includes(e.id)
     );
 
+    // Create links for non-linked estimates
+    const linkEstimates = () =>
+      estimatesToLink.map((estimateId) => {
+        return prisma.projectEstimate.create({
+          data: {
+            projectId,
+            estimateId,
+          },
+        });
+      });
+
     const existingEstimateUpdates = () =>
-      existingEstimates.map(({ id, ownerId: _, ...rest }) => {
+      existingEstimateUpdateValues.map(({ id, ownerId: _, ...rest }) => {
         return prisma.estimate.update({
           where: { id },
           data: rest,
@@ -109,6 +134,7 @@ export async function save({ projectId, name, state, estimates }: SaveProps) {
     await prisma.$transaction([
       projectUpdate(),
       ...existingEstimateUpdates(),
+      ...linkEstimates(),
       ...newEstimateUpdates(),
     ]);
 

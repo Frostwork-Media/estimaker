@@ -97,18 +97,20 @@ function createEstimate({
   x,
   y,
   variableName,
+  name = "Estimate...",
 }: {
   uid: string;
   x: number;
   y: number;
   variableName: string;
+  name?: string;
 }): EstimateNode {
   const estimate: EstimateNode = {
     type: "estimate",
     uid,
     x,
     y,
-    name: "Estimate...",
+    name,
     variableName,
   };
 
@@ -407,4 +409,67 @@ function getVariableName<T extends { variableName: string }>(
     name = `x${count}`;
   }
   return name;
+}
+
+/**
+ * This creates an estimate node, and automatically links an existing estimate,
+ * with it's value, to the node
+ */
+export function useCreateEstimateNodeWithLink() {
+  const store = useStore();
+
+  return useCallback(
+    ({
+      x,
+      y,
+      description,
+      estimateId,
+      value,
+      ownerId,
+    }: {
+      x: number;
+      y: number;
+      description: string;
+      estimateId: string;
+      value: string;
+      ownerId: string;
+    }) => {
+      if (!store) return;
+      const uid = nanoid();
+
+      store.transaction(() => {
+        store.addRow(
+          "nodes",
+
+          // Create the node to add the estimate
+          createEstimate({
+            uid,
+            x,
+            y,
+            name: description,
+            variableName: getVariableName(
+              store.getTable("nodes") as Tables["nodes"]
+            ),
+          })
+        );
+
+        //  Get the id of the node we just created
+        const nodeId = Object.entries(store.getTable("nodes")).find(
+          ([_, node]) => node.uid === uid
+        )?.[0];
+
+        if (!nodeId) throw new Error("Node ID not found");
+
+        const link: Link = {
+          id: estimateId,
+          nodeId,
+          owner: ownerId,
+          value,
+        };
+
+        store.addRow("links", link);
+      });
+    },
+    [store]
+  );
 }
