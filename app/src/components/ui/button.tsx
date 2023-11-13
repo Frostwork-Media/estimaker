@@ -26,7 +26,7 @@ export const IconButton = ({
 }: ButtonProps & { icon: typeof Icon24Hours }) => {
   return (
     <button className={cn(button(), "p-2 rounded-md")} {...props}>
-      <Icon />
+      <Icon className="w-4 h-4" />
     </button>
   );
 };

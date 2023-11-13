@@ -2,6 +2,8 @@ import { Estimate } from "@prisma/client";
 import type { State } from "shared";
 import { prisma } from "./db";
 
+type E = Pick<Estimate, "id" | "ownerId" | "description" | "value">;
+
 /**
  * Converts the state realtime format into the database format
  */
@@ -9,7 +11,7 @@ export const toDatabase = (projectId: string, state: State): SaveProps => {
   const [tables, values] = state;
   const { nodes = {}, links = {} } = tables;
 
-  const estimates = Object.values(links).reduce<Estimate[]>((acc, link) => {
+  const estimates = Object.values(links).reduce<E[]>((acc, link) => {
     const estimateNode = nodes[link.nodeId];
 
     if (!estimateNode) {
@@ -17,7 +19,7 @@ export const toDatabase = (projectId: string, state: State): SaveProps => {
       return acc;
     }
 
-    const estimate: Estimate = {
+    const estimate: E = {
       id: link.id,
       ownerId: link.owner,
       description: estimateNode.name,
@@ -39,7 +41,7 @@ type SaveProps = {
   projectId: string;
   name: string;
   state: State;
-  estimates: Estimate[];
+  estimates: E[];
 };
 
 export async function save({ projectId, name, state, estimates }: SaveProps) {

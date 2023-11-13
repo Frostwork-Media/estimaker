@@ -1,8 +1,24 @@
 import { SignOutButton } from "@clerk/clerk-react";
-import { IconTrash } from "@tabler/icons-react";
+import { IconArrowUpRight, IconTrash } from "@tabler/icons-react";
+import {
+  ColumnDef,
+  flexRender,
+  getCoreRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
+import { format } from "date-fns";
+import type { Project } from "db";
 import { Link, useNavigate } from "react-router-dom";
 
 import { Button, IconButton } from "@/components/ui/button";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { useCreateProject } from "@/lib/mutations";
 import { useProjects } from "@/lib/queries";
 
@@ -22,20 +38,9 @@ export default function Dashboard() {
         <span>Loading...</span>
       ) : projects.data?.length === 0 ? (
         <span>No projects yet</span>
-      ) : (
-        projects.data?.map((project) => (
-          <div
-            key={project.id}
-            className="flex items-center gap-2 justify-between"
-          >
-            <Link className="text-lg" to={project.id}>
-              {project.name}
-            </Link>
-            <IconButton icon={IconTrash} />
-          </div>
-        ))
-      )}
-
+      ) : projects.data ? (
+        <ProjectList projects={projects.data} />
+      ) : null}
       <SignOutButton
         signOutCallback={() => {
           navigate("/");
@@ -44,5 +49,101 @@ export default function Dashboard() {
         <div className="mt-12">Sign Out</div>
       </SignOutButton>
     </div>
+  );
+}
+const columns: ColumnDef<Project>[] = [
+  {
+    accessorKey: "name",
+    header: "Name",
+    cell: (cell) => (
+      <Link
+        to={`/projects/${cell.row.original.id}`}
+        className="opacity-70 hover:opacity-100 flex items-center gap-2"
+      >
+        {cell.getValue() as string}
+        <IconArrowUpRight className="ml-2 w-4 h-4" />
+      </Link>
+    ),
+  },
+  {
+    accessorKey: "updatedAt",
+    header: "Last Updated",
+    accessorFn: (row) => {
+      return format(new Date(row.updatedAt), "Pp");
+    },
+  },
+  {
+    accessorKey: "createdAt",
+    header: "Created At",
+    accessorFn: (row) => {
+      return format(new Date(row.createdAt), "Pp");
+    },
+  },
+  // add a column for deleting projects
+  {
+    accessorKey: "id",
+    header: "",
+    cell: (cell) => (
+      <IconButton
+        icon={IconTrash}
+        onClick={() => {
+          // console log id
+          console.log(cell.getValue());
+        }}
+      />
+    ),
+  },
+];
+
+export function ProjectList({ projects }: { projects: Project[] }) {
+  const table = useReactTable({
+    data: projects,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+  });
+
+  return (
+    <Table>
+      <TableHeader>
+        {table.getHeaderGroups().map((headerGroup) => (
+          <TableRow key={headerGroup.id}>
+            {headerGroup.headers.map((header) => {
+              return (
+                <TableHead key={header.id}>
+                  {header.isPlaceholder
+                    ? null
+                    : flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
+                </TableHead>
+              );
+            })}
+          </TableRow>
+        ))}
+      </TableHeader>
+      <TableBody>
+        {table.getRowModel().rows?.length ? (
+          table.getRowModel().rows.map((row) => (
+            <TableRow
+              key={row.id}
+              data-state={row.getIsSelected() && "selected"}
+            >
+              {row.getVisibleCells().map((cell) => (
+                <TableCell key={cell.id}>
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </TableCell>
+              ))}
+            </TableRow>
+          ))
+        ) : (
+          <TableRow>
+            <TableCell colSpan={columns.length} className="h-24 text-center">
+              No results.
+            </TableCell>
+          </TableRow>
+        )}
+      </TableBody>
+    </Table>
   );
 }
