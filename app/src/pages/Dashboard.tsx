@@ -15,7 +15,7 @@ import {
 } from "@tanstack/react-table";
 import { format } from "date-fns";
 import type { Project } from "db";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 import { Button, IconButton } from "@/components/ui/button";
@@ -27,7 +27,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useCreateProject } from "@/lib/mutations";
+import { useCreateProject, useDeleteProject } from "@/lib/mutations";
 import { useProjects } from "@/lib/queries";
 
 export default function Dashboard() {
@@ -40,7 +40,12 @@ export default function Dashboard() {
       <p className="text-3xl font-extrabold mb-6">estimaker</p>
       <div className="flex items-center gap-4">
         <h1 className="text-2xl font-bold">Your Projects</h1>
-        <Button onClick={() => createProject.mutate()}>Create Project</Button>
+        <Button
+          onClick={() => createProject.mutate()}
+          isLoading={createProject.isPending}
+        >
+          Create Project
+        </Button>
       </div>
       {projects.isLoading ? (
         <span>Loading...</span>
@@ -59,95 +64,116 @@ export default function Dashboard() {
     </div>
   );
 }
-const columns: ColumnDef<Project>[] = [
-  {
-    accessorKey: "name",
-    header: "Name",
-    cell: (cell) => (
-      <Link
-        to={`/projects/${cell.row.original.id}`}
-        className="opacity-70 hover:opacity-100 flex items-center gap-2"
-      >
-        {cell.getValue() as string}
-        <IconArrowUpRight className="ml-2 w-4 h-4" />
-      </Link>
-    ),
-  },
-  {
-    accessorKey: "updatedAt",
-    header: ({ column }) => {
-      return (
-        <div className="flex items-center gap-2">
-          <span>Updated</span>
-          <button
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            {column.getIsSorted() === "asc" ? (
-              <IconArrowDown className="w-4 h-4" />
-            ) : (
-              <IconArrowUp className="w-4 h-4" />
-            )}
-          </button>
-        </div>
-      );
+function getColumns({
+  deleteProject,
+}: {
+  deleteProject: ReturnType<typeof useDeleteProject>;
+}): ColumnDef<Project>[] {
+  return [
+    {
+      accessorKey: "name",
+      header: "Name",
+      cell: (cell) => (
+        <Link
+          to={`/projects/${cell.row.original.id}`}
+          className="opacity-70 hover:opacity-100 flex items-center gap-2"
+        >
+          {cell.getValue() as string}
+          <IconArrowUpRight className="ml-2 w-4 h-4" />
+        </Link>
+      ),
     },
-    accessorFn: (row) => {
-      return format(new Date(row.updatedAt), "Pp");
+    {
+      accessorKey: "updatedAt",
+      header: ({ column }) => {
+        return (
+          <div className="flex items-center gap-2">
+            <span>Updated</span>
+            <button
+              onClick={() =>
+                column.toggleSorting(column.getIsSorted() === "asc")
+              }
+            >
+              {column.getIsSorted() === "asc" ? (
+                <IconArrowDown className="w-4 h-4" />
+              ) : (
+                <IconArrowUp className="w-4 h-4" />
+              )}
+            </button>
+          </div>
+        );
+      },
+      accessorFn: (row) => {
+        return format(new Date(row.updatedAt), "Pp");
+      },
+      sortingFn: (a, b) => {
+        return (
+          new Date(b.original.updatedAt).getTime() -
+          new Date(a.original.updatedAt).getTime()
+        );
+      },
     },
-    sortingFn: (a, b) => {
-      return (
-        new Date(b.original.updatedAt).getTime() -
-        new Date(a.original.updatedAt).getTime()
-      );
+    {
+      accessorKey: "createdAt",
+      header: ({ column }) => {
+        return (
+          <div className="flex items-center gap-2">
+            <span>Created</span>
+            <button
+              onClick={() =>
+                column.toggleSorting(column.getIsSorted() === "asc")
+              }
+            >
+              {column.getIsSorted() === "asc" ? (
+                <IconArrowDown className="w-4 h-4" />
+              ) : (
+                <IconArrowUp className="w-4 h-4" />
+              )}
+            </button>
+          </div>
+        );
+      },
+      accessorFn: (row) => {
+        return format(new Date(row.createdAt), "Pp");
+      },
+      sortingFn: (a, b) => {
+        return (
+          new Date(b.original.createdAt).getTime() -
+          new Date(a.original.createdAt).getTime()
+        );
+      },
     },
-  },
-  {
-    accessorKey: "createdAt",
-    header: ({ column }) => {
-      return (
-        <div className="flex items-center gap-2">
-          <span>Created</span>
-          <button
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            {column.getIsSorted() === "asc" ? (
-              <IconArrowDown className="w-4 h-4" />
-            ) : (
-              <IconArrowUp className="w-4 h-4" />
-            )}
-          </button>
-        </div>
-      );
+    // add a column for deleting projects
+    {
+      accessorKey: "id",
+      header: "",
+      cell: (cell) => (
+        <IconButton
+          icon={IconTrash}
+          onClick={() => {
+            // console log id
+            const projectId = cell.getValue() as string;
+            if (
+              !window.confirm("Are you sure you want to delete this project?")
+            )
+              return;
+            deleteProject.mutate(projectId);
+          }}
+        />
+      ),
     },
-    accessorFn: (row) => {
-      return format(new Date(row.createdAt), "Pp");
-    },
-    sortingFn: (a, b) => {
-      return (
-        new Date(b.original.createdAt).getTime() -
-        new Date(a.original.createdAt).getTime()
-      );
-    },
-  },
-  // add a column for deleting projects
-  {
-    accessorKey: "id",
-    header: "",
-    cell: (cell) => (
-      <IconButton
-        icon={IconTrash}
-        onClick={() => {
-          // console log id
-          console.log(cell.getValue());
-        }}
-      />
-    ),
-  },
-];
+  ];
+}
 
 export function ProjectList({ projects }: { projects: Project[] }) {
-  const [sorting, setSorting] = useState<SortingState>([]);
-
+  const [sorting, setSorting] = useState<SortingState>([
+    {
+      id: "updatedAt",
+      desc: false,
+    },
+  ]);
+  const deleteProject = useDeleteProject();
+  const columns = useMemo(() => getColumns({ deleteProject }), [deleteProject]);
   const table = useReactTable({
     data: projects,
     columns,
@@ -158,6 +184,8 @@ export function ProjectList({ projects }: { projects: Project[] }) {
       sorting,
     },
   });
+
+  console.log(sorting);
 
   return (
     <Table>

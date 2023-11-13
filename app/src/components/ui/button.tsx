@@ -1,20 +1,36 @@
-import { Icon24Hours } from "@tabler/icons-react";
+import { Icon24Hours, IconLoader2 } from "@tabler/icons-react";
 import { cva } from "class-variance-authority";
 
 import { cn } from "@/lib/utils";
 
 const button = cva([
-  "px-3 py-2 rounded-md bg-foreground text-background font-bold",
+  "flex items-center gap-2 px-3 py-2 rounded-md bg-foreground text-background font-bold",
 ]);
 
-type ButtonProps = React.DetailedHTMLProps<
+type SharedButtonProps = {
+  isLoading?: boolean;
+} & React.DetailedHTMLProps<
   React.ButtonHTMLAttributes<HTMLButtonElement>,
   HTMLButtonElement
 >;
 
-export const Button = ({ children, ...props }: ButtonProps) => {
+type ButtonProps = SharedButtonProps & {
+  leftIcon?: typeof Icon24Hours;
+};
+
+export const Button = ({
+  children,
+  isLoading,
+  leftIcon: LeftIcon,
+  ...props
+}: ButtonProps) => {
   return (
     <button className={cn(button())} {...props}>
+      {isLoading ? (
+        <IconLoader2 className="w-4 h-4 animate-spin" />
+      ) : LeftIcon ? (
+        <LeftIcon className="w-4 h-4 mr-2" />
+      ) : null}
       {children}
     </button>
   );
@@ -22,11 +38,16 @@ export const Button = ({ children, ...props }: ButtonProps) => {
 
 export const IconButton = ({
   icon: Icon,
+  isLoading,
   ...props
-}: ButtonProps & { icon: typeof Icon24Hours }) => {
+}: SharedButtonProps & { icon: typeof Icon24Hours }) => {
   return (
     <button className={cn(button(), "p-2 rounded-md")} {...props}>
-      <Icon className="w-4 h-4" />
+      {isLoading ? (
+        <IconLoader2 className="w-4 h-4 animate-spin" />
+      ) : (
+        <Icon className="w-4 h-4" />
+      )}
     </button>
   );
 };
