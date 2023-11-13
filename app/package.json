@@ -38,7 +38,7 @@
     "shared": "workspace:*",
     "tailwind-merge": "^2.0.0",
     "tailwindcss-animate": "^1.0.7",
-    "tinybase": "^4.4.0",
+    "tinybase": "^4.4.1",
     "toposort": "^2.0.2",
     "zustand": "^4.4.6"
   },

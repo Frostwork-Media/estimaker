@@ -19,6 +19,6 @@
     "lodash.debounce": "^4.0.8",
     "lodash.throttle": "^4.1.1",
     "partysocket": "0.0.14",
-    "tinybase": "^4.4.0"
+    "tinybase": "^4.4.1"
   }
 }
