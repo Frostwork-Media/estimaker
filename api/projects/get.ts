@@ -33,8 +33,6 @@ const handler: VercelApiHandler = async (req, res) => {
   // Synchronize state with estimates in database (name and value)
   for (const pe of project.projectEstimate) {
     const { description, value, id } = pe.estimate;
-    console.log("Reconciling estimate");
-    console.log({ description, value, id });
 
     // Update the Values first
     const links = state[0].links;

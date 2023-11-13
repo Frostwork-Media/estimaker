@@ -410,6 +410,20 @@ export default class TinyBasePartyKitServer
     return createResponse(this, 404);
   }
 
+  onClose() {
+    const connections = this.party.getConnections();
+    // get size of iterator
+    let size = 0;
+    for (const _ of connections) {
+      size++;
+    }
+
+    // If no one in the room, purge from storage
+    if (size === 0) {
+      this.party.storage.deleteAll();
+    }
+  }
+
   async onMessage(message: string, connection: Connection) {
     const messagePrefix = this.config.messagePrefix ?? EMPTY_STRING;
     await ifNotUndefined(

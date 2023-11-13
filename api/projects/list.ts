@@ -1,7 +1,6 @@
 import { VercelApiHandler } from "@vercel/node";
 import { userFromSession } from "../_auth";
 import { prisma } from "db";
-import { initialState } from "shared";
 
 const handler: VercelApiHandler = async (req, res) => {
   const [user, email] = await userFromSession(req);

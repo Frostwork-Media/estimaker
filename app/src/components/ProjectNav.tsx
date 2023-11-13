@@ -1,5 +1,4 @@
 import { IconFolderFilled, IconGraph, IconSearch } from "@tabler/icons-react";
-import { useNavigate } from "react-router-dom";
 import { useValue } from "tinybase/debug/ui-react";
 
 import { IconButton } from "@/components/ui/button";
@@ -10,17 +9,13 @@ import { useUpdateProjectName } from "../lib/store";
 export function ProjectNav() {
   const projectName = useValue("name");
   const updateProjectName = useUpdateProjectName();
-  const navigate = useNavigate();
   return (
     <div className="p-2 bg-background">
       <div className="flex gap-2 justify-between items-center">
         <div className="flex gap-2 items-center">
-          <IconButton
-            icon={IconFolderFilled}
-            onClick={() => {
-              navigate("/projects");
-            }}
-          />
+          <a href="/projects">
+            <IconButton icon={IconFolderFilled} />
+          </a>
           <input
             type="text"
             value={projectName as string}

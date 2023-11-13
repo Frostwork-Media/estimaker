@@ -30,6 +30,7 @@ export function useMetaforecastSearch(search: string) {
     queryFn: () => searchMetaforecast(search),
     staleTime: Infinity,
     enabled: !!search,
+    retry: true,
   });
 }
 

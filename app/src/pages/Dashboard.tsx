@@ -1,7 +1,8 @@
 import { SignOutButton } from "@clerk/clerk-react";
+import { IconTrash } from "@tabler/icons-react";
 import { Link, useNavigate } from "react-router-dom";
 
-import { Button } from "@/components/ui/button";
+import { Button, IconButton } from "@/components/ui/button";
 import { useCreateProject } from "@/lib/mutations";
 import { useProjects } from "@/lib/queries";
 
@@ -23,9 +24,15 @@ export default function Dashboard() {
         <span>No projects yet</span>
       ) : (
         projects.data?.map((project) => (
-          <Link key={project.id} className="text-lg" to={project.id}>
-            {project.name}
-          </Link>
+          <div
+            key={project.id}
+            className="flex items-center gap-2 justify-between"
+          >
+            <Link className="text-lg" to={project.id}>
+              {project.name}
+            </Link>
+            <IconButton icon={IconTrash} />
+          </div>
         ))
       )}
 
