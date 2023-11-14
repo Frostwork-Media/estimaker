@@ -10,7 +10,7 @@ export function ProjectNav() {
   const projectName = useValue("name");
   const updateProjectName = useUpdateProjectName();
   return (
-    <div className="p-2 bg-background">
+    <div className="p-2 bg-background border-b border-neutral-200">
       <div className="flex gap-2 justify-between items-center">
         <div className="flex gap-2 items-center">
           <a href="/projects">

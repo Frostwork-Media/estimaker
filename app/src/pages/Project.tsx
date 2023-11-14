@@ -40,7 +40,7 @@ function Project() {
           </Panel>
           {showSidebar && (
             <>
-              <PanelResizeHandle className="w-2 h-full bg-neutral-100" />
+              <PanelResizeHandle className="w-2 h-full bg-background border-x border-neutral-300" />
               <Panel className="bg-background" order={2}>
                 <Sidebar />
               </Panel>

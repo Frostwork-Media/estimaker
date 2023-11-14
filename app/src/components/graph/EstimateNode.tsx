@@ -28,7 +28,11 @@ export function EstimateNode(props: EstimateNodeProps) {
           ))}
         </div>
       </Wrapper>
-      <Handle type="source" position={Position.Bottom} />
+      <Handle
+        type="source"
+        position={Position.Bottom}
+        className="!-bottom-3 !border-none"
+      />
     </>
   );
 }

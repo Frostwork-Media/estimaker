@@ -103,6 +103,7 @@ export function toNodesAndEdges(
           id: `${id}-${nodeId}`,
           source: nodeId,
           target: id,
+          style: { stroke: "#000" },
         });
       }
     }

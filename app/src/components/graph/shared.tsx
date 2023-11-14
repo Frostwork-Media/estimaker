@@ -24,7 +24,7 @@ export function Wrapper({
         {
           "w-64": nodeType === "metaforecast",
           "w-48": nodeType !== "metaforecast",
-          "outline-4 outline": selected,
+          "outline-2 outline outline-foreground/50": selected,
         }
       )}
     >
@@ -34,7 +34,7 @@ export function Wrapper({
             className={cn(
               "text-[8px] text-white font-bold font-mono rounded-full w-5 h-5 flex leading-[20px] text-center justify-center absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2",
               {
-                "bg-blue-600": nodeType === "estimate",
+                "bg-black": nodeType === "estimate",
                 "bg-emerald-600": nodeType === "derivative",
                 "bg-orange-600": nodeType === "metaforecast",
               }

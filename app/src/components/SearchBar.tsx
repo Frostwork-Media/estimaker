@@ -19,17 +19,27 @@ export function SearchBar() {
   const metaforecast = useMetaforecastSearch(searchTerm);
   const userEstimates = useEstimateSearch(searchTerm, id);
 
-  const { getViewport } = useReactFlow();
+  const { project } = useReactFlow();
   const addMetaforecastNode = useAddMetaforecastNode();
   const handleMetaforecast = useCallback(
     (slug: string) => {
-      // get the center from the viewport
-      const viewport = getViewport();
-      const { x, y } = viewport;
+      let x = 0,
+        y = 0;
+      const pane = document.querySelector(".react-flow__pane");
+      if (pane) {
+        // find the center of it
+        const rect = pane.getBoundingClientRect();
+        const _x = rect.left + rect.width / 2;
+        const _y = rect.top + rect.height / 2;
+        const projection = project({ x: _x, y: _y });
+        x = projection.x;
+        y = projection.y;
+      }
+
       // add the node
       addMetaforecastNode({ slug, x, y });
     },
-    [addMetaforecastNode, getViewport]
+    [addMetaforecastNode, project]
   );
 
   const createEstimateNodeWithLink = useCreateEstimateNodeWithLink();

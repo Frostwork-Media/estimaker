@@ -155,7 +155,7 @@ export function useAddEstimateNode() {
         "nodes",
         createEstimate({
           uid,
-          x,
+          x: x - 96,
           y,
           variableName: getVariableName(
             store.getTable("nodes") as Tables["nodes"]
@@ -189,7 +189,7 @@ export function useAddDerivativeNode() {
         "nodes",
         createDerivative({
           uid,
-          x,
+          x: x - 96,
           y,
           variableName: getVariableName(
             store.getTable("nodes") as Tables["nodes"]
@@ -215,8 +215,8 @@ export function useAddMetaforecastNode() {
       store.addRow("nodes", {
         type: "metaforecast",
         uid,
-        x,
-        y,
+        x: x - 112,
+        y: y - 96,
         variableName: getVariableName(
           store.getTable("nodes") as Tables["nodes"]
         ),
