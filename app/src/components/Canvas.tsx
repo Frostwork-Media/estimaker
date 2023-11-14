@@ -75,7 +75,9 @@ export function Canvas({ nodes, edges }: ReturnType<typeof toNodesAndEdges>) {
                 useClientStore.setState((state) => ({
                   ...state,
                   selectedNodes: change.selected
-                    ? [change.id]
+                    ? change.id in state.selectedNodes
+                      ? state.selectedNodes
+                      : [...state.selectedNodes, change.id]
                     : state.selectedNodes.filter((id) => id !== change.id),
                 }));
                 break;
