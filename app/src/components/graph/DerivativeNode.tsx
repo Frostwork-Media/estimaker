@@ -7,14 +7,13 @@ export function DerivativeNode(props: NodeProps) {
     <>
       <Handle type="target" position={Position.Top} />
       <Wrapper
-        color="emerald"
         label={props.data.label}
         variableName={props.data.variableName}
         selected={!!props.selected}
         nodeType="derivative"
       >
         <div className="mt-2 w-full">
-          <p className="font-mono text-xs bg-emerald-600 w-full text-white p-1">
+          <p className="font-mono text-xs bg-emerald-200 text-emerald-700 w-full text-white p-1">
             {props.data.value}
           </p>
         </div>

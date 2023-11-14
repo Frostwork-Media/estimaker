@@ -185,8 +185,6 @@ export function ProjectList({ projects }: { projects: Project[] }) {
     },
   });
 
-  console.log(sorting);
-
   return (
     <Table>
       <TableHeader>

@@ -14,7 +14,7 @@ export function StoreProvider({
   children,
   id,
   initial = JSON.stringify(initialState),
-  presence,
+  presence: _,
 }: {
   children: React.ReactNode;
   id: string;
@@ -41,10 +41,7 @@ export function StoreProvider({
       if (!persister) return;
       await persister.startAutoSave();
       await persister.startAutoLoad();
-
-      // const socket = persister.getConnection();
-      // socket.send
-      console.log(presence);
+      // presence message here
     }
   );
 

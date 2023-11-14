@@ -18,6 +18,7 @@ module.exports = {
     extend: {
       fontFamily: {
         sans: ["Inter", "sans-serif"],
+        mono: ["Space Mono", "monospace"],
       },
       colors: {
         background: "#fcfcfc",

@@ -19,13 +19,12 @@ export function MetaforecastNode(props: NodeProps) {
   }, [question.data?.options]);
   return (
     <Wrapper
-      color="metaforecast"
       label={question.data?.title ?? ""}
       selected={props.selected}
       variableName={props.data.variableName}
       nodeType="metaforecast"
     >
-      <div className="mt-4 grid gap-1 w-full">
+      <div className="mt-4 grid gap-1 w-full p-1">
         {question.data?.options.length ? (
           <div
             className={cn("grid gap-y-2", {
@@ -56,12 +55,14 @@ function Option({ option }: { option: ProbabilityOption }) {
   const optionProbability = option.probability ?? 0;
   return (
     <>
-      <span className={cn("text-left text-xs mr-2")}>{option.name}</span>
+      <span className={cn("text-left text-xs mr-2 rounded")}>
+        {option.name}
+      </span>
       <div
-        className="bg-orange-200 inner flex-grow h-4 text-[0px] relative overflow-hidden min-w-[50px]"
+        className="bg-orange-200 inner flex-grow h-4 rounded text-[0px] relative overflow-hidden min-w-[50px]"
         style={{ "--probability": optionProbability } as CSSProperties}
       >
-        <div className="option-amount-fill" />
+        <div className="option-amount-fill rounded" />
       </div>
       {/* <span className="rounded p-1 min-w-[50px] text-center whitespace-nowrap text-xs">
         {Math.round(optionProbability * 100)}%

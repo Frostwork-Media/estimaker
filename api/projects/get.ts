@@ -38,10 +38,8 @@ const handler: VercelApiHandler = async (req, res) => {
     const links = state[0].links;
     const nodes = state[0].nodes;
     if (links) {
-      console.log("1");
       for (const linkId in links) {
         const link = links[linkId];
-        console.log(link);
         if (link.id === id) {
           link.value = value;
 

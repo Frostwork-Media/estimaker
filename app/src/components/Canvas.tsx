@@ -42,7 +42,7 @@ export function Canvas({ nodes, edges }: ReturnType<typeof toNodesAndEdges>) {
   const deleteNode = useDeleteNode();
 
   return (
-    <div className="w-full h-full bg-blue-100" ref={reactFlowWrapper}>
+    <div className="w-full h-full bg-neutral-100" ref={reactFlowWrapper}>
       <ReactFlow
         fitView
         proOptions={{
@@ -57,7 +57,7 @@ export function Canvas({ nodes, edges }: ReturnType<typeof toNodesAndEdges>) {
         nodesFocusable={false}
         selectionOnDrag={false}
         snapToGrid={true}
-        snapGrid={[15, 15]}
+        snapGrid={[16, 16]}
         onNodesChange={(changes) => {
           for (const change of changes) {
             switch (change.type) {
@@ -154,10 +154,9 @@ export function Canvas({ nodes, edges }: ReturnType<typeof toNodesAndEdges>) {
       >
         <Controls />
         <Background
-          variant={BackgroundVariant.Dots}
-          gap={15}
-          size={1}
-          color="#98ccff"
+          variant={BackgroundVariant.Lines}
+          gap={16}
+          color="#e0e1e1"
         />
       </ReactFlow>
     </div>

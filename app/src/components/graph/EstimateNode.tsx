@@ -1,28 +1,29 @@
 import { Handle, Position } from "reactflow";
-import { useTable } from "tinybase/debug/ui-react";
+
+import { UserPresence } from "@/lib/hooks";
 
 import { EstimateNodeProps } from "../../lib/canvasTypes";
-import { User } from "../../lib/store";
 import { Wrapper } from "./shared";
 
 export function EstimateNode(props: EstimateNodeProps) {
   return (
     <>
       <Wrapper
-        color="indigo"
         label={props.data.label}
         variableName={props.data.variableName}
         selected={!!props.selected}
         nodeType="estimate"
       >
-        <div className="mt-4 grid gap-1">
+        <div className="mt-2 grid gap-1 p-1">
           {props.data.links.map((link) => (
             <div
               key={link.id}
-              className="flex items-center justify-start text-blue-500 text-sm gap-2"
+              className="flex items-center justify-start text-xs text-left gap-2"
             >
-              <Avatar userId={link.owner} />
-              <span>{link.value}</span>
+              <Avatar
+                presence={"presence" in link ? link.presence : undefined}
+              />
+              <span className="text-neutral-500">{link.value}</span>
             </div>
           ))}
         </div>
@@ -32,22 +33,20 @@ export function EstimateNode(props: EstimateNodeProps) {
   );
 }
 
-function Avatar({ userId }: { userId: string }) {
-  const users = useTable("users") as Record<string, User>;
-  const user = Object.values(users).find((u) => u.id === userId);
+function Avatar({ presence }: { presence?: UserPresence }) {
   return (
     <div
       style={
-        user
+        presence
           ? {
-              backgroundImage: `url(${user.avatarUrl})`,
+              backgroundImage: `url(${presence.avatar})`,
               backgroundSize: "cover",
               backgroundPosition: "center center",
               backgroundRepeat: "no-repeat",
             }
           : {}
       }
-      className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center text-gray-500 text-sm font-semibold"
+      className="w-5 h-5 bg-blue-600 rounded-full shrink-0 flex items-center justify-center text-gray-500 text-sm font-semibold"
     />
   );
 }

@@ -48,7 +48,6 @@ export function useEstimateSearch(search: string, projectId: string) {
       if (error) {
         throw new Error(error);
       }
-      console.log(estimates);
       return estimates as Estimate[];
     },
     staleTime: Infinity,

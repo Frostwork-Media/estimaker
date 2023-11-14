@@ -1,4 +1,3 @@
-import { useClerk } from "@clerk/clerk-react";
 import { nanoid } from "nanoid";
 import { useCallback } from "react";
 import { useStore } from "tinybase/debug/ui-react";
@@ -367,30 +366,6 @@ export function useUpdateProjectName() {
     (name: string) => {
       if (!store) return;
       store.setValue("name", name);
-    },
-    [store]
-  );
-}
-
-/**
- * Sets the users id and avatar url in the store,
- * if it's not already set
- */
-export function useSetUser() {
-  const store = useStore();
-  return useCallback(
-    (user: ReturnType<typeof useClerk>["user"]) => {
-      if (!store || !user) return;
-      const users = store.getTable("users");
-      if (Object.values(users).some((u) => u.id === user.id)) return;
-      store.addRow("users", {
-        id: user.id,
-        avatarUrl: user.imageUrl,
-        name:
-          user.fullName ??
-          user.firstName ??
-          user.emailAddresses[0].emailAddress,
-      });
     },
     [store]
   );

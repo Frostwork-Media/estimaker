@@ -27,9 +27,18 @@ export function toNodesAndEdges(
           // get links and add to node
           let links: Link[] = [];
           if (state.links) {
-            links = Object.values(state.links).filter(
-              (link) => link.nodeId === id
-            );
+            links = Object.values(state.links)
+              .filter((link) => link.nodeId === id)
+              .map((link) => {
+                const { owner } = link;
+                if (state.users) {
+                  const presence = Object.values(state.users).find(
+                    (user) => user.id === owner
+                  );
+                  if (presence) return { ...link, presence };
+                }
+                return link;
+              });
           }
 
           const n: EstimateNodeType = {

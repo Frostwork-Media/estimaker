@@ -10,7 +10,7 @@ import { ProjectNav } from "@/components/ProjectNav";
 import { Sidebar } from "@/components/Sidebar";
 import { SquiggleProvider } from "@/components/SquiggleProvider";
 import { StoreProvider } from "@/components/StoreProvider";
-import { useUser, useUserPresence } from "@/lib/hooks";
+import { useAvatar, useUser, useUserPresence } from "@/lib/hooks";
 import { Tables } from "@/lib/store";
 import { toNodesAndEdges } from "@/lib/toNodesAndEdges";
 import { useClientStore } from "@/lib/useClientStore";
@@ -18,6 +18,10 @@ import { useSquiggleCode } from "@/lib/useSquiggleCode";
 
 function Project() {
   const tables = useTables();
+
+  // Stores the users avatar in the store
+  useAvatar();
+
   const selectedNodes = useClientStore((state) => state.selectedNodes);
   const { nodes, edges } = toNodesAndEdges(tables as Tables, selectedNodes);
   const user = useUser();
