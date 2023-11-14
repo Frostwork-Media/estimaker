@@ -8,6 +8,7 @@ import { Connection, Party } from "partykit/server";
 export default class Server extends TinyBasePartyKitServer {
   id: string;
   saveTo: string;
+
   constructor(readonly party: Party) {
     super(party);
     this.id = party.id;

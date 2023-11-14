@@ -11,3 +11,17 @@ export function useUser() {
 
   return user;
 }
+
+export function useUserPresence() {
+  const { user } = useClerk();
+  if (!user) {
+    throw new Error("You must be logged in to use this.");
+  }
+
+  const avatar = user.imageUrl;
+  const name = user.firstName || user.fullName;
+
+  return { avatar, name };
+}
+
+export type UserPresence = ReturnType<typeof useUserPresence>;

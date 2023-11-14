@@ -8,14 +8,18 @@ import {
 } from "tinybase/debug/ui-react";
 import { createPartyKitPersister } from "tinybase/persisters/persister-partykit-client";
 
+import { UserPresence } from "@/lib/hooks";
+
 export function StoreProvider({
   children,
   id,
   initial = JSON.stringify(initialState),
+  presence,
 }: {
   children: React.ReactNode;
   id: string;
   initial?: string;
+  presence: UserPresence;
 }) {
   if (!id) throw new Error("No room ID provided");
 
@@ -37,6 +41,10 @@ export function StoreProvider({
       if (!persister) return;
       await persister.startAutoSave();
       await persister.startAutoLoad();
+
+      // const socket = persister.getConnection();
+      // socket.send
+      console.log(presence);
     }
   );
 

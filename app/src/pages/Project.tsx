@@ -10,7 +10,7 @@ import { ProjectNav } from "@/components/ProjectNav";
 import { Sidebar } from "@/components/Sidebar";
 import { SquiggleProvider } from "@/components/SquiggleProvider";
 import { StoreProvider } from "@/components/StoreProvider";
-import { useUser } from "@/lib/hooks";
+import { useUser, useUserPresence } from "@/lib/hooks";
 import { Tables } from "@/lib/store";
 import { toNodesAndEdges } from "@/lib/toNodesAndEdges";
 import { useClientStore } from "@/lib/useClientStore";
@@ -52,6 +52,7 @@ export default function Page() {
   const data = useLoaderData() as { project: P };
   const { id } = useParams<{ id: string }>();
   if (!id) throw new Error("No ID provided");
+  const presence = useUserPresence();
 
   return (
     <Suspense fallback={<div>Loading project...</div>}>
@@ -61,7 +62,11 @@ export default function Page() {
       >
         {(project) => {
           return (
-            <StoreProvider id={id} initial={JSON.stringify(project.state)}>
+            <StoreProvider
+              id={id}
+              initial={JSON.stringify(project.state)}
+              presence={presence}
+            >
               <ReactFlowProvider>
                 <Project />
               </ReactFlowProvider>
