@@ -165,7 +165,7 @@ function getColumns({
   ];
 }
 
-export function ProjectList({ projects }: { projects: Project[] }) {
+function ProjectList({ projects }: { projects: Project[] }) {
   const [sorting, setSorting] = useState<SortingState>([
     {
       id: "updatedAt",
