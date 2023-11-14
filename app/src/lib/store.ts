@@ -448,3 +448,29 @@ export function useCreateEstimateNodeWithLink() {
     [store]
   );
 }
+
+export function useConnectNodes() {
+  const store = useStore();
+
+  return useCallback(
+    ({ source, target }: { source: string; target: string }) => {
+      if (!store) return;
+      // we get the variable of the source
+      const sourceVariable = store.getCell("nodes", source, "variableName");
+
+      if (!sourceVariable) return;
+
+      // get the value of the target
+      const targetValue = store.getCell("nodes", target, "value");
+
+      if (!targetValue) return;
+
+      // Naive version: Wrap existing value in parens and multiply
+      const newValue = `(${targetValue}) * ${sourceVariable}`;
+
+      // Update the target node with the new value
+      store.setCell("nodes", target, "value", newValue);
+    },
+    [store]
+  );
+}

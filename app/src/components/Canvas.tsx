@@ -14,6 +14,7 @@ import { useStore } from "tinybase/debug/ui-react";
 import {
   useAddDerivativeNode,
   useAddEstimateNode,
+  useConnectNodes,
   useDeleteNode,
   useMoveNode,
 } from "../lib/store";
@@ -40,6 +41,8 @@ export function Canvas({ nodes, edges }: ReturnType<typeof toNodesAndEdges>) {
   const moveNode = useMoveNode();
   const connectingNodeId = useRef<string | null>(null);
   const deleteNode = useDeleteNode();
+
+  const connectNodes = useConnectNodes();
 
   return (
     <div className="w-full h-full bg-neutral-100" ref={reactFlowWrapper}>
@@ -107,6 +110,18 @@ export function Canvas({ nodes, edges }: ReturnType<typeof toNodesAndEdges>) {
         }}
         onConnectStart={(_, { nodeId }) => {
           connectingNodeId.current = nodeId;
+        }}
+        onConnect={(params) => {
+          // Unset connecting node
+          connectingNodeId.current = null;
+
+          const { source, target } = params;
+          if (!source || !target) return;
+
+          connectNodes({
+            source,
+            target,
+          });
         }}
         onConnectEnd={(event) => {
           if (!store) return;
