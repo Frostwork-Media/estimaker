@@ -31,7 +31,7 @@ export function EstimateNode(props: EstimateNodeProps) {
       <Handle
         type="source"
         position={Position.Bottom}
-        className="!-bottom-3 !border-none"
+        className="!-bottom-3 !border-none !w-1 !h-1"
       />
     </>
   );

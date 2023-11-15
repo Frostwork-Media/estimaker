@@ -8,7 +8,7 @@ export function DerivativeNode(props: NodeProps) {
       <Handle
         type="target"
         position={Position.Top}
-        className="!-top-3 !border-none"
+        className="!-top-3 !border-none !w-1 !h-1"
       />
       <Wrapper
         label={props.data.label}
@@ -25,7 +25,7 @@ export function DerivativeNode(props: NodeProps) {
       <Handle
         type="source"
         position={Position.Bottom}
-        className="!-bottom-3 !border-none"
+        className="!-bottom-3 !border-none !w-1 !h-1"
       />
     </>
   );

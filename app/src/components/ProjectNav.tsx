@@ -1,4 +1,5 @@
 import { IconFolderFilled, IconGraph, IconSearch } from "@tabler/icons-react";
+import AutosizeInput from "react-input-autosize";
 import { useValue } from "tinybase/debug/ui-react";
 
 import { IconButton } from "@/components/ui/button";
@@ -16,7 +17,7 @@ export function ProjectNav() {
           <a href="/projects">
             <IconButton icon={IconFolderFilled} />
           </a>
-          <input
+          <AutosizeInput
             type="text"
             value={projectName as string}
             className="font-extrabold text-2xl border-none bg-transparent"
