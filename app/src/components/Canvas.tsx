@@ -11,6 +11,8 @@ import ReactFlow, {
 } from "reactflow";
 import { useStore } from "tinybase/debug/ui-react";
 
+import { NODE_NAME_EDITOR_ID } from "@/lib/constants";
+
 import {
   useAddDerivativeNode,
   useAddEstimateNode,
@@ -56,6 +58,23 @@ export function Canvas({ nodes, edges }: ReturnType<typeof toNodesAndEdges>) {
         edges={edges}
         zoomOnDoubleClick={false}
         selectionMode={SelectionMode.Partial}
+        onNodeDoubleClick={(event, node) => {
+          event.stopPropagation();
+          event.preventDefault();
+
+          if (!node) return;
+
+          useClientStore.setState({
+            selectedNodes: [node.id],
+          });
+
+          requestAnimationFrame(() => {
+            // focus the node name editor
+            const nameEditor = document.getElementById(NODE_NAME_EDITOR_ID);
+            if (!nameEditor) return;
+            nameEditor.focus();
+          });
+        }}
         selectNodesOnDrag={false}
         nodesFocusable={false}
         selectionOnDrag={false}

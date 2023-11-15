@@ -27,7 +27,7 @@ export function MetaforecastNode(props: NodeProps) {
       <div className="mt-4 grid gap-1 w-full p-1">
         {question.data?.options.length ? (
           <div
-            className={cn("grid gap-y-2", {
+            className={cn("grid gap-y-2 px-2", {
               "grid-cols-[auto,minmax(0,1fr)]": !hasLongOptionText,
             })}
           >
@@ -40,10 +40,10 @@ export function MetaforecastNode(props: NodeProps) {
           href={question.data?.url}
           target="_blank"
           rel="noreferrer"
-          className="hover:underline flex items-center mt-2 text-xs"
+          className="hover:bg-neutral-100 px-2 py-1 flex items-center mt-2 text-[10px] text-neutral-400 justify-self-center font-bold rounded-full"
         >
           Open on {question.data?.platform.label}
-          <IconChevronRight className="inline-block ml-1 w-4 h-4" />
+          <IconChevronRight className="inline-block ml-1 w-3 h-3" />
         </a>
       </div>
     </Wrapper>
@@ -55,7 +55,9 @@ function Option({ option }: { option: ProbabilityOption }) {
   const optionProbability = option.probability ?? 0;
   return (
     <>
-      <span className={cn("text-left text-xs mr-2 rounded")}>
+      <span
+        className={cn("text-left text-[10px] text-neutral-600 mr-2 rounded")}
+      >
         {option.name}
       </span>
       <div

@@ -1,6 +1,8 @@
 import { useUser } from "@clerk/clerk-react";
 import { useRow } from "tinybase/debug/ui-react";
 
+import { NODE_NAME_EDITOR_ID } from "@/lib/constants";
+
 import {
   AnyNode,
   DerivativeNode,
@@ -62,6 +64,7 @@ function EstimateForm({ node, id }: { node: EstimateNode; id: string }) {
     <>
       <textarea
         className="w-full p-2 border border-gray-300 rounded h-16 resize-none"
+        id={NODE_NAME_EDITOR_ID}
         value={node.name as string}
         onChange={(e) => {
           renameNode({ id, name: e.target.value });
@@ -125,6 +128,7 @@ function DerivativeForm({ node, id }: { node: DerivativeNode; id: string }) {
     <div>
       <textarea
         className="w-full p-2 border border-gray-300 rounded h-16 resize-none"
+        id={NODE_NAME_EDITOR_ID}
         value={node.name as string}
         onChange={(e) => {
           renameNode({ id, name: e.target.value });
