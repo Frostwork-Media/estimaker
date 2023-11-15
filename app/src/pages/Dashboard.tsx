@@ -36,9 +36,11 @@ export default function Dashboard() {
   const projects = useProjects();
 
   return (
-    <div className="p-12 grid gap-4">
-      <header className="flex justify-between mb-6 items-center">
-        <p className="text-3xl font-extrabold">estimaker</p>
+    <div className="p-12 grid gap-6 min-h-screen content-start">
+      <header className="flex justify-between mb-8 items-center">
+        <p className="text-4xl font-extrabold text-orange-600 tracking-tight">
+          estimaker
+        </p>
         <SignOutButton
           signOutCallback={() => {
             navigate("/");
@@ -49,22 +51,24 @@ export default function Dashboard() {
           </span>
         </SignOutButton>
       </header>
-      <div className="flex items-center gap-4">
-        <h1 className="text-4xl font-bold">Your Projects</h1>
-        <Button
-          onClick={() => createProject.mutate()}
-          isLoading={createProject.isPending}
-        >
-          Create Project
-        </Button>
+      <div className="mx-auto max-w-6xl w-full grid gap-6">
+        <div className="flex items-center gap-6">
+          <h1 className="text-3xl font-bold tracking-tight">Projects</h1>
+          <Button
+            onClick={() => createProject.mutate()}
+            isLoading={createProject.isPending}
+          >
+            Create Project
+          </Button>
+        </div>
+        {projects.isLoading ? (
+          <span>Loading...</span>
+        ) : projects.data?.length === 0 ? (
+          <span>No projects yet</span>
+        ) : projects.data ? (
+          <ProjectList projects={projects.data} />
+        ) : null}
       </div>
-      {projects.isLoading ? (
-        <span>Loading...</span>
-      ) : projects.data?.length === 0 ? (
-        <span>No projects yet</span>
-      ) : projects.data ? (
-        <ProjectList projects={projects.data} />
-      ) : null}
     </div>
   );
 }
@@ -190,7 +194,7 @@ function ProjectList({ projects }: { projects: Project[] }) {
   });
 
   return (
-    <div className="bg-white p-3 rounded-md shadow-md">
+    <div className="bg-white rounded-md border">
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
