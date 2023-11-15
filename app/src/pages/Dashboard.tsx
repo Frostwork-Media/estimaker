@@ -37,9 +37,20 @@ export default function Dashboard() {
 
   return (
     <div className="p-12 grid gap-4">
-      <p className="text-3xl font-extrabold mb-6">estimaker</p>
+      <header className="flex justify-between mb-6 items-center">
+        <p className="text-3xl font-extrabold">estimaker</p>
+        <SignOutButton
+          signOutCallback={() => {
+            navigate("/");
+          }}
+        >
+          <span className="text-neutral-400 font-bold hover:text-neutral-500 cursor-pointer">
+            Sign Out
+          </span>
+        </SignOutButton>
+      </header>
       <div className="flex items-center gap-4">
-        <h1 className="text-2xl font-bold">Your Projects</h1>
+        <h1 className="text-4xl font-bold">Your Projects</h1>
         <Button
           onClick={() => createProject.mutate()}
           isLoading={createProject.isPending}
@@ -54,13 +65,6 @@ export default function Dashboard() {
       ) : projects.data ? (
         <ProjectList projects={projects.data} />
       ) : null}
-      <SignOutButton
-        signOutCallback={() => {
-          navigate("/");
-        }}
-      >
-        <div className="mt-12">Sign Out</div>
-      </SignOutButton>
     </div>
   );
 }
@@ -186,47 +190,49 @@ function ProjectList({ projects }: { projects: Project[] }) {
   });
 
   return (
-    <Table>
-      <TableHeader>
-        {table.getHeaderGroups().map((headerGroup) => (
-          <TableRow key={headerGroup.id}>
-            {headerGroup.headers.map((header) => {
-              return (
-                <TableHead key={header.id}>
-                  {header.isPlaceholder
-                    ? null
-                    : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
-                </TableHead>
-              );
-            })}
-          </TableRow>
-        ))}
-      </TableHeader>
-      <TableBody>
-        {table.getRowModel().rows?.length ? (
-          table.getRowModel().rows.map((row) => (
-            <TableRow
-              key={row.id}
-              data-state={row.getIsSelected() && "selected"}
-            >
-              {row.getVisibleCells().map((cell) => (
-                <TableCell key={cell.id}>
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </TableCell>
-              ))}
+    <div className="bg-white p-3 rounded-md shadow-md">
+      <Table>
+        <TableHeader>
+          {table.getHeaderGroups().map((headerGroup) => (
+            <TableRow key={headerGroup.id}>
+              {headerGroup.headers.map((header) => {
+                return (
+                  <TableHead key={header.id}>
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                  </TableHead>
+                );
+              })}
             </TableRow>
-          ))
-        ) : (
-          <TableRow>
-            <TableCell colSpan={columns.length} className="h-24 text-center">
-              No results.
-            </TableCell>
-          </TableRow>
-        )}
-      </TableBody>
-    </Table>
+          ))}
+        </TableHeader>
+        <TableBody>
+          {table.getRowModel().rows?.length ? (
+            table.getRowModel().rows.map((row) => (
+              <TableRow
+                key={row.id}
+                data-state={row.getIsSelected() && "selected"}
+              >
+                {row.getVisibleCells().map((cell) => (
+                  <TableCell key={cell.id}>
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))
+          ) : (
+            <TableRow>
+              <TableCell colSpan={columns.length} className="h-24 text-center">
+                No results.
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
+    </div>
   );
 }
