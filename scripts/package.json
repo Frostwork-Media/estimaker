@@ -1,0 +1,21 @@
+{
+  "name": "scripts",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "insertFromFile": "ts-node src/insertFromFile.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "db": "workspace:*",
+    "shared": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^20.6.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.2.2"
+  }
+}

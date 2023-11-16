@@ -4,3 +4,4 @@ packages:
   - "db"
   - "shared"
   - "multiplayer"
+  - "scripts"

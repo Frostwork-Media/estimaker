@@ -20,7 +20,7 @@ export function ProjectNav() {
           <AutosizeInput
             type="text"
             value={projectName as string}
-            className="font-extrabold text-2xl border-none bg-transparent"
+            inputClassName="font-extrabold text-2xl border-none bg-transparent"
             onChange={(e) => {
               updateProjectName(e.target.value);
             }}

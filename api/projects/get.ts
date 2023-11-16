@@ -1,26 +1,11 @@
 import { VercelApiHandler } from "@vercel/node";
-import { prisma } from "db";
+import { getProject, prisma } from "db";
 import { State } from "shared";
 
 const handler: VercelApiHandler = async (req, res) => {
   const { id } = req.query;
 
-  const project = await prisma.project.findUnique({
-    where: {
-      id: id as string,
-    },
-    select: {
-      id: true,
-      name: true,
-      state: true,
-      ownerId: true,
-      projectEstimate: {
-        select: {
-          estimate: true,
-        },
-      },
-    },
-  });
+  const project = await getProject(id as string);
 
   if (!project) {
     res.status(404).json({ error: "Project not found" });
