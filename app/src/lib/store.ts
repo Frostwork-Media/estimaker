@@ -2,6 +2,8 @@ import { nanoid } from "nanoid";
 import { useCallback } from "react";
 import { useStore } from "tinybase/debug/ui-react";
 
+import { useClientStore } from "./useClientStore";
+
 type Node = {
   /** A concatenation of the [type]:[id] */
   uid: string;
@@ -96,7 +98,7 @@ function createEstimate({
   x,
   y,
   variableName,
-  name = "Estimate...",
+  name = "",
 }: {
   uid: string;
   x: number;
@@ -135,7 +137,7 @@ function createDerivative({
     x,
     y,
     variableName,
-    name: "Derivative...",
+    name: "",
     value,
   };
 
@@ -151,7 +153,7 @@ export function useAddEstimateNode() {
     ({ x, y }: { x: number; y: number }) => {
       if (!store) return;
       const uid = nanoid();
-      store.addRow(
+      const nodeId = store.addRow(
         "nodes",
         createEstimate({
           uid,
@@ -162,6 +164,13 @@ export function useAddEstimateNode() {
           ),
         })
       );
+
+      if (nodeId)
+        useClientStore.setState({
+          selectedNodes: [nodeId],
+        });
+
+      return uid;
     },
     [store]
   );
@@ -185,7 +194,7 @@ export function useAddDerivativeNode() {
       if (!store) return;
       const uid = nanoid();
 
-      store.addRow(
+      const nodeId = store.addRow(
         "nodes",
         createDerivative({
           uid,
@@ -197,6 +206,13 @@ export function useAddDerivativeNode() {
           value: initialContent,
         })
       );
+
+      requestAnimationFrame(() => {
+        if (nodeId)
+          useClientStore.setState({
+            selectedNodes: [nodeId],
+          });
+      });
     },
     [store]
   );

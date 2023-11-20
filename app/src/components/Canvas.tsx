@@ -105,7 +105,7 @@ export function Canvas({ nodes, edges }: ReturnType<typeof toNodesAndEdges>) {
                 break;
               }
               default: {
-                console.log("Unhandled Change", change);
+                // console.log("Unhandled Change", change);
               }
             }
           }
@@ -126,6 +126,13 @@ export function Canvas({ nodes, edges }: ReturnType<typeof toNodesAndEdges>) {
           addEstimateNode(
             project({ x: event.clientX - left, y: event.clientY - top })
           );
+
+          requestAnimationFrame(() => {
+            // focus the node name editor
+            const nameEditor = document.getElementById(NODE_NAME_EDITOR_ID);
+            if (!nameEditor) return;
+            nameEditor.focus();
+          });
         }}
         onConnectStart={(_, { nodeId }) => {
           connectingNodeId.current = nodeId;
@@ -180,6 +187,13 @@ export function Canvas({ nodes, edges }: ReturnType<typeof toNodesAndEdges>) {
           });
 
           connectingNodeId.current = null;
+
+          requestAnimationFrame(() => {
+            // focus the node name editor
+            const nameEditor = document.getElementById(NODE_NAME_EDITOR_ID);
+            if (!nameEditor) return;
+            nameEditor.focus();
+          });
         }}
         onNodesDelete={(nodes) => {
           for (const node of nodes) {
