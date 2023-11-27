@@ -6,7 +6,7 @@ import { ProbabilityOption } from "@/lib/metaforecast-types";
 import { useMetaforecastQuestion } from "@/lib/queries";
 import { cn } from "@/lib/utils";
 
-import { Wrapper } from "./shared";
+import { Wrapper } from "./Wrapper";
 
 export function MetaforecastNode(props: NodeProps) {
   const question = useMetaforecastQuestion(props.data.slug);
@@ -23,6 +23,7 @@ export function MetaforecastNode(props: NodeProps) {
       selected={props.selected}
       variableName={props.data.variableName}
       nodeType="metaforecast"
+      id={props.id}
     >
       <div className="mt-4 grid gap-1 w-full p-1">
         {question.data?.options.length ? (

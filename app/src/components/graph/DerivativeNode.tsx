@@ -1,6 +1,6 @@
 import { Handle, NodeProps, Position } from "reactflow";
 
-import { Wrapper } from "./shared";
+import { Wrapper } from "./Wrapper";
 
 export function DerivativeNode(props: NodeProps) {
   return (
@@ -15,6 +15,7 @@ export function DerivativeNode(props: NodeProps) {
         variableName={props.data.variableName}
         selected={!!props.selected}
         nodeType="derivative"
+        id={props.id}
       >
         <div className="mt-2 w-full p-1">
           <p className="font-mono text-[10px] bg-emerald-100 text-emerald-700 w-full p-1 rounded">

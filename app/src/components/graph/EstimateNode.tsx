@@ -3,7 +3,7 @@ import { Handle, Position } from "reactflow";
 import { UserPresence } from "@/lib/hooks";
 
 import { EstimateNodeProps } from "../../lib/canvasTypes";
-import { Wrapper } from "./shared";
+import { Wrapper } from "./Wrapper";
 
 export function EstimateNode(props: EstimateNodeProps) {
   return (
@@ -13,6 +13,7 @@ export function EstimateNode(props: EstimateNodeProps) {
         variableName={props.data.variableName}
         selected={!!props.selected}
         nodeType="estimate"
+        id={props.id}
       >
         <div className="mt-2 grid gap-1 p-1">
           {props.data.links.map((link) => (
