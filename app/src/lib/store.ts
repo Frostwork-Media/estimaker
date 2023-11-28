@@ -387,17 +387,34 @@ export function useUpdateProjectName() {
   );
 }
 
+/** this function returns a string for a number following these rules
+ * 1 returns "a"
+ * 2 returns "b"
+ * 27 returns "aa"
+ * 28 returns "ab"
+ */
+function getLetterForNumber(num: number): string {
+  const charCode = 96 + (num % 26 || 26); // adjust for 26%26=0 case
+  const letter = String.fromCharCode(charCode).toUpperCase();
+  const remaining = Math.floor((num - 1) / 26); // subtract 1 before division
+  if (remaining === 0) {
+    return letter;
+  } else {
+    return getLetterForNumber(remaining) + letter; // reverse the order of concatenation
+  }
+}
+
 function getVariableName<T extends { variableName: string }>(
   nodes?: Record<number, T>
 ) {
   let count = 1;
-  let name = `x${count}`;
+  let name = getLetterForNumber(count);
   if (!nodes) {
     return name;
   }
   while (Object.values(nodes).some((node) => node.variableName === name)) {
     count++;
-    name = `x${count}`;
+    name = getLetterForNumber(count);
   }
   return name;
 }
