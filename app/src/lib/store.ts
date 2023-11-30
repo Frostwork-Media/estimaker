@@ -57,6 +57,10 @@ export type Link = {
   value: string;
 };
 
+export type LinkWithSelfId = Link & {
+  selfId: string;
+};
+
 /**
  * This represents a user of the project
  */

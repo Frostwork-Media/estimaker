@@ -40,6 +40,7 @@ export function Wrapper({
       >
         <IconButton
           color="red"
+          size="sm"
           icon={IconTrash}
           onClick={() => {
             deleteNode(id);
@@ -60,9 +61,9 @@ export function Wrapper({
           {variableName && (
             <span
               className={cn(
-                "text-[8px] text-white font-bold font-mono rounded-full min-w-[20px] px-1 h-5 flex leading-[20px] text-center justify-center absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2",
+                "text-[11px] text-white font-bold font-mono rounded-full min-w-[20px] px-1 h-5 flex leading-[20px] text-center justify-center absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2",
                 {
-                  "bg-black": nodeType === "estimate",
+                  "bg-indigo-600": nodeType === "estimate",
                   "bg-emerald-600": nodeType === "derivative",
                   "bg-orange-600": nodeType === "metaforecast",
                 }

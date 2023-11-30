@@ -1,7 +1,7 @@
 import { Edge, Node } from "reactflow";
 
 import { EstimateNodeType } from "./canvasTypes";
-import { Link, Tables } from "./store";
+import { LinkWithSelfId, Tables } from "./store";
 
 /**
  * Real-time Document is the input
@@ -25,19 +25,19 @@ export function toNodesAndEdges(
       switch (node.type) {
         case "estimate": {
           // get links and add to node
-          let links: Link[] = [];
+          let links: LinkWithSelfId[] = [];
           if (state.links) {
-            links = Object.values(state.links)
-              .filter((link) => link.nodeId === id)
-              .map((link) => {
+            links = Object.entries(state.links)
+              .filter(([_selfId, link]) => link.nodeId === id)
+              .map(([selfId, link]) => {
                 const { owner } = link;
                 if (state.users) {
                   const presence = Object.values(state.users).find(
                     (user) => user.id === owner
                   );
-                  if (presence) return { ...link, presence };
+                  if (presence) return { ...link, selfId, presence };
                 }
-                return link;
+                return { ...link, selfId };
               });
           }
 

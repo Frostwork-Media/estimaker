@@ -10,9 +10,14 @@ const button = cva(["flex items-center gap-2 px-3 py-2 rounded-md font-bold"], {
       neutral: "bg-neutral-200 text-foreground",
       red: "bg-red-500 text-background",
     },
+    size: {
+      sm: "text-sm px-2 py-1",
+      md: "text-base px-3 py-2",
+    },
   },
   defaultVariants: {
     color: "inverted",
+    size: "md",
   },
 });
 
@@ -33,10 +38,11 @@ export const Button = ({
   isLoading,
   leftIcon: LeftIcon,
   color,
+  size,
   ...props
 }: ButtonProps) => {
   return (
-    <button className={cn(button({ color }))} {...props}>
+    <button className={cn(button({ color, size }))} {...props}>
       {isLoading ? (
         <IconLoader2 className="w-4 h-4 animate-spin" />
       ) : LeftIcon ? (
@@ -47,18 +53,34 @@ export const Button = ({
   );
 };
 
+const iconButton = cva([], {
+  variants: {
+    size: {
+      md: "w-4 h-4",
+      sm: "w-3 h-3",
+    },
+  },
+  defaultVariants: {
+    size: "md",
+  },
+});
+
 export const IconButton = ({
   icon: Icon,
   isLoading,
   color,
+  size,
   ...props
 }: SharedButtonProps & { icon: typeof Icon24Hours }) => {
   return (
-    <button className={cn(button({ color }), "p-2 rounded-md")} {...props}>
+    <button
+      className={cn(button({ color, size }), "p-2 rounded-md")}
+      {...props}
+    >
       {isLoading ? (
-        <IconLoader2 className="w-4 h-4 animate-spin" />
+        <IconLoader2 className={cn("animate-spin", iconButton({ size }))} />
       ) : (
-        <Icon className="w-4 h-4" />
+        <Icon className={cn(iconButton({ size }))} />
       )}
     </button>
   );

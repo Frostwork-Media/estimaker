@@ -17,8 +17,8 @@ export function DerivativeNode(props: NodeProps) {
         nodeType="derivative"
         id={props.id}
       >
-        <div className="mt-2 w-full p-1">
-          <p className="font-mono text-[10px] bg-emerald-100 text-emerald-700 w-full p-1 rounded">
+        <div className="mt-2 w-full p-2">
+          <p className="font-mono text-[10px] bg-emerald-100 text-emerald-700 w-full p-1 rounded-full">
             {props.data.value}
           </p>
         </div>
