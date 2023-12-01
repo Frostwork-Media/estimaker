@@ -54,10 +54,35 @@ export function useSquiggleRunResult(code: string) {
     resultItem = getResultValue(squiggleOutput);
   }
 
+  let variableWithErrorName: string | null = null;
+  if (squiggleOutput?.output.ok === false) {
+    variableWithErrorName = variableWithError(squiggleOutput, code);
+  }
+
   return {
     squiggleOutput,
     resultVariables,
     resultItem,
     isRunning,
+    variableWithErrorName,
   };
+}
+
+function variableWithError(
+  output?: SquiggleOutput,
+  code?: string
+): string | null {
+  if (!output) return null;
+  if (!code) return null;
+  if (output.output.ok) return null;
+  if (output.output.value.tag === "compile") {
+    const line = output.output.value.location().start.line;
+    const lines = code.split("\n");
+    if (lines.length < line) return null;
+    const variableLine = lines[line - 1];
+    const variable = variableLine.split(" ")[0];
+    return variable;
+  }
+
+  return null;
 }

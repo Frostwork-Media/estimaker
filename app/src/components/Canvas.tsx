@@ -12,6 +12,7 @@ import ReactFlow, {
 import { useStore } from "tinybase/debug/ui-react";
 
 import { NODE_NAME_EDITOR_ID } from "@/lib/constants";
+import type { NodesAndEdges } from "@/lib/toNodesAndEdges";
 
 import {
   useAddDerivativeNode,
@@ -20,7 +21,6 @@ import {
   useDeleteNode,
   useMoveNode,
 } from "../lib/store";
-import { toNodesAndEdges } from "../lib/toNodesAndEdges";
 import { useClientStore } from "../lib/useClientStore";
 import { DerivativeNode } from "./graph/DerivativeNode";
 import { EstimateNode } from "./graph/EstimateNode";
@@ -32,7 +32,7 @@ const nodeTypes: NodeTypes = {
   metaforecast: MetaforecastNode,
 };
 
-export function Canvas({ nodes, edges }: ReturnType<typeof toNodesAndEdges>) {
+export function Canvas({ nodes, edges }: NodesAndEdges) {
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const { project } = useReactFlow();
 

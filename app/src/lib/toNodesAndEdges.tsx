@@ -50,6 +50,7 @@ export function toNodesAndEdges(
               label: node.name,
               variableName: node.variableName,
               links,
+              hasError: false,
             },
           };
 
@@ -127,3 +128,5 @@ function getVariables(value: string) {
   }
   return safeMatches;
 }
+
+export type NodesAndEdges = ReturnType<typeof toNodesAndEdges>;

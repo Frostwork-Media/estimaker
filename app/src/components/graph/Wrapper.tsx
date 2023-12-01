@@ -17,6 +17,7 @@ export function Wrapper({
   selected,
   nodeType,
   id,
+  hasError = false,
 }: {
   children: ReactNode;
   variableName?: string;
@@ -24,6 +25,7 @@ export function Wrapper({
   selected: boolean;
   nodeType: NodeType;
   id: string;
+  hasError?: boolean;
 }) {
   const deleteNode = useDeleteNode();
 
@@ -54,6 +56,8 @@ export function Wrapper({
             "w-64": nodeType === "metaforecast",
             "w-48": nodeType !== "metaforecast",
             "outline-2 outline outline-foreground/50": selected,
+            // give a red outline to the node if it has an error
+            "outline-2 outline-red-500 outline": hasError,
           }
         )}
       >

@@ -18,6 +18,7 @@ export function EstimateNode(props: EstimateNodeProps) {
         selected={!!props.selected}
         nodeType="estimate"
         id={props.id}
+        hasError={props.data.hasError}
       >
         <div className="grid gap-1 p-2">
           {link ? <EstimateSlider link={link} /> : null}

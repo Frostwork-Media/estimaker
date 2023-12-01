@@ -8,13 +8,14 @@ import { useTables } from "tinybase/debug/ui-react";
 import { Canvas } from "@/components/Canvas";
 import { ProjectNav } from "@/components/ProjectNav";
 import { Sidebar } from "@/components/Sidebar";
-import { SquiggleProvider } from "@/components/SquiggleProvider";
+import { SquiggleContext } from "@/components/SquiggleProvider";
 import { StoreProvider } from "@/components/StoreProvider";
 import { useAvatar, useUser, useUserPresence } from "@/lib/hooks";
 import { Tables } from "@/lib/store";
 import { toNodesAndEdges } from "@/lib/toNodesAndEdges";
 import { useClientStore } from "@/lib/useClientStore";
 import { useSquiggleCode } from "@/lib/useSquiggleCode";
+import { useSquiggleRunResult } from "@/lib/useSquiggleRunResult";
 
 function Project() {
   const tables = useTables();
@@ -23,15 +24,33 @@ function Project() {
   useAvatar();
 
   const selectedNodes = useClientStore((state) => state.selectedNodes);
-  const { nodes, edges } = toNodesAndEdges(tables as Tables, selectedNodes);
+  const nodesAndEdges = toNodesAndEdges(tables as Tables, selectedNodes);
+  const { edges } = nodesAndEdges;
   const user = useUser();
-  const squiggleCode = useSquiggleCode(tables, edges, user.id);
-
+  const code = useSquiggleCode(tables, edges, user.id);
   const sidebarTab = useClientStore((state) => state.sidebarTab);
   const showSidebar = !!sidebarTab || selectedNodes.length === 1;
 
+  const runResult = useSquiggleRunResult(code);
+
+  let { nodes } = nodesAndEdges;
+  if (runResult.variableWithErrorName) {
+    nodes = nodes.map((node) => {
+      if (node.data.variableName === runResult.variableWithErrorName) {
+        return {
+          ...node,
+          data: {
+            ...node.data,
+            hasError: true,
+          },
+        };
+      }
+      return node;
+    });
+  }
+
   return (
-    <SquiggleProvider code={squiggleCode}>
+    <SquiggleContext.Provider value={{ ...runResult, code }}>
       <div className="w-screen h-screen grid grid-rows-[auto_minmax(0,1fr)]">
         <ProjectNav />
         <PanelGroup direction="horizontal" autoSaveId="estimaker-size">
@@ -48,7 +67,7 @@ function Project() {
           )}
         </PanelGroup>
       </div>
-    </SquiggleProvider>
+    </SquiggleContext.Provider>
   );
 }
 

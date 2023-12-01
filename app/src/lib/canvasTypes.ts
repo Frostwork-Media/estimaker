@@ -7,6 +7,7 @@ type Estimate = {
   label: string;
   variableName: string;
   links: (LinkWithSelfId | (LinkWithSelfId & { presence: UserPresence }))[];
+  hasError: boolean;
 };
 
 export type EstimateNodeProps = NodeProps<Estimate>;

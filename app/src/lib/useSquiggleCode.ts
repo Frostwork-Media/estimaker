@@ -45,5 +45,13 @@ function createSquiggleCode(tables: Tables, edges: Edge[], userId: string) {
       return `${nodes[id].variableName} = ${value}`;
     })
     .join("\n");
-  return squiggleCode;
+
+  // now put a colon at the end of every line except the last one
+  // this is because squiggle requires a colon at the end of every line
+  // except the last one
+  const lines = squiggleCode.split("\n");
+  const lastLine = lines.pop();
+  const newLines = lines.map((line) => line + ";");
+  if (lastLine) newLines.push(lastLine);
+  return newLines.join("\n");
 }

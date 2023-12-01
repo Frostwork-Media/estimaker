@@ -399,7 +399,7 @@ export function useUpdateProjectName() {
  */
 function getLetterForNumber(num: number): string {
   const charCode = 96 + (num % 26 || 26); // adjust for 26%26=0 case
-  const letter = String.fromCharCode(charCode).toUpperCase();
+  const letter = String.fromCharCode(charCode);
   const remaining = Math.floor((num - 1) / 26); // subtract 1 before division
   if (remaining === 0) {
     return letter;
