@@ -73,7 +73,7 @@ export function Wrapper({
                 }
               )}
             >
-              {variableName}
+              <span className="-mt-px">{variableName}</span>
             </span>
           )}
           <h2 className="font-bold leading-tight pt-2 text-wrap-balance">
