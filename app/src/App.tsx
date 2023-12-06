@@ -3,15 +3,17 @@ import {
   RedirectToSignIn,
   SignedIn,
   SignedOut,
+  useUser,
 } from "@clerk/clerk-react";
 import { QueryClientProvider } from "@tanstack/react-query";
-import { lazy,Suspense } from "react";
-import { createBrowserRouter,Outlet, RouterProvider } from "react-router-dom";
+import { lazy, Suspense, useEffect } from "react";
+import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
 
 import { queryClient } from "./lib/queryClient";
 const Landing = lazy(() => import("./pages/Landing"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Project = lazy(() => import("./pages/Project"));
+import { registerUser, useAmplitude } from "./lib/analytics";
 import * as loaders from "./lib/loaders";
 
 const clerkPubKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
@@ -43,6 +45,7 @@ const router = createBrowserRouter([
 ]);
 
 export default function App() {
+  useAmplitude();
   return (
     <ClerkProvider publishableKey={clerkPubKey}>
       <QueryClientProvider client={queryClient}>
@@ -55,6 +58,11 @@ export default function App() {
 }
 
 function AuthWall({ children }: { children: React.ReactNode }) {
+  const user = useUser();
+  const email = user.user?.emailAddresses[0]?.emailAddress;
+  useEffect(() => {
+    if (email) registerUser(email);
+  }, [email]);
   return (
     <>
       <SignedIn>{children}</SignedIn>
