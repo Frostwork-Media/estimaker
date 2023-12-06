@@ -68,7 +68,7 @@ export type User = {
   /** The ID of the user */
   id: string;
   /** The avatar url of the user */
-  avatarUrl: string;
+  avatar: string;
   /** Full Name */
   name: string;
 };

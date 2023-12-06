@@ -1,26 +1,81 @@
 import { Edge, Node } from "reactflow";
 
 import { EstimateNodeType } from "./canvasTypes";
-import { LinkWithSelfId, Tables } from "./store";
+import { MedianStore } from "./createMedianStore";
+import { AnyNode, LinkWithSelfId, Tables } from "./store";
+
+const squiggleReservedWords = ["to"];
 
 /**
- * Real-time Document is the input
+ * Finds variables in a value
  */
-export function toNodesAndEdges(
-  state: Tables,
-  selectedNodes: string[]
-): {
-  nodes: Node[];
-  edges: Edge[];
-} {
-  const variableToNodeId: Record<string, string> = {};
+function getVariables(value: string) {
+  const matches = value.matchAll(/([a-z]\w*)/gi);
+  const safeMatches: string[] = [];
+  for (const match of matches) {
+    const variableName = match[1];
+    if (squiggleReservedWords.includes(variableName)) continue;
+    safeMatches.push(variableName);
+  }
+  return safeMatches;
+}
 
-  const nodes: Node[] = [];
+export function createEdges(
+  variableToNodeId: Record<string, string>,
+  nodes?: Record<string, AnyNode>
+) {
   const edges: Edge[] = [];
+
+  if (!nodes) return edges;
+
+  // loop only over derivative nodes
+  for (const id in nodes) {
+    const node = nodes[id];
+    if (node.type !== "derivative") continue;
+
+    const variables = getVariables(node.value);
+    for (const variable of variables) {
+      const nodeId = variableToNodeId[variable];
+      if (!nodeId) continue;
+
+      edges.push({
+        id: `${id}-${nodeId}`,
+        source: nodeId,
+        target: id,
+        style: { stroke: "#000" },
+      });
+    }
+  }
+
+  return edges;
+}
+
+export function createVariableToNodeId(state: Tables) {
+  const variableToNodeId: Record<string, string> = {};
   if (state.nodes) {
     for (const id in state.nodes) {
       const node = state.nodes[id];
       variableToNodeId[node.variableName] = id;
+    }
+  }
+  return variableToNodeId;
+}
+
+export function createNodes({
+  state,
+  selectedNodes,
+  variableWithErrorName,
+  medianStore,
+}: {
+  state: Tables;
+  selectedNodes: string[];
+  variableWithErrorName?: string | null;
+  medianStore: MedianStore;
+}): Node[] {
+  const nodes: Node[] = [];
+  if (state.nodes) {
+    for (const id in state.nodes) {
+      const node = state.nodes[id];
 
       switch (node.type) {
         case "estimate": {
@@ -50,7 +105,7 @@ export function toNodesAndEdges(
               label: node.name,
               variableName: node.variableName,
               links,
-              hasError: false,
+              hasError: node.variableName === variableWithErrorName,
             },
           };
 
@@ -68,6 +123,7 @@ export function toNodesAndEdges(
               label: node.name,
               value: node.value,
               variableName: node.variableName,
+              medians: medianStore[node.variableName],
             },
           });
 
@@ -89,44 +145,7 @@ export function toNodesAndEdges(
         }
       }
     }
-
-    // loop only over derivative nodes
-    for (const id in state.nodes) {
-      const node = state.nodes[id];
-      if (node.type !== "derivative") continue;
-
-      const variables = getVariables(node.value);
-      for (const variable of variables) {
-        const nodeId = variableToNodeId[variable];
-        if (!nodeId) continue;
-
-        edges.push({
-          id: `${id}-${nodeId}`,
-          source: nodeId,
-          target: id,
-          style: { stroke: "#000" },
-        });
-      }
-    }
   }
 
-  return { nodes, edges };
+  return nodes;
 }
-
-const squiggleReservedWords = ["to"];
-
-/**
- * Finds variables in a value
- */
-function getVariables(value: string) {
-  const matches = value.matchAll(/([a-z]\w*)/gi);
-  const safeMatches: string[] = [];
-  for (const match of matches) {
-    const variableName = match[1];
-    if (squiggleReservedWords.includes(variableName)) continue;
-    safeMatches.push(variableName);
-  }
-  return safeMatches;
-}
-
-export type NodesAndEdges = ReturnType<typeof toNodesAndEdges>;

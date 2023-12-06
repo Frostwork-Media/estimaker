@@ -106,7 +106,7 @@ function getSliderProps(value: string) {
   let min, max;
 
   if (isPercentage) {
-    min = 0;
+    min = 0.01;
     max = 1;
   } else {
     const smallest = Math.min(...localValue);
@@ -114,7 +114,7 @@ function getSliderProps(value: string) {
 
     // if both numbers are positive, set min to 0
     if (smallest >= 0 && largest >= 0) {
-      min = 0;
+      min = 0.01;
       max = closestPowerOfTen(largest);
       // if both numbers are negative, set max to 0
     } else if (smallest <= 0 && largest <= 0) {
@@ -127,7 +127,7 @@ function getSliderProps(value: string) {
   }
 
   // the step should divide the range into 100
-  const step = Math.abs((max - min) / 100);
+  const step = Math.abs((max - min) / 99);
   return { min, max, isPercentage, step, localValue };
 }
 

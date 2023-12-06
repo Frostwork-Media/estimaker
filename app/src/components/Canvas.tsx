@@ -5,6 +5,8 @@ import ReactFlow, {
   Background,
   BackgroundVariant,
   Controls,
+  Edge,
+  Node,
   NodeTypes,
   SelectionMode,
   useReactFlow,
@@ -12,7 +14,6 @@ import ReactFlow, {
 import { useStore } from "tinybase/debug/ui-react";
 
 import { NODE_NAME_EDITOR_ID } from "@/lib/constants";
-import type { NodesAndEdges } from "@/lib/toNodesAndEdges";
 
 import {
   useAddDerivativeNode,
@@ -32,7 +33,7 @@ const nodeTypes: NodeTypes = {
   metaforecast: MetaforecastNode,
 };
 
-export function Canvas({ nodes, edges }: NodesAndEdges) {
+export function Canvas({ nodes, edges }: { nodes: Node[]; edges: Edge[] }) {
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const { project } = useReactFlow();
 

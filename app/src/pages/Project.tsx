@@ -1,5 +1,5 @@
 import type { Project as P } from "db";
-import { Suspense } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { Await, useLoaderData, useParams } from "react-router-dom";
 import { ReactFlowProvider } from "reactflow";
@@ -10,9 +10,14 @@ import { ProjectNav } from "@/components/ProjectNav";
 import { Sidebar } from "@/components/Sidebar";
 import { SquiggleContext } from "@/components/SquiggleProvider";
 import { StoreProvider } from "@/components/StoreProvider";
+import { createMedianStore, MedianStore } from "@/lib/createMedianStore";
 import { useAvatar, useUser, useUserPresence } from "@/lib/hooks";
 import { Tables } from "@/lib/store";
-import { toNodesAndEdges } from "@/lib/toNodesAndEdges";
+import {
+  createEdges,
+  createNodes,
+  createVariableToNodeId,
+} from "@/lib/toNodesAndEdges";
 import { useClientStore } from "@/lib/useClientStore";
 import { useSquiggleCode } from "@/lib/useSquiggleCode";
 import { useSquiggleRunResult } from "@/lib/useSquiggleRunResult";
@@ -24,8 +29,12 @@ function Project() {
   useAvatar();
 
   const selectedNodes = useClientStore((state) => state.selectedNodes);
-  const nodesAndEdges = toNodesAndEdges(tables as Tables, selectedNodes);
-  const { edges } = nodesAndEdges;
+
+  const variableToNodeId = createVariableToNodeId(tables as Tables);
+  const edges = createEdges(variableToNodeId, (tables as Tables).nodes);
+
+  // const nodesAndEdges = toNodesAndEdges(tables as Tables, selectedNodes);
+
   const user = useUser();
   const code = useSquiggleCode(tables, edges, user.id);
   const sidebarTab = useClientStore((state) => state.sidebarTab);
@@ -33,34 +42,38 @@ function Project() {
 
   const runResult = useSquiggleRunResult(code);
 
-  let { nodes } = nodesAndEdges;
-  if (runResult.variableWithErrorName) {
-    nodes = nodes.map((node) => {
-      if (node.data.variableName === runResult.variableWithErrorName) {
-        return {
-          ...node,
-          data: {
-            ...node.data,
-            hasError: true,
-          },
-        };
-      }
-      return node;
-    });
-  }
+  // Add Medians to Nodes, Temporary Solution
+  // until we can get the median directly from single run
+  const [medianStore, setMedianStore] = useState<MedianStore>({});
+  const effectProps = JSON.stringify({ tables, edges });
+  useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const { tables, edges } = JSON.parse(effectProps);
+    createMedianStore(tables as Tables, edges)
+      .then(setMedianStore)
+      .catch(console.error);
+  }, [effectProps]);
+
+  const nodes = createNodes({
+    state: tables as Tables,
+    selectedNodes,
+    variableWithErrorName: runResult.variableWithErrorName,
+    medianStore,
+  });
 
   return (
     <SquiggleContext.Provider value={{ ...runResult, code }}>
       <div className="w-screen h-screen grid grid-rows-[auto_minmax(0,1fr)]">
         <ProjectNav />
         <PanelGroup direction="horizontal" autoSaveId="estimaker-size">
-          <Panel defaultSize={80} order={1}>
+          <Panel defaultSize={80} order={1} id="canvas">
             <Canvas nodes={nodes} edges={edges} />
           </Panel>
           {showSidebar && (
             <>
               <PanelResizeHandle className="w-2 h-full bg-background border-x border-neutral-300" />
-              <Panel className="bg-background" order={2}>
+              <Panel className="bg-background" order={2} id="sidebar">
                 <Sidebar />
               </Panel>
             </>

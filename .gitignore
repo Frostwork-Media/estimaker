@@ -2,3 +2,4 @@ node_modules
 .vercel
 .turbo
 .env*.local
+TODO.md

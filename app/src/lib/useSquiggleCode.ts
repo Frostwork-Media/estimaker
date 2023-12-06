@@ -8,7 +8,11 @@ export function useSquiggleCode(tables: Tables, edges: Edge[], userId: string) {
 }
 
 /** Here we create the squiggle code */
-function createSquiggleCode(tables: Tables, edges: Edge[], userId: string) {
+export function createSquiggleCode(
+  tables: Tables,
+  edges: Edge[],
+  userId: string
+) {
   const { nodes, links } = tables;
   if (!nodes) return "";
   const deps = edges.map((e) => [e.source, e.target] as [string, string]);
