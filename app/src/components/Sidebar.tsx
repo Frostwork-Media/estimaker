@@ -9,6 +9,7 @@ import {
   EstimateNode,
   Link,
   useCreateEstimateLink,
+  useDeleteEstimateLink,
   useNodeLinks,
   useRenameNode,
   useUpdateDerivativeValue,
@@ -17,6 +18,7 @@ import {
 import { useClientStore } from "../lib/useClientStore";
 import { SearchBar } from "./SearchBar";
 import { SquiggleSidebar } from "./SquiggleSidebar";
+import { Button } from "./ui/button";
 
 export function Sidebar() {
   const selectedNodes = useClientStore((state) => state.selectedNodes);
@@ -105,16 +107,29 @@ function EstimateLink({
 }) {
   const isOwner = link.owner === clerkId;
   const update = useUpdateEstimateLink();
+  const deleteEstimate = useDeleteEstimateLink();
   return (
-    <input
-      type="text"
-      value={link.value}
-      disabled={!isOwner}
-      className="w-full p-2 border border-gray-300 rounded resize-none disabled:opacity-50"
-      onChange={(e) => {
-        update({ id, value: e.target.value });
-      }}
-    />
+    <div className="flex gap-2">
+      <input
+        type="text"
+        value={link.value}
+        disabled={!isOwner}
+        className="w-full p-2 border border-gray-300 rounded resize-none disabled:opacity-50"
+        onChange={(e) => {
+          update({ id, value: e.target.value });
+        }}
+      />
+      {isOwner ? (
+        <Button
+          color="red"
+          onClick={() => {
+            deleteEstimate({ id });
+          }}
+        >
+          Delete
+        </Button>
+      ) : null}
+    </div>
   );
 }
 

@@ -349,6 +349,20 @@ export function useCreateEstimateLink() {
 }
 
 /**
+ * Deletes an estimate link
+ */
+export function useDeleteEstimateLink() {
+  const store = useStore();
+  return useCallback(
+    ({ id }: { id: string }) => {
+      if (!store) return;
+      store.delRow("links", id);
+    },
+    [store]
+  );
+}
+
+/**
  * Updates an estimate link
  */
 export function useUpdateEstimateLink() {
