@@ -41,7 +41,7 @@ export function StoreProvider({
       if (!persister) return;
       await persister.startAutoSave();
       await persister.startAutoLoad();
-      // presence message here
+      // Is there a way to subscribe to events from the persister?
     }
   );
 
