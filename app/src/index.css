@@ -17,3 +17,16 @@ html {
 .text-wrap-balance {
   text-wrap: balance;
 }
+
+.nice-small-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.nice-small-scrollbar::-webkit-scrollbar-track {
+  @apply bg-neutral-100;
+}
+
+.nice-small-scrollbar::-webkit-scrollbar-thumb {
+  @apply bg-neutral-500;
+}

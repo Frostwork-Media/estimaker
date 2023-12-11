@@ -56,7 +56,7 @@ export function SearchBar() {
         <h3 className="font-bold ">Library</h3>
         {userEstimates.isLoading ? <Loading /> : null}
       </div>
-      <div className="grid max-h-[400px] overflow-auto border rounded-md">
+      <div className="grid max-h-[400px] overflow-auto border nice-small-scrollbar">
         {userEstimates.data?.length ? (
           userEstimates.data?.map((estimate) => (
             <button
@@ -84,7 +84,7 @@ export function SearchBar() {
         <h3 className="font-bold ">Metaforecast</h3>
         {metaforecast.isLoading ? <Loading /> : null}
       </div>
-      <div className="grid max-h-[400px] overflow-auto border rounded-md">
+      <div className="grid max-h-[400px] overflow-auto border nice-small-scrollbar">
         {metaforecast.data?.length ? (
           metaforecast.data?.map((question) => (
             <button
