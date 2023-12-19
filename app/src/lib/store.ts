@@ -43,6 +43,12 @@ export type MetaforecastNode = Node & {
   variableName: string;
 };
 
+export type ImageNode = Node & {
+  type: "image";
+  /** The image url */
+  url: string;
+};
+
 /**
  * This represents a row from the estimates table in the db
  */
@@ -73,7 +79,11 @@ export type User = {
   name: string;
 };
 
-export type AnyNode = EstimateNode | DerivativeNode | MetaforecastNode;
+export type AnyNode =
+  | EstimateNode
+  | DerivativeNode
+  | MetaforecastNode
+  | ImageNode;
 
 export type Tables = {
   /**
@@ -422,15 +432,20 @@ function getLetterForNumber(num: number): string {
   }
 }
 
-function getVariableName<T extends { variableName: string }>(
-  nodes?: Record<number, T>
-) {
+function getVariableName(nodes?: Record<number, AnyNode>) {
   let count = 1;
   let name = getLetterForNumber(count);
   if (!nodes) {
     return name;
   }
-  while (Object.values(nodes).some((node) => node.variableName === name)) {
+
+  // Only nodes with variable names
+  const nodesWithVariableNames = Object.values(nodes).filter(
+    (node): node is EstimateNode | DerivativeNode | MetaforecastNode =>
+      "variableName" in node
+  );
+
+  while (nodesWithVariableNames.some((node) => node.variableName === name)) {
     count++;
     name = getLetterForNumber(count);
   }

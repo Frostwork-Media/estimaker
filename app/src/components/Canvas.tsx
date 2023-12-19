@@ -14,6 +14,7 @@ import ReactFlow, {
 import { useStore } from "tinybase/debug/ui-react";
 
 import { NODE_NAME_EDITOR_ID } from "@/lib/constants";
+import { useCanvasKeybinds } from "@/lib/useCanvasKeybinds";
 
 import {
   useAddDerivativeNode,
@@ -46,6 +47,8 @@ export function Canvas({ nodes, edges }: { nodes: Node[]; edges: Edge[] }) {
   const deleteNode = useDeleteNode();
 
   const connectNodes = useConnectNodes();
+
+  useCanvasKeybinds();
 
   return (
     <div className="w-full h-full bg-neutral-100" ref={reactFlowWrapper}>

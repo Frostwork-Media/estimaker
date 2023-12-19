@@ -23,6 +23,8 @@ export async function createMedianStore(tables: Tables, edges: Edge[]) {
       const user = users[userId];
       const code = createSquiggleCode(tables, edges, user.id);
       for (const node of derivativeNodes) {
+        if (!("variableName" in node)) continue;
+
         // Try it as a distribution first...
         let result = await run(`${code}\nquantile(${node.variableName},0.5)`);
         if (!result.ok) {
