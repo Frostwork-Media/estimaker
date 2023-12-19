@@ -11,21 +11,21 @@ export function useCanvasKeybinds() {
 
   // upload image
   const uploadImage = useCallback(
-    async (_file: File) => {
+    async (file: File) => {
       toast({
         title: "Uploading...",
         variant: "default",
         duration: 3000,
       });
 
-      // const formData = new FormData();
-      // formData.append("file", file);
-      // const res = await fetch("/api/upload", {
-      //   method: "POST",
-      //   body: formData,
-      // });
-      // const json = await res.json();
-      // return json.url;
+      const formData = new FormData();
+      formData.append("file", file);
+      const res = await fetch(`/api/upload?filename=${file.name}`, {
+        method: "POST",
+        body: formData,
+      });
+      const json = await res.json();
+      return json.url;
     },
     [toast]
   );
