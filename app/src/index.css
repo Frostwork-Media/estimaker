@@ -30,3 +30,8 @@ html {
 .nice-small-scrollbar::-webkit-scrollbar-thumb {
   @apply bg-neutral-500;
 }
+
+/** Put edges in the front **/
+.react-flow__edges {
+  z-index: 1000 !important;
+}

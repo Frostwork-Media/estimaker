@@ -47,6 +47,10 @@ export type ImageNode = Node & {
   type: "image";
   /** The image url */
   url: string;
+  /** The rendered width */
+  width: number;
+  /** The rendered height */
+  height: number;
 };
 
 /**
@@ -251,6 +255,33 @@ export function useAddMetaforecastNode() {
           store.getTable("nodes") as Tables["nodes"]
         ),
         slug,
+      });
+    },
+    [store]
+  );
+}
+
+/**
+ * Adds an image node to the store
+ */
+export function useAddImageNode() {
+  const store = useStore();
+  return useCallback(
+    ({ x, y, url, width, height }: Omit<ImageNode, "uid" | "type">) => {
+      if (!store) return;
+      const uid = nanoid();
+
+      store.addRow("nodes", {
+        type: "image",
+        uid,
+        x,
+        y,
+        variableName: getVariableName(
+          store.getTable("nodes") as Tables["nodes"]
+        ),
+        url,
+        width,
+        height,
       });
     },
     [store]

@@ -26,12 +26,14 @@ import {
 import { useClientStore } from "../lib/useClientStore";
 import { DerivativeNode } from "./graph/DerivativeNode";
 import { EstimateNode } from "./graph/EstimateNode";
+import { ImageNode } from "./graph/ImageNode";
 import { MetaforecastNode } from "./graph/MetaforecastNode";
 
 const nodeTypes: NodeTypes = {
   estimate: EstimateNode,
   derivative: DerivativeNode,
   metaforecast: MetaforecastNode,
+  image: ImageNode,
 };
 
 export function Canvas({ nodes, edges }: { nodes: Node[]; edges: Edge[] }) {

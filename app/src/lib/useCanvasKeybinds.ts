@@ -1,6 +1,9 @@
 import { useCallback, useEffect } from "react";
+import { useReactFlow } from "reactflow";
 
 import { useToast } from "@/components/ui/use-toast";
+
+import { useAddImageNode } from "./store";
 
 /**
  * This captures key events on the window when the canvas
@@ -8,6 +11,8 @@ import { useToast } from "@/components/ui/use-toast";
  */
 export function useCanvasKeybinds() {
   const { toast } = useToast();
+  const addImageNode = useAddImageNode();
+  const { getViewport } = useReactFlow();
 
   // upload image
   const uploadImage = useCallback(
@@ -25,9 +30,28 @@ export function useCanvasKeybinds() {
         body: formData,
       });
       const json = await res.json();
-      return json.url;
+      const url = json.url;
+
+      // Get the dimensions of the image
+      const img = new Image();
+      img.src = url;
+      await img.decode();
+      const width = img.width;
+      const height = img.height;
+
+      // Get center of viewport
+      const viewport = getViewport();
+
+      // Add the image node
+      addImageNode({
+        url,
+        width,
+        height,
+        x: viewport.x,
+        y: viewport.y,
+      });
     },
-    [toast]
+    [addImageNode, getViewport, toast]
   );
 
   useEffect(() => {

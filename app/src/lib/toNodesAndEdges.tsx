@@ -146,11 +146,28 @@ export function createNodes({
       }
 
       case "image": {
-        console.log("image", node);
+        nodes.push({
+          id,
+          position: { x: node.x, y: node.y },
+          type: "image",
+          selected: selectedNodes.includes(id),
+          data: {
+            url: node.url,
+            width: node.width,
+            height: node.height,
+          },
+        });
         break;
       }
     }
   }
+
+  // move all image nodes to the beginning
+  nodes.sort((a, b) => {
+    if (a.type === "image" && b.type !== "image") return -1;
+    if (a.type !== "image" && b.type === "image") return 1;
+    return 0;
+  });
 
   return nodes;
 }
