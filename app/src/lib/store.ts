@@ -289,6 +289,25 @@ export function useAddImageNode() {
 }
 
 /**
+ * Resizes an image node
+ */
+export function useResizeImageNode() {
+  const store = useStore();
+  return useCallback(
+    ({ id, width, height }: { id: string; width: number; height: number }) => {
+      if (!store) return;
+      // if the node is not an image node, return
+      const node = store.getRow("nodes", id) as ImageNode;
+      if (!node) return;
+      if (node.type !== "image") return;
+      store.setCell("nodes", id, "width", width);
+      store.setCell("nodes", id, "height", height);
+    },
+    [store]
+  );
+}
+
+/**
  * Moves a node of a given id
  */
 export function useMoveNode() {

@@ -22,6 +22,7 @@ import {
   useConnectNodes,
   useDeleteNode,
   useMoveNode,
+  useResizeImageNode,
 } from "../lib/store";
 import { useClientStore } from "../lib/useClientStore";
 import { DerivativeNode } from "./graph/DerivativeNode";
@@ -47,6 +48,7 @@ export function Canvas({ nodes, edges }: { nodes: Node[]; edges: Edge[] }) {
   const moveNode = useMoveNode();
   const connectingNodeId = useRef<string | null>(null);
   const deleteNode = useDeleteNode();
+  const resizeImageNode = useResizeImageNode();
 
   const connectNodes = useConnectNodes();
 
@@ -110,8 +112,17 @@ export function Canvas({ nodes, edges }: { nodes: Node[]; edges: Edge[] }) {
                 }));
                 break;
               }
+              case "dimensions": {
+                if (!change.dimensions) break;
+                resizeImageNode({
+                  id: change.id,
+                  width: change.dimensions.width,
+                  height: change.dimensions.height,
+                });
+                break;
+              }
               default: {
-                // console.log("Unhandled Change", change);
+                console.log("Unhandled Change", change);
               }
             }
           }
