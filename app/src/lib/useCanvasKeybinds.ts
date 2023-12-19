@@ -21,6 +21,7 @@ export function useCanvasKeybinds() {
         title: "Uploading...",
         variant: "default",
         duration: 3000,
+        description: "Your image is uploading.",
       });
 
       const formData = new FormData();
