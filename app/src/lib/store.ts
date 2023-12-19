@@ -43,6 +43,16 @@ export type MetaforecastNode = Node & {
   variableName: string;
 };
 
+export type ImageNode = Node & {
+  type: "image";
+  /** The image url */
+  url: string;
+  /** The rendered width */
+  width: number;
+  /** The rendered height */
+  height: number;
+};
+
 /**
  * This represents a row from the estimates table in the db
  */
@@ -73,7 +83,11 @@ export type User = {
   name: string;
 };
 
-export type AnyNode = EstimateNode | DerivativeNode | MetaforecastNode;
+export type AnyNode =
+  | EstimateNode
+  | DerivativeNode
+  | MetaforecastNode
+  | ImageNode;
 
 export type Tables = {
   /**
@@ -242,6 +256,52 @@ export function useAddMetaforecastNode() {
         ),
         slug,
       });
+    },
+    [store]
+  );
+}
+
+/**
+ * Adds an image node to the store
+ */
+export function useAddImageNode() {
+  const store = useStore();
+  return useCallback(
+    ({ x, y, url, width, height }: Omit<ImageNode, "uid" | "type">) => {
+      if (!store) return;
+      const uid = nanoid();
+
+      store.addRow("nodes", {
+        type: "image",
+        uid,
+        x,
+        y,
+        variableName: getVariableName(
+          store.getTable("nodes") as Tables["nodes"]
+        ),
+        url,
+        width,
+        height,
+      });
+    },
+    [store]
+  );
+}
+
+/**
+ * Resizes an image node
+ */
+export function useResizeImageNode() {
+  const store = useStore();
+  return useCallback(
+    ({ id, width, height }: { id: string; width: number; height: number }) => {
+      if (!store) return;
+      // if the node is not an image node, return
+      const node = store.getRow("nodes", id) as ImageNode;
+      if (!node) return;
+      if (node.type !== "image") return;
+      store.setCell("nodes", id, "width", width);
+      store.setCell("nodes", id, "height", height);
     },
     [store]
   );
@@ -422,15 +482,20 @@ function getLetterForNumber(num: number): string {
   }
 }
 
-function getVariableName<T extends { variableName: string }>(
-  nodes?: Record<number, T>
-) {
+function getVariableName(nodes?: Record<number, AnyNode>) {
   let count = 1;
   let name = getLetterForNumber(count);
   if (!nodes) {
     return name;
   }
-  while (Object.values(nodes).some((node) => node.variableName === name)) {
+
+  // Only nodes with variable names
+  const nodesWithVariableNames = Object.values(nodes).filter(
+    (node): node is EstimateNode | DerivativeNode | MetaforecastNode =>
+      "variableName" in node
+  );
+
+  while (nodesWithVariableNames.some((node) => node.variableName === name)) {
     count++;
     name = getLetterForNumber(count);
   }

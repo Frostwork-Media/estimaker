@@ -12,12 +12,15 @@
   "license": "ISC",
   "dependencies": {
     "@clerk/clerk-sdk-node": "^4.12.20",
+    "@vercel/blob": "^0.16.1",
+    "db": "workspace:*",
     "dotenv": "^16.3.1",
+    "formidable": "^3.5.1",
     "jsonwebtoken": "^9.0.2",
-    "shared": "workspace:*",
-    "db": "workspace:*"
+    "shared": "workspace:*"
   },
   "devDependencies": {
+    "@types/formidable": "^3.4.5",
     "@types/jsonwebtoken": "^9.0.5",
     "@types/node": "^20.6.0",
     "@vercel/node": "^2.15.1",

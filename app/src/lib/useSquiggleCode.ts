@@ -20,6 +20,8 @@ export function createSquiggleCode(
   const squiggleCode = sorted
     .map((id) => {
       const node = nodes[id];
+      if (!("variableName" in node)) return "";
+
       let value = "1"; // default value
       if (node.type === "derivative") {
         value = node.value;
@@ -46,7 +48,7 @@ export function createSquiggleCode(
           }
         }
       }
-      return `${nodes[id].variableName} = ${value}`;
+      return `${node.variableName} = ${value}`;
     })
     .join("\n");
 

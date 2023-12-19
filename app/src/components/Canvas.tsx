@@ -14,6 +14,7 @@ import ReactFlow, {
 import { useStore } from "tinybase/debug/ui-react";
 
 import { NODE_NAME_EDITOR_ID } from "@/lib/constants";
+import { useCanvasKeybinds } from "@/lib/useCanvasKeybinds";
 
 import {
   useAddDerivativeNode,
@@ -21,16 +22,19 @@ import {
   useConnectNodes,
   useDeleteNode,
   useMoveNode,
+  useResizeImageNode,
 } from "../lib/store";
 import { useClientStore } from "../lib/useClientStore";
 import { DerivativeNode } from "./graph/DerivativeNode";
 import { EstimateNode } from "./graph/EstimateNode";
+import { ImageNode } from "./graph/ImageNode";
 import { MetaforecastNode } from "./graph/MetaforecastNode";
 
 const nodeTypes: NodeTypes = {
   estimate: EstimateNode,
   derivative: DerivativeNode,
   metaforecast: MetaforecastNode,
+  image: ImageNode,
 };
 
 export function Canvas({ nodes, edges }: { nodes: Node[]; edges: Edge[] }) {
@@ -44,8 +48,11 @@ export function Canvas({ nodes, edges }: { nodes: Node[]; edges: Edge[] }) {
   const moveNode = useMoveNode();
   const connectingNodeId = useRef<string | null>(null);
   const deleteNode = useDeleteNode();
+  const resizeImageNode = useResizeImageNode();
 
   const connectNodes = useConnectNodes();
+
+  useCanvasKeybinds();
 
   return (
     <div className="w-full h-full bg-neutral-100" ref={reactFlowWrapper}>
@@ -105,8 +112,17 @@ export function Canvas({ nodes, edges }: { nodes: Node[]; edges: Edge[] }) {
                 }));
                 break;
               }
+              case "dimensions": {
+                if (!change.dimensions) break;
+                resizeImageNode({
+                  id: change.id,
+                  width: change.dimensions.width,
+                  height: change.dimensions.height,
+                });
+                break;
+              }
               default: {
-                // console.log("Unhandled Change", change);
+                console.log("Unhandled Change", change);
               }
             }
           }

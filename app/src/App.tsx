@@ -13,6 +13,7 @@ import { queryClient } from "./lib/queryClient";
 const Landing = lazy(() => import("./pages/Landing"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Project = lazy(() => import("./pages/Project"));
+import { Toaster } from "./components/ui/toaster";
 import { registerUser, useAmplitude } from "./lib/analytics";
 import * as loaders from "./lib/loaders";
 
@@ -65,7 +66,10 @@ function AuthWall({ children }: { children: React.ReactNode }) {
   }, [email]);
   return (
     <>
-      <SignedIn>{children}</SignedIn>
+      <SignedIn>
+        {children}
+        <Toaster />
+      </SignedIn>
       <SignedOut>
         <RedirectToSignIn />
       </SignedOut>

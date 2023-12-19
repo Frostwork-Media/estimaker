@@ -55,6 +55,7 @@ export function createVariableToNodeId(state: Tables) {
   if (state.nodes) {
     for (const id in state.nodes) {
       const node = state.nodes[id];
+      if (!("variableName" in node)) continue;
       variableToNodeId[node.variableName] = id;
     }
   }
@@ -73,79 +74,100 @@ export function createNodes({
   medianStore: MedianStore;
 }): Node[] {
   const nodes: Node[] = [];
-  if (state.nodes) {
-    for (const id in state.nodes) {
-      const node = state.nodes[id];
+  if (!state.nodes) return nodes;
 
-      switch (node.type) {
-        case "estimate": {
-          // get links and add to node
-          let links: LinkWithSelfId[] = [];
-          if (state.links) {
-            links = Object.entries(state.links)
-              .filter(([_selfId, link]) => link.nodeId === id)
-              .map(([selfId, link]) => {
-                const { owner } = link;
-                if (state.users) {
-                  const presence = Object.values(state.users).find(
-                    (user) => user.id === owner
-                  );
-                  if (presence) return { ...link, selfId, presence };
-                }
-                return { ...link, selfId };
-              });
-          }
+  for (const id in state.nodes) {
+    const node = state.nodes[id];
 
-          const n: EstimateNodeType = {
-            id,
-            position: { x: node.x, y: node.y },
-            type: "estimate",
-            selected: selectedNodes.includes(id),
-            data: {
-              label: node.name,
-              variableName: node.variableName,
-              links,
-              hasError: node.variableName === variableWithErrorName,
-            },
-          };
-
-          nodes.push(n);
-
-          break;
-        }
-        case "derivative": {
-          nodes.push({
-            id,
-            position: { x: node.x, y: node.y },
-            type: "derivative",
-            selected: selectedNodes.includes(id),
-            data: {
-              label: node.name,
-              value: node.value,
-              variableName: node.variableName,
-              medians: medianStore[node.variableName],
-            },
-          });
-
-          break;
+    switch (node.type) {
+      case "estimate": {
+        // get links and add to node
+        let links: LinkWithSelfId[] = [];
+        if (state.links) {
+          links = Object.entries(state.links)
+            .filter(([_selfId, link]) => link.nodeId === id)
+            .map(([selfId, link]) => {
+              const { owner } = link;
+              if (state.users) {
+                const presence = Object.values(state.users).find(
+                  (user) => user.id === owner
+                );
+                if (presence) return { ...link, selfId, presence };
+              }
+              return { ...link, selfId };
+            });
         }
 
-        case "metaforecast": {
-          nodes.push({
-            id,
-            position: { x: node.x, y: node.y },
-            type: "metaforecast",
-            selected: selectedNodes.includes(id),
-            data: {
-              slug: node.slug,
-            },
-          });
+        const n: EstimateNodeType = {
+          id,
+          position: { x: node.x, y: node.y },
+          type: "estimate",
+          selected: selectedNodes.includes(id),
+          data: {
+            label: node.name,
+            variableName: node.variableName,
+            links,
+            hasError: node.variableName === variableWithErrorName,
+          },
+        };
 
-          break;
-        }
+        nodes.push(n);
+
+        break;
+      }
+      case "derivative": {
+        nodes.push({
+          id,
+          position: { x: node.x, y: node.y },
+          type: "derivative",
+          selected: selectedNodes.includes(id),
+          data: {
+            label: node.name,
+            value: node.value,
+            variableName: node.variableName,
+            medians: medianStore[node.variableName],
+          },
+        });
+
+        break;
+      }
+      case "metaforecast": {
+        nodes.push({
+          id,
+          position: { x: node.x, y: node.y },
+          type: "metaforecast",
+          selected: selectedNodes.includes(id),
+          data: {
+            slug: node.slug,
+          },
+        });
+
+        break;
+      }
+
+      case "image": {
+        nodes.push({
+          id,
+          position: { x: node.x, y: node.y },
+          type: "image",
+          selected: selectedNodes.includes(id),
+          data: {
+            url: node.url,
+            width: node.width,
+            height: node.height,
+          },
+        });
+        break;
       }
     }
   }
+
+  // move all image nodes to the beginning
+  nodes.sort((a, b) => {
+    if (a.type === "image" && b.type !== "image") return -1;
+    if (a.type !== "image" && b.type === "image") return 1;
+    return 0;
+  });
 
   return nodes;
 }
