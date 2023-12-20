@@ -4,7 +4,6 @@ export function ImageNode(
   props: NodeProps<{ url: string; width: number; height: number }>
 ) {
   const { url, width, height } = props.data;
-  console.log({ props });
 
   // render it as a full background, size cover
   return (

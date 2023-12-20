@@ -1,7 +1,7 @@
 import { VercelApiHandler } from "@vercel/node";
 import { userFromSession } from "../_auth";
 import { prisma } from "db";
-import { initialState } from "shared";
+import { State, initialState } from "shared";
 
 const handler: VercelApiHandler = async (req, res) => {
   const [user, email] = await userFromSession(req);
@@ -10,11 +10,14 @@ const handler: VercelApiHandler = async (req, res) => {
     return;
   }
 
+  const state: State = req.body.state ?? initialState;
+  console.log(state);
+
   const project = await prisma.project.create({
     data: {
-      name: initialState[1].name,
+      name: state[1].name,
       ownerId: user.id,
-      state: initialState,
+      state: state,
     },
   });
 
