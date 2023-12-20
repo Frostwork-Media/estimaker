@@ -71,3 +71,28 @@ export function useDeleteProject() {
     },
   });
 }
+
+/** Creates a new project using only the selected nodes */
+export function useCreateProjectFromSelection() {
+  const navigate = useNavigate();
+  return useMutation({
+    mutationFn: async () => {
+      const res = await fetch("/api/projects/create");
+      if (!res.ok) {
+        throw new Error("Failed to create project");
+      }
+
+      const { project } = (await res.json()) as { project: Project };
+
+      return project;
+    },
+    onSuccess: (project) => {
+      // navigate to the new project
+      navigate(`/projects/${project.id}`);
+
+      queryClient.invalidateQueries({
+        queryKey: ["projects"],
+      });
+    },
+  });
+}
