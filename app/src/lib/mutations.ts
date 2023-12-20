@@ -1,8 +1,11 @@
 import { useMutation } from "@tanstack/react-query";
 import { Project } from "db";
 import { useNavigate } from "react-router-dom";
+import { State } from "shared";
+import { useStore } from "tinybase/debug/ui-react";
 
 import { queryClient } from "./queryClient";
+import { useClientStore } from "./useClientStore";
 
 export function useCreateProject() {
   const navigate = useNavigate();
@@ -74,10 +77,18 @@ export function useDeleteProject() {
 
 /** Creates a new project using only the selected nodes */
 export function useCreateProjectFromSelection() {
-  const navigate = useNavigate();
+  const getSelectedState = useGetSelectedState();
   return useMutation({
     mutationFn: async () => {
-      const res = await fetch("/api/projects/create");
+      const [tables] = getSelectedState();
+
+      const res = await fetch("/api/projects/create", {
+        method: "POST",
+        body: JSON.stringify({ state: [tables, { name: "New Project" }] }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
       if (!res.ok) {
         throw new Error("Failed to create project");
       }
@@ -87,12 +98,41 @@ export function useCreateProjectFromSelection() {
       return project;
     },
     onSuccess: (project) => {
-      // navigate to the new project
-      navigate(`/projects/${project.id}`);
-
-      queryClient.invalidateQueries({
-        queryKey: ["projects"],
-      });
+      // navigate to the new project with a refresh
+      window.location.href = `/projects/${project.id}`;
     },
   });
+}
+
+/**
+ * This function returns the subset of the state that is selected
+ */
+export function useGetSelectedState() {
+  const store = useStore();
+  return () => {
+    if (!store) throw new Error("Store is not defined");
+    const selectedNodes = useClientStore.getState().selectedNodes;
+    const [tables, values]: State = JSON.parse(store.getJson());
+
+    // remove any nodes from the nodes table that aren't selected
+    if (tables.nodes) {
+      for (const id in tables.nodes) {
+        if (!selectedNodes.includes(id)) {
+          delete tables.nodes[id];
+        }
+      }
+    }
+
+    // remove any links that no longer have nodes
+    if (tables.links) {
+      for (const id in tables.links) {
+        const link = tables.links[id];
+        if (!selectedNodes.includes(link.nodeId)) {
+          delete tables.links[id];
+        }
+      }
+    }
+
+    return [tables, values];
+  };
 }

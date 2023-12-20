@@ -29,7 +29,7 @@ import { DerivativeNode } from "./graph/DerivativeNode";
 import { EstimateNode } from "./graph/EstimateNode";
 import { ImageNode } from "./graph/ImageNode";
 import { MetaforecastNode } from "./graph/MetaforecastNode";
-import { MultiSelectToolbar } from "./MutiSelectToolbar";
+import { MultiSelectToolbar } from "./MultiSelectToolbar";
 
 const nodeTypes: NodeTypes = {
   estimate: EstimateNode,
