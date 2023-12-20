@@ -29,6 +29,7 @@ import { DerivativeNode } from "./graph/DerivativeNode";
 import { EstimateNode } from "./graph/EstimateNode";
 import { ImageNode } from "./graph/ImageNode";
 import { MetaforecastNode } from "./graph/MetaforecastNode";
+import { MultiSelectToolbar } from "./MutiSelectToolbar";
 
 const nodeTypes: NodeTypes = {
   estimate: EstimateNode,
@@ -225,6 +226,7 @@ export function Canvas({ nodes, edges }: { nodes: Node[]; edges: Edge[] }) {
           gap={16}
           color="#e0e1e1"
         />
+        <MultiSelectToolbar />
       </ReactFlow>
     </div>
   );
