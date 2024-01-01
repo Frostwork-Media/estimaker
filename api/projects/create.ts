@@ -10,8 +10,7 @@ const handler: VercelApiHandler = async (req, res) => {
     return;
   }
 
-  const state: State = req.body.state ?? initialState;
-  console.log(state);
+  const state: State = req?.body?.state ?? initialState;
 
   const project = await prisma.project.create({
     data: {
