@@ -136,3 +136,27 @@ export function useGetSelectedState() {
     return [tables, values];
   };
 }
+
+function updateProjectNameInDB(name: string, id: string) {
+  return fetch("/api/projects/update-name", {
+    method: "POST",
+    body: JSON.stringify({ name, id }),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+}
+
+export function useUpdateProjectNameInDB() {
+  return useMutation({
+    mutationKey: ["updateProjectNameInDB"],
+    mutationFn: async ({ name, id }: { name: string; id: string }) => {
+      const res = await updateProjectNameInDB(name, id);
+      if (!res.ok) {
+        throw new Error("Failed to update project name");
+      }
+
+      return res.json() as Promise<{ success: boolean }>;
+    },
+  });
+}

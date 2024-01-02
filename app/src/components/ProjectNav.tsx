@@ -4,31 +4,37 @@ import {
   IconLoader2,
   IconSearch,
 } from "@tabler/icons-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect } from "react";
 import AutosizeInput from "react-input-autosize";
 import { useValue } from "tinybase/debug/ui-react";
 
 import { IconButton } from "@/components/ui/button";
+import { useUpdateProjectNameInDB } from "@/lib/mutations";
 import { useClientStore } from "@/lib/useClientStore";
+import { useDebounce } from "@/lib/useDebounce";
 
 import { useUpdateProjectName } from "../lib/store";
 
-export function ProjectNav() {
+export function ProjectNav({ id }: { id: string }) {
   const projectName = useValue("name");
+  const debouncedProjectName = useDebounce(projectName, 1000);
   const updateProjectName = useUpdateProjectName();
-  const [saving, setSaving] = useState(false);
-  const timer = useRef<NodeJS.Timeout | null>(null);
-  useEffect(() => {
-    if (saving) {
-      timer.current = setTimeout(() => {
-        setSaving(false);
-      }, 1000);
-    }
 
-    return () => {
-      if (timer.current) clearTimeout(timer.current);
-    };
-  }, [saving, projectName]);
+  const { mutateAsync: updateProjectNameInDBMutation, isPending } =
+    useUpdateProjectNameInDB();
+
+  useEffect(() => {
+    if (typeof debouncedProjectName !== "string") return;
+    console.log(debouncedProjectName);
+    updateProjectNameInDBMutation({
+      id,
+      name: debouncedProjectName,
+    });
+  }, [debouncedProjectName, id, updateProjectNameInDBMutation]);
+
+  // It's loading if the value, and debounced value are different, or isPending
+  const loading = debouncedProjectName !== projectName || isPending;
+
   return (
     <div className="p-2 bg-background border-b border-neutral-200">
       <div className="flex gap-2 justify-between items-center">
@@ -42,10 +48,9 @@ export function ProjectNav() {
             inputClassName="font-extrabold text-2xl border-none bg-transparent p-1 focus:outline-none focus:bg-neutral-100"
             onChange={(e) => {
               updateProjectName(e.target.value);
-              setSaving(true);
             }}
           />
-          {saving ? (
+          {loading ? (
             <IconLoader2 className="animate-spin text-blue-300" />
           ) : null}
         </div>

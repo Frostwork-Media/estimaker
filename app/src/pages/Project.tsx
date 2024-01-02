@@ -22,7 +22,7 @@ import { useClientStore } from "@/lib/useClientStore";
 import { useSquiggleCode } from "@/lib/useSquiggleCode";
 import { useSquiggleRunResult } from "@/lib/useSquiggleRunResult";
 
-function Project() {
+function Project({ id }: { id: string }) {
   const tables = useTables();
 
   // Stores the users avatar in the store
@@ -65,7 +65,7 @@ function Project() {
   return (
     <SquiggleContext.Provider value={{ ...runResult, code }}>
       <div className="w-screen h-screen grid grid-rows-[auto_minmax(0,1fr)]">
-        <ProjectNav />
+        <ProjectNav id={id} />
         <PanelGroup direction="horizontal" autoSaveId="estimaker-size">
           <Panel defaultSize={80} order={1} id="canvas">
             <Canvas nodes={nodes} edges={edges} />
@@ -104,7 +104,7 @@ export default function Page() {
               presence={presence}
             >
               <ReactFlowProvider>
-                <Project />
+                <Project key={project.id} id={project.id} />
               </ReactFlowProvider>
             </StoreProvider>
           );
