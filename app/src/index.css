@@ -33,5 +33,12 @@ html {
 
 /** Put edges in the front **/
 .react-flow__edges {
-  z-index: 1000 !important;
+  z-index: 1 !important;
+}
+
+/** Put right nodes in front of edges **/
+.react-flow__node-estimate,
+.react-flow__node-derivative,
+.react-flow__node-metaforecast {
+  z-index: 2 !important;
 }

@@ -228,11 +228,7 @@ export function Canvas({ nodes, edges }: { nodes: Node[]; edges: Edge[] }) {
           color="#e8e9e9"
         />
         <MultiSelectToolbar />
-        <Panel
-          position="top-center"
-          className="!pointer-events-none"
-          style={{ zIndex: -1 }}
-        >
+        <Panel position="top-center" className="!pointer-events-none">
           <span className="text-neutral-300 select-none font-bold">
             Double-click to create a new node
           </span>
