@@ -401,7 +401,7 @@ export function useCreateEstimateLink() {
         id,
         nodeId,
         owner,
-        value: ".2 to .5",
+        value: "",
       });
     },
     [store]

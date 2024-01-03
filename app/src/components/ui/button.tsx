@@ -46,7 +46,7 @@ export const Button = ({
       {isLoading ? (
         <IconLoader2 className="w-4 h-4 animate-spin" />
       ) : LeftIcon ? (
-        <LeftIcon className="w-4 h-4 mr-2" />
+        <LeftIcon className="w-5 h-5" />
       ) : null}
       {children}
     </button>

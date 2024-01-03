@@ -8,6 +8,7 @@ import ReactFlow, {
   Edge,
   Node,
   NodeTypes,
+  Panel,
   SelectionMode,
   useReactFlow,
 } from "reactflow";
@@ -224,9 +225,18 @@ export function Canvas({ nodes, edges }: { nodes: Node[]; edges: Edge[] }) {
         <Background
           variant={BackgroundVariant.Lines}
           gap={16}
-          color="#e0e1e1"
+          color="#e8e9e9"
         />
         <MultiSelectToolbar />
+        <Panel
+          position="top-center"
+          className="!pointer-events-none"
+          style={{ zIndex: -1 }}
+        >
+          <span className="text-neutral-300 select-none font-bold">
+            Double-click to create a new node
+          </span>
+        </Panel>
       </ReactFlow>
     </div>
   );

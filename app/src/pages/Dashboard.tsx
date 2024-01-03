@@ -3,6 +3,7 @@ import {
   IconArrowDown,
   IconArrowUp,
   IconArrowUpRight,
+  IconPlus,
   IconTrash,
 } from "@tabler/icons-react";
 import {
@@ -39,7 +40,7 @@ export default function Dashboard() {
     <div className="p-12 grid gap-6 min-h-screen content-start">
       <header className="flex justify-between mb-8 items-center">
         <p className="text-4xl font-extrabold text-orange-600 tracking-tight">
-          estimaker
+          Forecasting Whiteboard
         </p>
         <SignOutButton
           signOutCallback={() => {
@@ -57,8 +58,9 @@ export default function Dashboard() {
           <Button
             onClick={() => createProject.mutate()}
             isLoading={createProject.isPending}
+            leftIcon={IconPlus}
           >
-            Create Project
+            New Project
           </Button>
         </div>
         {projects.isLoading ? (

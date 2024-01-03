@@ -76,7 +76,18 @@ function EstimateForm({ node, id }: { node: EstimateNode; id: string }) {
         <button
           className="py-2 px-5 bg-blue-500 text-white rounded"
           onClick={() => {
-            if (clerkId) createEstimate({ nodeId: id, owner: clerkId });
+            if (clerkId) {
+              createEstimate({ nodeId: id, owner: clerkId });
+              // Focus the input when it appears
+              requestAnimationFrame(() => {
+                const input = document.querySelector(
+                  `[data-estimate-id="${id}-${clerkId}"]`
+                );
+                if (input) {
+                  (input as HTMLInputElement).focus();
+                }
+              });
+            }
           }}
         >
           Create Estimate
@@ -115,6 +126,7 @@ function EstimateLink({
         value={link.value}
         disabled={!isOwner}
         className="w-full p-2 border border-gray-300 rounded resize-none disabled:opacity-50"
+        data-estimate-id={link.nodeId + "-" + link.owner}
         onChange={(e) => {
           update({ id, value: e.target.value });
         }}

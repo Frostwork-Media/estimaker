@@ -4,7 +4,7 @@ import {
   IconLoader2,
   IconSearch,
 } from "@tabler/icons-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import AutosizeInput from "react-input-autosize";
 import { useValue } from "tinybase/debug/ui-react";
 
@@ -17,6 +17,7 @@ import { useUpdateProjectName } from "../lib/store";
 
 export function ProjectNav({ id }: { id: string }) {
   const projectName = useValue("name");
+  const [firstName] = useState(projectName);
   const debouncedProjectName = useDebounce(projectName, 1000);
   const updateProjectName = useUpdateProjectName();
 
@@ -24,19 +25,28 @@ export function ProjectNav({ id }: { id: string }) {
     useUpdateProjectNameInDB();
 
   useEffect(() => {
+    // Don't trigger on first load if values match
+    if (firstName === projectName) return;
+
     if (typeof debouncedProjectName !== "string") return;
     console.log(debouncedProjectName);
     updateProjectNameInDBMutation({
       id,
       name: debouncedProjectName,
     });
-  }, [debouncedProjectName, id, updateProjectNameInDBMutation]);
+  }, [
+    debouncedProjectName,
+    firstName,
+    id,
+    projectName,
+    updateProjectNameInDBMutation,
+  ]);
 
   // It's loading if the value, and debounced value are different, or isPending
   const loading = debouncedProjectName !== projectName || isPending;
 
   return (
-    <div className="p-2 bg-background border-b border-neutral-200">
+    <div className="p-2 bg-background border-b border-neutral-300">
       <div className="flex gap-2 justify-between items-center">
         <div className="flex gap-2 items-center">
           <a href="/projects">
