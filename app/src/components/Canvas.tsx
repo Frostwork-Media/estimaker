@@ -56,6 +56,14 @@ export function Canvas({ nodes, edges }: { nodes: Node[]; edges: Edge[] }) {
 
   useCanvasKeybinds();
 
+  // Bind to the mouse movement to capture the users cursor position
+  // useEffect(() => {
+  //   const position = reactFlowInstance.screenToFlowPosition({
+  //     x: event.clientX,
+  //     y: event.clientY,
+  //   });
+  // }, []);
+
   return (
     <div className="w-full h-full bg-neutral-100" ref={reactFlowWrapper}>
       <ReactFlow

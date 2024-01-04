@@ -62,7 +62,6 @@ export function MetaforecastNode(props: NodeProps) {
 }
 
 function TwoOptions({ options }: { options: ProbabilityOption[] }) {
-  console.log(options);
   return (
     <div className="flex items-center gap-2">
       <span className={cn("text-left text-[10px] text-neutral-600")}>

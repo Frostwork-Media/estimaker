@@ -1,4 +1,5 @@
 import PartySocket from "partysocket";
+import { useState } from "react";
 import { initialState } from "shared";
 import { createStore } from "tinybase/debug";
 import {
@@ -8,6 +9,7 @@ import {
 } from "tinybase/debug/ui-react";
 import { createPartyKitPersister } from "tinybase/persisters/persister-partykit-client";
 
+import { useSetupCursors } from "@/lib/cursors";
 import { UserPresence } from "@/lib/hooks";
 
 export function StoreProvider({
@@ -25,15 +27,20 @@ export function StoreProvider({
 
   const store = useCreateStore(() => createStore().setJson(initial));
 
+  const [socket] = useState(() => {
+    return new PartySocket({
+      host: import.meta.env.VITE_PARTYKIT_HOST,
+      room: id,
+      // debug: true,
+    });
+  });
+
   useCreatePersister(
     store,
     (store) =>
       createPartyKitPersister(
         store,
-        new PartySocket({
-          host: import.meta.env.VITE_PARTYKIT_HOST,
-          room: id,
-        }),
+        socket,
         location.protocol.slice(0, -1) as "http" | "https"
       ),
     [id],
@@ -44,6 +51,8 @@ export function StoreProvider({
       // Is there a way to subscribe to events from the persister?
     }
   );
+
+  useSetupCursors(socket);
 
   return <Provider store={store}>{children}</Provider>;
 }
