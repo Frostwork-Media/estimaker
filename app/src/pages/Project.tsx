@@ -68,7 +68,7 @@ function Project({ id }: { id: string }) {
         <ProjectNav id={id} />
         <PanelGroup direction="horizontal" autoSaveId="estimaker-size">
           <Panel defaultSize={80} order={1} id="canvas">
-            <Canvas nodes={nodes} edges={edges} />
+            <Canvas nodes={nodes} edges={edges} id={id} />
           </Panel>
           {showSidebar && (
             <>
@@ -97,6 +97,8 @@ export default function Page() {
         errorElement={<p>We had trouble finding your project.</p>}
       >
         {(project) => {
+          console.log("Project", project);
+          console.log("Id", id);
           return (
             <StoreProvider
               id={id}

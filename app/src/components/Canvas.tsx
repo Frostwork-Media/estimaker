@@ -39,9 +39,17 @@ const nodeTypes: NodeTypes = {
   image: ImageNode,
 };
 
-export function Canvas({ nodes, edges }: { nodes: Node[]; edges: Edge[] }) {
+export function Canvas({
+  nodes,
+  edges,
+  id: _id,
+}: {
+  nodes: Node[];
+  edges: Edge[];
+  id: string;
+}) {
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
-  const { project } = useReactFlow();
+  const reactFlowInstance = useReactFlow();
 
   const store = useStore();
 
@@ -56,13 +64,32 @@ export function Canvas({ nodes, edges }: { nodes: Node[]; edges: Edge[] }) {
 
   useCanvasKeybinds();
 
+  // This is a separate party just for cursors
+  // const socket = usePartySocket({
+  //   host: import.meta.env.VITE_PARTYKIT_HOST,
+  //   room: id,
+  //   party: "cursors",
+  //   onMessage(event) {
+  //     console.log("Cursor message", event);
+  //   },
+  // });
+
   // Bind to the mouse movement to capture the users cursor position
   // useEffect(() => {
-  //   const position = reactFlowInstance.screenToFlowPosition({
-  //     x: event.clientX,
-  //     y: event.clientY,
-  //   });
-  // }, []);
+  //   window.addEventListener("mousemove", onMouseMove);
+  //   return () => window.removeEventListener("mousemove", onMouseMove);
+
+  //   function onMouseMove(event: MouseEvent) {
+  //     if (!reactFlowInstance) return;
+
+  //     const _position = reactFlowInstance.screenToFlowPosition({
+  //       x: event.clientX,
+  //       y: event.clientY,
+  //     });
+
+  //     // socket.send(JSON.stringify({ position }));
+  //   }
+  // }, [reactFlowInstance]);
 
   return (
     <div className="w-full h-full bg-neutral-100" ref={reactFlowWrapper}>
@@ -151,7 +178,10 @@ export function Canvas({ nodes, edges }: { nodes: Node[]; edges: Edge[] }) {
             reactFlowWrapper.current.getBoundingClientRect();
 
           addEstimateNode(
-            project({ x: event.clientX - left, y: event.clientY - top })
+            reactFlowInstance.project({
+              x: event.clientX - left,
+              y: event.clientY - top,
+            })
           );
 
           requestAnimationFrame(() => {
@@ -210,7 +240,7 @@ export function Canvas({ nodes, edges }: { nodes: Node[]; edges: Edge[] }) {
 
           addDerivativeNode({
             initialContent,
-            ...project({ x, y }),
+            ...reactFlowInstance.project({ x, y }),
           });
 
           connectingNodeId.current = null;
