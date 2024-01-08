@@ -101,8 +101,6 @@ export default function Page() {
         errorElement={<p>We had trouble finding your project.</p>}
       >
         {(project) => {
-          console.log("Project", project);
-          console.log("Id", id);
           return (
             <StoreProvider
               id={id}

@@ -20,9 +20,7 @@ export default class Server extends TinyBasePartyKitServer {
     await super.onMessage(message, connection);
 
     // Throttled state update
-    if (this.party.name === "main") {
-      sendStateToWebhook(this);
-    }
+    sendStateToWebhook(this);
   }
 
   onClose() {
@@ -48,7 +46,6 @@ export default class Server extends TinyBasePartyKitServer {
 const sendStateToWebhook = debounce(
   throttle(
     (that: Server) => {
-      if (that.party.name !== "main") return;
       (async () => {
         const state = await loadStoreFromStorage(that.party.storage);
 

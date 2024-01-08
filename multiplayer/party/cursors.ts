@@ -20,9 +20,7 @@ export default class Server implements Party.Server {
   }
 
   async onMessage(message: string | ArrayBuffer, sender: Party.Connection) {
-    // Broadcast message to all clients except sender
-    // sender.broadcast(message);
-
+    // Broadcast message to all clients
     const m = JSON.parse(message as string) as CursorMessage;
     switch (m.type) {
       case "move":
