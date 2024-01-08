@@ -114,9 +114,6 @@ importers:
       lucide-react:
         specifier: ^0.292.0
         version: 0.292.0(react@18.2.0)
-      multiplayer:
-        specifier: workspace:*
-        version: link:../multiplayer
       nanoid:
         specifier: 3.3.4
         version: 3.3.4
