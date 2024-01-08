@@ -67,14 +67,23 @@ export function createNodes({
   selectedNodes,
   variableWithErrorName,
   medianStore,
+  cursors,
 }: {
   state: Tables;
   selectedNodes: string[];
   variableWithErrorName?: string | null;
   medianStore: MedianStore;
+  cursors: Record<string, { x: number; y: number }>;
 }): Node[] {
   const nodes: Node[] = [];
   if (!state.nodes) return nodes;
+
+  let userIdToAvatar: Record<string, string> = {};
+  if (state.users) {
+    userIdToAvatar = Object.fromEntries(
+      Object.values(state.users).map((user) => [user.id, user.avatar])
+    );
+  }
 
   for (const id in state.nodes) {
     const node = state.nodes[id];
@@ -160,6 +169,26 @@ export function createNodes({
         break;
       }
     }
+  }
+
+  // add cursors
+  for (const id in cursors) {
+    const cursor = cursors[id];
+    if (state.users) {
+      console.log(state.users);
+      state.users[id];
+    }
+    nodes.push({
+      id,
+      position: { x: cursor.x, y: cursor.y },
+      type: "cursor",
+      selected: false,
+      selectable: false,
+      draggable: false,
+      data: {
+        avatar: userIdToAvatar[id],
+      },
+    });
   }
 
   // move all image nodes to the beginning

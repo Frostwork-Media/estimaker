@@ -11,6 +11,7 @@ export default class Server extends TinyBasePartyKitServer {
 
   constructor(readonly party: Party) {
     super(party);
+
     this.id = party.id;
     this.saveTo = party.env.SAVE_ENDPOINT as string;
   }
@@ -35,6 +36,10 @@ export default class Server extends TinyBasePartyKitServer {
       this.party.storage.deleteAll();
     }
   }
+
+  onError(err: Error) {
+    console.error(err);
+  }
 }
 
 // Throttled state update
@@ -43,6 +48,7 @@ const sendStateToWebhook = debounce(
     (that: Server) => {
       (async () => {
         const state = await loadStoreFromStorage(that.party.storage);
+
         if (state && that.id) {
           fetch(that.saveTo, {
             method: "POST",

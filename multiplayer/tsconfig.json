@@ -12,5 +12,5 @@
     /* Linting */
     "strict": true
   },
-  "include": ["party/index.ts"]
+  "include": ["party/*.ts"]
 }

@@ -1,6 +1,7 @@
 import "reactflow/dist/style.css";
 
-import { useRef } from "react";
+import usePartySocket from "partysocket/react";
+import { useEffect, useRef } from "react";
 import ReactFlow, {
   Background,
   BackgroundVariant,
@@ -15,7 +16,9 @@ import ReactFlow, {
 import { useStore } from "tinybase/debug/ui-react";
 
 import { NODE_NAME_EDITOR_ID } from "@/lib/constants";
+import { useUserPresence } from "@/lib/hooks";
 import { useCanvasKeybinds } from "@/lib/useCanvasKeybinds";
+import { removeUser, setUserPosition } from "@/lib/useCursorsStore";
 
 import {
   useAddDerivativeNode,
@@ -26,6 +29,7 @@ import {
   useResizeImageNode,
 } from "../lib/store";
 import { useClientStore } from "../lib/useClientStore";
+import { CursorNode } from "./graph/CursorNode";
 import { DerivativeNode } from "./graph/DerivativeNode";
 import { EstimateNode } from "./graph/EstimateNode";
 import { ImageNode } from "./graph/ImageNode";
@@ -37,11 +41,32 @@ const nodeTypes: NodeTypes = {
   derivative: DerivativeNode,
   metaforecast: MetaforecastNode,
   image: ImageNode,
+  cursor: CursorNode,
 };
 
-export function Canvas({ nodes, edges }: { nodes: Node[]; edges: Edge[] }) {
+type CursorMessage =
+  | {
+      type: "move";
+      position: { x: number; y: number };
+      id: string;
+    }
+  | {
+      type: "disconnect";
+      id: string;
+    };
+
+export function Canvas({
+  nodes,
+  edges,
+  id,
+}: {
+  nodes: Node[];
+  edges: Edge[];
+  id: string;
+}) {
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
-  const { project } = useReactFlow();
+  const reactFlowInstance = useReactFlow();
+  const presence = useUserPresence();
 
   const store = useStore();
 
@@ -55,6 +80,55 @@ export function Canvas({ nodes, edges }: { nodes: Node[]; edges: Edge[] }) {
   const connectNodes = useConnectNodes();
 
   useCanvasKeybinds();
+
+  // This is a separate party just for cursors
+  const socket = usePartySocket({
+    host: import.meta.env.VITE_PARTYKIT_HOST,
+    room: id,
+    id: presence.id,
+    party: "cursors",
+    onMessage(event) {
+      try {
+        const message = JSON.parse(event.data) as CursorMessage;
+        switch (message.type) {
+          case "move": {
+            if (message.id === presence.id) return;
+            setUserPosition(message.id, message.position.x, message.position.y);
+            break;
+          }
+          case "disconnect": {
+            removeUser(message.id);
+            break;
+          }
+        }
+      } catch (error) {
+        console.error("Error parsing cursor message", error);
+      }
+    },
+  });
+
+  // Bind to the mouse movement to capture the users cursor position
+  useEffect(() => {
+    window.addEventListener("mousemove", onMouseMove);
+    return () => window.removeEventListener("mousemove", onMouseMove);
+
+    function onMouseMove(event: MouseEvent) {
+      if (!reactFlowInstance || !socket) return;
+
+      const position = reactFlowInstance.screenToFlowPosition({
+        x: event.clientX,
+        y: event.clientY,
+      });
+
+      const m: CursorMessage = {
+        type: "move",
+        position,
+        id: presence.id,
+      };
+
+      socket.send(JSON.stringify(m));
+    }
+  }, [presence.id, reactFlowInstance, socket]);
 
   return (
     <div className="w-full h-full bg-neutral-100" ref={reactFlowWrapper}>
@@ -143,7 +217,10 @@ export function Canvas({ nodes, edges }: { nodes: Node[]; edges: Edge[] }) {
             reactFlowWrapper.current.getBoundingClientRect();
 
           addEstimateNode(
-            project({ x: event.clientX - left, y: event.clientY - top })
+            reactFlowInstance.project({
+              x: event.clientX - left,
+              y: event.clientY - top,
+            })
           );
 
           requestAnimationFrame(() => {
@@ -202,7 +279,7 @@ export function Canvas({ nodes, edges }: { nodes: Node[]; edges: Edge[] }) {
 
           addDerivativeNode({
             initialContent,
-            ...project({ x, y }),
+            ...reactFlowInstance.project({ x, y }),
           });
 
           connectingNodeId.current = null;

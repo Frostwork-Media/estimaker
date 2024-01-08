@@ -1,4 +1,5 @@
 import PartySocket from "partysocket";
+import { useState } from "react";
 import { initialState } from "shared";
 import { createStore } from "tinybase/debug";
 import {
@@ -9,6 +10,7 @@ import {
 import { createPartyKitPersister } from "tinybase/persisters/persister-partykit-client";
 
 import { UserPresence } from "@/lib/hooks";
+import { SocketContext } from "@/lib/socketContext";
 
 export function StoreProvider({
   children,
@@ -25,16 +27,24 @@ export function StoreProvider({
 
   const store = useCreateStore(() => createStore().setJson(initial));
 
+  const [socket] = useState(() => {
+    const socket = new PartySocket({
+      host: import.meta.env.VITE_PARTYKIT_HOST,
+      room: id,
+      party: "main",
+    });
+
+    return socket;
+  });
+
   useCreatePersister(
     store,
     (store) =>
       createPartyKitPersister(
         store,
-        new PartySocket({
-          host: import.meta.env.VITE_PARTYKIT_HOST,
-          room: id,
-        }),
-        location.protocol.slice(0, -1) as "http" | "https"
+        socket,
+        location.protocol.slice(0, -1) as "http" | "https",
+        console.error
       ),
     [id],
     async (persister) => {
@@ -45,5 +55,11 @@ export function StoreProvider({
     }
   );
 
-  return <Provider store={store}>{children}</Provider>;
+  return (
+    <Provider store={store}>
+      <SocketContext.Provider value={{ socket }}>
+        {children}
+      </SocketContext.Provider>
+    </Provider>
+  );
 }
