@@ -34,7 +34,7 @@
     "lodash.debounce": "^4.0.8",
     "lucide-react": "^0.292.0",
     "nanoid": "3.3.4",
-    "partysocket": "0.0.14",
+    "partysocket": "0.0.19",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-input-autosize": "^3.0.0",

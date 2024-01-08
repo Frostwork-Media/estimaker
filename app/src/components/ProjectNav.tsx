@@ -29,7 +29,7 @@ export function ProjectNav({ id }: { id: string }) {
     if (firstName === projectName) return;
 
     if (typeof debouncedProjectName !== "string") return;
-    console.log(debouncedProjectName);
+
     updateProjectNameInDBMutation({
       id,
       name: debouncedProjectName,

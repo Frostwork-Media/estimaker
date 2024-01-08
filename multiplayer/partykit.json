@@ -1,5 +1,8 @@
 {
   "name": "partykit-party",
   "main": "party/index.ts",
+  "parties": {
+    "cursors": "party/cursors.ts"
+  },
   "compatibilityDate": "2023-11-09"
 }

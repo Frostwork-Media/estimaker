@@ -42,3 +42,8 @@ html {
 .react-flow__node-metaforecast {
   z-index: 2 !important;
 }
+
+.react-flow__node-cursor {
+  z-index: 3 !important;
+  transition: transform 0.2s ease-in-out;
+}

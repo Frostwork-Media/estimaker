@@ -19,6 +19,7 @@ import {
   createVariableToNodeId,
 } from "@/lib/toNodesAndEdges";
 import { useClientStore } from "@/lib/useClientStore";
+import { useCursorsStore } from "@/lib/useCursorsStore";
 import { useSquiggleCode } from "@/lib/useSquiggleCode";
 import { useSquiggleRunResult } from "@/lib/useSquiggleRunResult";
 
@@ -55,11 +56,14 @@ function Project({ id }: { id: string }) {
       .catch(console.error);
   }, [effectProps]);
 
+  const cursors = useCursorsStore((state) => state.cursors);
+
   const nodes = createNodes({
     state: tables as Tables,
     selectedNodes,
     variableWithErrorName: runResult.variableWithErrorName,
     medianStore,
+    cursors,
   });
 
   return (

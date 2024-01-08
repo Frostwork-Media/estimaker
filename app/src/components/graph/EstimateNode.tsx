@@ -23,19 +23,21 @@ export function EstimateNode(props: EstimateNodeProps) {
       >
         <div className="grid gap-1 p-2">
           {link ? <EstimateSlider link={link} /> : null}
-          {props.data.links.map((link) => (
-            <div
-              key={link.id}
-              className="flex items-center justify-start text-xs text-left gap-2 bg-indigo-50 rounded-full"
-            >
-              <Avatar
-                avatar={"presence" in link ? link.presence.avatar : undefined}
-              />
-              <span className="text-indigo-700 font-mono tracking-tighter text-[11px] text-center grow pr-6">
-                {link.value}
-              </span>
-            </div>
-          ))}
+          {props.data.links.map((link) => {
+            return (
+              <div
+                key={link.id}
+                className="flex items-center justify-start text-xs text-left gap-2 bg-indigo-50 rounded-full"
+              >
+                <Avatar
+                  avatar={"presence" in link ? link.presence.avatar : undefined}
+                />
+                <span className="text-indigo-700 font-mono tracking-tighter text-[11px] text-center grow pr-6">
+                  {link.value}
+                </span>
+              </div>
+            );
+          })}
         </div>
       </Wrapper>
       <Handle
