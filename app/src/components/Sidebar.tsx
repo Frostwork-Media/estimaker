@@ -25,7 +25,7 @@ export function Sidebar() {
   const sidebarTab = useClientStore((state) => state.sidebarTab);
 
   return (
-    <aside>
+    <aside className="h-full overflow-auto">
       {selectedNodes.length === 1 ? (
         <SingleNodeEditor key={selectedNodes[0]} id={selectedNodes[0]} />
       ) : sidebarTab === "search" ? (
