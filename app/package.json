@@ -48,6 +48,7 @@
     "tinybase": "^4.4.1",
     "toposort": "^2.0.2",
     "vitest": "^0.34.6",
+    "zod": "^3.22.4",
     "zustand": "^4.4.6"
   },
   "devDependencies": {

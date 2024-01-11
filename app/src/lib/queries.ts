@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import type { Estimate, Project } from "db";
 
-import { searchManifold } from "./searchManifold";
+import { getManifoldMarket, searchManifold } from "./searchManifold";
 import { getMetaforecast, searchMetaforecast } from "./searchMetaforecast";
 
 /**
@@ -76,6 +76,17 @@ export function useMetaforecastQuestion(slug: string) {
   return useQuery({
     queryKey: ["metaforecast", slug],
     queryFn: () => getMetaforecast(slug),
+    staleTime: Infinity,
+  });
+}
+
+/**
+ * Returns the manifold market for a given id
+ */
+export function useManifoldMarket(id: string) {
+  return useQuery({
+    queryKey: ["manifold", id],
+    queryFn: () => getManifoldMarket(id),
     staleTime: Infinity,
   });
 }

@@ -188,7 +188,6 @@ export function createNodes({
   for (const id in cursors) {
     const cursor = cursors[id];
     if (state.users) {
-      console.log(state.users);
       state.users[id];
     }
     nodes.push({

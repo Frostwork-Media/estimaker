@@ -4,8 +4,8 @@ import clsx from "clsx";
 import { Search } from "lucide-react";
 import { useCallback, useState } from "react";
 import { useParams } from "react-router-dom";
-import { useReactFlow } from "reactflow";
 
+import { useGetFlowCenter } from "@/lib/hooks";
 import {
   useEstimateSearch,
   useManifoldSearch,
@@ -30,36 +30,23 @@ export function SearchBar() {
   const userEstimates = useEstimateSearch(searchTermDebounced, id);
   const markets = useManifoldSearch(searchTermDebounced);
 
-  const { project, getViewport } = useReactFlow();
+  const getFlowCenter = useGetFlowCenter();
+
   const addMetaforecastNode = useAddMetaforecastNode();
   const handleAddMetaforecast = useCallback(
     (slug: string) => {
-      let x = 0,
-        y = 0;
-      const pane = document.querySelector(".react-flow__pane");
-      if (pane) {
-        // find the center of it
-        const rect = pane.getBoundingClientRect();
-        const _x = rect.left + rect.width / 2;
-        const _y = rect.top + rect.height / 2;
-        const projection = project({ x: _x, y: _y });
-        x = projection.x;
-        y = projection.y;
-      }
-
       // add the node
-      addMetaforecastNode({ slug, x, y });
+      addMetaforecastNode({ slug, ...getFlowCenter() });
     },
-    [addMetaforecastNode, project]
+    [addMetaforecastNode, getFlowCenter]
   );
 
   const addManifoldNode = useAddManifoldNode();
   const handleManifoldAdd = useCallback(
     (marketId: string) => {
-      const { x, y } = getViewport();
-      addManifoldNode({ marketId, x, y });
+      addManifoldNode({ marketId, ...getFlowCenter() });
     },
-    [addManifoldNode, getViewport]
+    [addManifoldNode, getFlowCenter]
   );
 
   const createEstimateNodeWithLink = useCreateEstimateNodeWithLink();

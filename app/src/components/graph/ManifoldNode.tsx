@@ -1,9 +1,15 @@
+import { IconChevronRight, IconLoader2 } from "@tabler/icons-react";
 import { NodeProps } from "reactflow";
 
+import { ApiAnswer, FullMarket, LiteMarket } from "@/lib/manifold-types";
+import { ProbabilityOption } from "@/lib/metaforecast-types";
+import { useManifoldMarket } from "@/lib/queries";
+
+import { MultiOption, TwoOptions } from "./meta-shared";
 import { Wrapper } from "./Wrapper";
 
 export function ManifoldNode(props: NodeProps) {
-  // const question = useMetaforecastQuestion(props.data.slug);
+  const market = useManifoldMarket(props.data.marketId);
 
   /** We check if the option text is really long and move bars to the bottom if so */
   // const hasLongOptionText = useMemo(() => {
@@ -15,41 +21,69 @@ export function ManifoldNode(props: NodeProps) {
 
   // const numOptions = question.data?.options.length ?? 0;
 
-  // if (question.isLoading)
-  //   return (
-  //     <div>
-  //       <IconLoader2 className=" animate-spin" />
-  //     </div>
-  //   );
+  if (market.isLoading)
+    return (
+      <div>
+        <IconLoader2 className=" animate-spin" />
+      </div>
+    );
 
   // const twoOptions = numOptions === 2 && !hasLongOptionText;
 
+  if (!market.data) return null;
+
+  const pool = market.data.pool;
+  let options: ProbabilityOption[] = [];
+  let display: "two" | "many" | "none" = "none";
+
+  if (pool) {
+    options = poolToProbabilityOptions(pool);
+  } else if (isFullMarket(market.data)) {
+    if (market.data.answers) {
+      options = answersToProbabilityOptions(market.data.answers);
+    } else if (market.data.options) {
+      options = pollOptionsToProbabilityOptions(market.data.options);
+    } else {
+      console.log("full market; no answers");
+      console.log(market.data);
+    }
+  } else {
+    console.log("not pool; not full");
+    console.log(market.data);
+  }
+
+  if (options.length === 2) {
+    display = "two";
+  } else {
+    display = "many";
+  }
+
   return (
     <Wrapper
-      label={"A Manifold Market"}
+      label={market.data.question}
       selected={props.selected}
       variableName={props.data.variableName}
       nodeType="manifold"
       id={props.id}
+      coverImgUrl={
+        isFullMarket(market.data) ? market.data.coverImageUrl : undefined
+      }
     >
       <div className="mt-4 grid gap-1 w-full p-1">
-        {/* {twoOptions ? (
-          <TwoOptions options={question.data?.options ?? []} />
-        ) : (
-          <MultiOption
-            options={question.data?.options ?? []}
-            hasLongOptionText={hasLongOptionText}
-          />
-        )} */}
-        {/* <a
-          href={question.data?.url}
+        {display === "two" ? (
+          <TwoOptions options={options} />
+        ) : display === "many" ? (
+          <MultiOption options={options} hasLongOptionText={true} />
+        ) : null}
+        <a
+          href={market.data.url}
           target="_blank"
           rel="noreferrer"
           className="hover:bg-neutral-100 px-2 py-1 flex items-center mt-2 text-[10px] text-neutral-400 justify-self-center font-bold rounded-full"
         >
-          Open on {question.data?.platform.label}
+          Open on Manifold Markets
           <IconChevronRight className="inline-block ml-1 w-3 h-3" />
-        </a> */}
+        </a>
       </div>
     </Wrapper>
   );
@@ -119,3 +153,44 @@ export function ManifoldNode(props: NodeProps) {
 //     </>
 //   );
 // }
+
+function isFullMarket(market: LiteMarket | FullMarket): market is FullMarket {
+  return "description" in market;
+}
+
+function poolToProbabilityOptions(
+  pool: Record<string, number>
+): ProbabilityOption[] {
+  // get the total of all values
+  const total = Object.values(pool).reduce((acc, cur) => acc + cur, 0);
+
+  // return array of probability options for each entry in the pool
+  return Object.entries(pool).map(([name, value]) => ({
+    name,
+    probability: value / total,
+  }));
+}
+
+function answersToProbabilityOptions(
+  answers: ApiAnswer[]
+): ProbabilityOption[] {
+  return answers.map((answer) => {
+    return {
+      name: answer.text,
+      probability: answer.probability,
+    };
+  });
+}
+
+function pollOptionsToProbabilityOptions(
+  options: NonNullable<FullMarket["options"]>
+): ProbabilityOption[] {
+  const total = options.reduce((acc, cur) => acc + cur.votes, 0);
+
+  return options.map((option) => {
+    return {
+      name: option.text,
+      probability: option.votes / total,
+    };
+  });
+}

@@ -1,3 +1,5 @@
+import { FullMarket, LiteMarket } from "./manifold-types";
+
 export interface Market {
   id: string;
   creatorId: string;
@@ -52,3 +54,13 @@ const handleErrors = (response: Response) => {
   }
   return response;
 };
+
+export async function getManifoldMarket(id: string) {
+  const response = await fetch(`https://api.manifold.markets/v0/market/${id}`);
+
+  const result = (await handleErrors(response).json()) as
+    | LiteMarket
+    | FullMarket;
+
+  return result;
+}

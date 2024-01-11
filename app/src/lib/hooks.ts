@@ -1,5 +1,6 @@
 import { useClerk } from "@clerk/clerk-react";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
+import { useReactFlow } from "reactflow";
 import { useStore, useTable } from "tinybase/debug/ui-react";
 
 /**
@@ -40,4 +41,21 @@ export function useAvatar() {
     if (Object.values(users).some((u) => u.id === presence.id)) return;
     store.addRow("users", presence);
   }, [users, presence, store]);
+}
+
+/**
+ * Gets the center of the react flow pane, in react flow coordinates.
+ */
+export function useGetFlowCenter() {
+  const { screenToFlowPosition } = useReactFlow();
+  return useCallback(() => {
+    const element = document.querySelector(".react-flow__pane");
+    if (!element) return screenToFlowPosition({ x: 200, y: 200 });
+
+    const rect = element.getBoundingClientRect();
+    return screenToFlowPosition({
+      x: rect.left + rect.width / 2,
+      y: rect.top + rect.height / 2,
+    });
+  }, [screenToFlowPosition]);
 }

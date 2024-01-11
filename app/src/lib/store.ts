@@ -283,8 +283,8 @@ export function useAddManifoldNode() {
       store.addRow("nodes", {
         type: "manifold",
         uid,
-        x: x - 112,
-        y: y - 96,
+        x,
+        y,
         variableName: getVariableName(
           store.getTable("nodes") as Tables["nodes"]
         ),
