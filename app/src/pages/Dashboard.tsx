@@ -5,6 +5,7 @@ import {
   IconArrowUpRight,
   IconPlus,
   IconTrash,
+  IconUrgent,
 } from "@tabler/icons-react";
 import {
   ColumnDef,
@@ -37,22 +38,28 @@ export default function Dashboard() {
   const projects = useProjects();
 
   return (
-    <div className="p-12 grid gap-6 min-h-screen content-start">
+    <div className="p-6 md:p-12 grid gap-6 min-h-screen content-start">
       <header className="flex justify-between mb-8 items-center">
-        <p className="text-4xl font-extrabold text-orange-600 tracking-tight">
-          Forecasting Whiteboard
-        </p>
+        <p className="text-2xl font-bold text-orange-600">Estimaker</p>
         <SignOutButton
           signOutCallback={() => {
             navigate("/");
           }}
         >
-          <span className="text-neutral-400 font-bold hover:text-neutral-500 cursor-pointer">
+          <span className="text-neutral-400 hover:text-neutral-500 cursor-pointer">
             Sign Out
           </span>
         </SignOutButton>
       </header>
-      <div className="mx-auto max-w-6xl w-full grid gap-6">
+      <div className="mx-auto max-w-5xl w-full grid gap-6">
+        <div className="bg-orange-100 rounded-md p-4 flex items-center gap-2">
+          <IconUrgent className="w-6 h-6 text-orange-600 shrink-0" />
+          <p>
+            We've upgraded Estimaker to V2 and migrated your forecasts! If you
+            notice any discrepancies or need assistance, please don't hesitate
+            to contact us for support.
+          </p>
+        </div>
         <div className="flex items-center gap-6">
           <h1 className="text-3xl font-bold tracking-tight">Projects</h1>
           <Button
