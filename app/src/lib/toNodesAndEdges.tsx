@@ -153,6 +153,19 @@ export function createNodes({
 
         break;
       }
+      case "manifold": {
+        nodes.push({
+          id,
+          position: { x: node.x, y: node.y },
+          type: "manifold",
+          selected: selectedNodes.includes(id),
+          data: {
+            marketId: node.marketId,
+          },
+        });
+
+        break;
+      }
 
       case "image": {
         nodes.push({

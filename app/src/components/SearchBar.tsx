@@ -12,6 +12,7 @@ import {
   useMetaforecastSearch,
 } from "@/lib/queries";
 import {
+  useAddManifoldNode,
   useAddMetaforecastNode,
   useCreateEstimateNodeWithLink,
 } from "@/lib/store";
@@ -27,11 +28,11 @@ export function SearchBar() {
 
   const metaforecast = useMetaforecastSearch(searchTermDebounced);
   const userEstimates = useEstimateSearch(searchTermDebounced, id);
-  const { data: manifold } = useManifoldSearch(searchTermDebounced);
+  const markets = useManifoldSearch(searchTermDebounced);
 
-  const { project } = useReactFlow();
+  const { project, getViewport } = useReactFlow();
   const addMetaforecastNode = useAddMetaforecastNode();
-  const handleMetaforecast = useCallback(
+  const handleAddMetaforecast = useCallback(
     (slug: string) => {
       let x = 0,
         y = 0;
@@ -50,6 +51,15 @@ export function SearchBar() {
       addMetaforecastNode({ slug, x, y });
     },
     [addMetaforecastNode, project]
+  );
+
+  const addManifoldNode = useAddManifoldNode();
+  const handleManifoldAdd = useCallback(
+    (marketId: string) => {
+      const { x, y } = getViewport();
+      addManifoldNode({ marketId, x, y });
+    },
+    [addManifoldNode, getViewport]
   );
 
   const createEstimateNodeWithLink = useCreateEstimateNodeWithLink();
@@ -79,7 +89,7 @@ export function SearchBar() {
           <TabTrigger value="metaforecast" results={metaforecast.data}>
             Metaforecast
           </TabTrigger>
-          <TabTrigger value="manifold" results={manifold}>
+          <TabTrigger value="manifold" results={markets.data}>
             Manifold Markets
           </TabTrigger>
           <TabTrigger value="user-library" results={userEstimates.data}>
@@ -114,7 +124,7 @@ export function SearchBar() {
             <SearchResult
               key={question.id}
               onClick={() => {
-                handleMetaforecast(question.id);
+                handleAddMetaforecast(question.id);
               }}
             >
               {question.title}
@@ -124,8 +134,15 @@ export function SearchBar() {
       </Tab>
       <Tab value="manifold">
         <SearchGroup isLoading={false}>
-          {manifold?.map((market) => (
-            <SearchResult key={market.id}>{market.question}</SearchResult>
+          {markets.data?.map((market) => (
+            <SearchResult
+              key={market.id}
+              onClick={() => {
+                handleManifoldAdd(market.id);
+              }}
+            >
+              {market.question}
+            </SearchResult>
           ))}
         </SearchGroup>
       </Tab>

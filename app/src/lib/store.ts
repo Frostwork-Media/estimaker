@@ -43,6 +43,14 @@ export type MetaforecastNode = Node & {
   variableName: string;
 };
 
+export type ManifoldNode = Node & {
+  type: "manifold";
+  /** The manifold market id */
+  marketId: string;
+  /** A variable name, currently unused but maybe in the future */
+  variableName: string;
+};
+
 export type ImageNode = Node & {
   type: "image";
   /** The image url */
@@ -87,6 +95,7 @@ export type AnyNode =
   | EstimateNode
   | DerivativeNode
   | MetaforecastNode
+  | ManifoldNode
   | ImageNode;
 
 export type Tables = {
@@ -255,6 +264,31 @@ export function useAddMetaforecastNode() {
           store.getTable("nodes") as Tables["nodes"]
         ),
         slug,
+      });
+    },
+    [store]
+  );
+}
+
+/**
+ * Adds a manifold node to the store at the passed in location
+ */
+export function useAddManifoldNode() {
+  const store = useStore();
+  return useCallback(
+    ({ x, y, marketId }: { x: number; y: number; marketId: string }) => {
+      if (!store) return;
+      const uid = nanoid();
+
+      store.addRow("nodes", {
+        type: "manifold",
+        uid,
+        x: x - 112,
+        y: y - 96,
+        variableName: getVariableName(
+          store.getTable("nodes") as Tables["nodes"]
+        ),
+        marketId,
       });
     },
     [store]

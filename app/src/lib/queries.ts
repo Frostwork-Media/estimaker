@@ -44,7 +44,7 @@ export function useManifoldSearch(search: string) {
     queryFn: () => searchManifold(search),
     staleTime: Infinity,
     enabled: !!search,
-    retry: false,
+    retry: true,
   });
 }
 

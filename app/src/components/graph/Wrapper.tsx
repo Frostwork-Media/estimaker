@@ -2,7 +2,7 @@ import { ReactNode } from "react";
 
 import { cn } from "@/lib/utils";
 
-type NodeType = "metaforecast" | "derivative" | "estimate";
+type NodeType = "metaforecast" | "derivative" | "estimate" | "manifold";
 import * as Popover from "@radix-ui/react-popover";
 import { IconTrash } from "@tabler/icons-react";
 
@@ -69,7 +69,8 @@ export function Wrapper({
                 {
                   "bg-indigo-600": nodeType === "estimate",
                   "bg-emerald-600": nodeType === "derivative",
-                  "bg-orange-600": nodeType === "metaforecast",
+                  "bg-orange-600":
+                    nodeType === "metaforecast" || nodeType === "manifold",
                 }
               )}
             >
