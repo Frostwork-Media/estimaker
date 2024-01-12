@@ -2,7 +2,7 @@ import { ReactNode } from "react";
 
 import { cn } from "@/lib/utils";
 
-type NodeType = "metaforecast" | "derivative" | "estimate";
+type NodeType = "metaforecast" | "derivative" | "estimate" | "manifold";
 import * as Popover from "@radix-ui/react-popover";
 import { IconTrash } from "@tabler/icons-react";
 
@@ -18,6 +18,7 @@ export function Wrapper({
   nodeType,
   id,
   hasError = false,
+  coverImgUrl,
 }: {
   children: ReactNode;
   variableName?: string;
@@ -26,6 +27,7 @@ export function Wrapper({
   nodeType: NodeType;
   id: string;
   hasError?: boolean;
+  coverImgUrl?: string;
 }) {
   const deleteNode = useDeleteNode();
 
@@ -53,14 +55,20 @@ export function Wrapper({
         className={cn(
           `text-center bg-background w-48 rounded-md shadow-md justify-items-start overflow-hidden`,
           {
-            "w-64": nodeType === "metaforecast",
-            "w-48": nodeType !== "metaforecast",
+            "w-64": ["metaforecast", "manifold"].includes(nodeType),
+            "w-48": !["metaforecast", "manifold"].includes(nodeType),
             "outline-2 outline outline-foreground/50": selected,
             // give a red outline to the node if it has an error
             "outline-2 outline-red-500 outline": hasError,
           }
         )}
       >
+        {coverImgUrl ? (
+          <div
+            className="w-full h-24 bg-cover bg-center bg-no-repeat"
+            style={{ backgroundImage: `url(${coverImgUrl})` }}
+          />
+        ) : null}
         <div className="grid p-1">
           {variableName && (
             <span
@@ -69,7 +77,8 @@ export function Wrapper({
                 {
                   "bg-indigo-600": nodeType === "estimate",
                   "bg-emerald-600": nodeType === "derivative",
-                  "bg-orange-600": nodeType === "metaforecast",
+                  "bg-orange-600":
+                    nodeType === "metaforecast" || nodeType === "manifold",
                 }
               )}
             >
