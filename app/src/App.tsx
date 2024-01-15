@@ -69,6 +69,9 @@ function AuthWall({ children }: { children: React.ReactNode }) {
   }, [email]);
 
   useEffect(() => {
+    // Only identify in production
+    if (__VERCEL_ENV__ !== "production") return;
+
     if (id && name && email) LogRocket.identify(id, { name, email });
   }, [email, id, name]);
   return (
