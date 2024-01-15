@@ -9,7 +9,7 @@ export function useAmplitude() {
   }, []);
 }
 
-export function registerUser(userId: string) {
+export function amplitudeRegisterUser(userId: string) {
   amplitude.setUserId(userId);
 }
 
