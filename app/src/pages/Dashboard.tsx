@@ -52,12 +52,24 @@ export default function Dashboard() {
         </SignOutButton>
       </header>
       <div className="mx-auto max-w-5xl w-full grid gap-6">
-        <div className="bg-orange-100 rounded-md p-4 flex items-center gap-2">
-          <IconUrgent className="w-6 h-6 text-orange-600 shrink-0" />
-          <p>
+        <div className="bg-orange-100 rounded-md p-4 flex items-center gap-4">
+          <IconUrgent className="w-7 h-7 text-orange-600 shrink-0" />
+          <p className="text-sm opacity-80">
             We've upgraded Estimaker to V2 and migrated your forecasts! If you
-            notice any discrepancies or need assistance, please don't hesitate
-            to contact us for support.
+            notice any discrepancies or need assistance, feel free to reach out.
+            You can join our{" "}
+            <a
+              href="https://chat.whatsapp.com/BKIVdkX4dQ0Gk3Oy4ZTm0M"
+              target="_blank"
+              className="underline underline-offset-2"
+            >
+              WhatsApp group
+            </a>{" "}
+            for quick questions and community support, or email us directly at{" "}
+            <span className="underline underline-offset-2">
+              nathan@frostwork.io
+            </span>{" "}
+            for more detailed inquiries. We're here to help!
           </p>
         </div>
         <div className="flex items-center gap-6">
