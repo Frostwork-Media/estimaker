@@ -114,6 +114,9 @@ importers:
       lodash.debounce:
         specifier: ^4.0.8
         version: 4.0.8
+      logrocket:
+        specifier: ^7.0.0
+        version: 7.0.0
       lucide-react:
         specifier: ^0.292.0
         version: 0.292.0(react@18.2.0)
@@ -7113,6 +7116,10 @@ packages:
       slice-ansi: 4.0.0
       wrap-ansi: 6.2.0
     dev: true
+
+  /logrocket@7.0.0:
+    resolution: {integrity: sha512-IvM4RKYTAByljKTWCx/Q+58Nvt4Dmf/0PIHLfall3kqDtxiDSVKSzu3/bvGb3riHE/C7xY3wzLxy6v+Wui1NUQ==}
+    dev: false
 
   /loose-envify@1.4.0:
     resolution: {integrity: sha512-lyuxPGr/Wfhrlem2CL/UcnUc1zcqKAImBDzukY7Y5F/yQiNdko6+fRLevlw1HgMySw7f611UIY408EtxRSoK3Q==}
