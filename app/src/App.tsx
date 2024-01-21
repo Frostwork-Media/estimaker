@@ -49,7 +49,11 @@ const router = createBrowserRouter([
 export default function App() {
   useAmplitude();
   return (
-    <ClerkProvider publishableKey={clerkPubKey}>
+    <ClerkProvider
+      publishableKey={clerkPubKey}
+      afterSignInUrl="/projects"
+      afterSignUpUrl="/projects"
+    >
       <QueryClientProvider client={queryClient}>
         <Suspense fallback={<div>Loading...</div>}>
           <RouterProvider router={router} />

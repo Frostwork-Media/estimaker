@@ -3,23 +3,26 @@ import { cva, VariantProps } from "class-variance-authority";
 
 import { cn } from "@/lib/utils";
 
-const button = cva(["flex items-center gap-2 px-3 py-2 rounded-md font-bold"], {
-  variants: {
-    color: {
-      inverted: "bg-foreground text-background",
-      neutral: "bg-neutral-200 text-foreground",
-      red: "bg-red-500 text-background",
+const button = cva(
+  ["flex items-center gap-2 px-3 py-2 rounded-md font-bold justify-center"],
+  {
+    variants: {
+      color: {
+        inverted: "bg-foreground text-background",
+        neutral: "bg-neutral-200 text-foreground",
+        red: "bg-red-500 text-background",
+      },
+      size: {
+        sm: "text-sm px-2 py-1",
+        md: "text-base px-3 py-2",
+      },
     },
-    size: {
-      sm: "text-sm px-2 py-1",
-      md: "text-base px-3 py-2",
+    defaultVariants: {
+      color: "inverted",
+      size: "md",
     },
-  },
-  defaultVariants: {
-    color: "inverted",
-    size: "md",
-  },
-});
+  }
+);
 
 type SharedButtonProps = {
   isLoading?: boolean;
