@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "pnpm partykit dev"
+    "dev": "partykit dev",
+    "deploy:staging": "partykit deploy --preview staging",
+    "deploy:prod": "partykit deploy"
   },
   "keywords": [],
   "author": "",
