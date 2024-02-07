@@ -49,7 +49,6 @@ export function StoreProvider({
     [id],
     async (persister) => {
       if (!persister) return;
-
       await persister.startAutoSave();
       await persister.startAutoLoad();
       // Is there a way to subscribe to events from the persister?

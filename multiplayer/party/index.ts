@@ -17,6 +17,8 @@ export default class Server extends TinyBasePartyKitServer {
   }
 
   async onMessage(message: string, connection: Connection) {
+    console.log("Received message", message);
+
     await super.onMessage(message, connection);
 
     // Throttled state update
@@ -47,9 +49,16 @@ const sendStateToWebhook = debounce(
   throttle(
     (that: Server) => {
       (async () => {
+        console.log("Sending state to webhook");
+
+        // It seems like on first connection this state may not be loaded and it could be overriden by the initial state
         const state = await loadStoreFromStorage(that.party.storage);
 
+        console.log("State", state);
+
         if (state && that.id) {
+          console.log("Sending state to webhook", state);
+
           fetch(that.saveTo, {
             method: "POST",
             headers: {
@@ -61,7 +70,7 @@ const sendStateToWebhook = debounce(
               console.error("Error hitting /save webhook", err);
             })
             .then(() => {
-              // console.log("Sent state to webhook");
+              console.log("Sent state to webhook");
             });
         }
       })();

@@ -20,3 +20,6 @@ pnpm partykit deploy --var SAVE_ENDPOINT=""
 https://partykit-party.rob-gordon.partykit.dev
 
 https://staging.partykit-party.rob-gordon.partykit.dev
+
+VITE_PARTYKIT_HOST=staging.partykit-party.rob-gordon.partykit.dev
+VITE_PARTYKIT_HOST=partykit-party.rob-gordon.partykit.dev
