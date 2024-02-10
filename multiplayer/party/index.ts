@@ -52,26 +52,30 @@ const sendStateToWebhook = debounce(
         console.log("Sending state to webhook");
 
         // It seems like on first connection this state may not be loaded and it could be overriden by the initial state
-        const state = await loadStoreFromStorage(that.party.storage);
+        try {
+          const state = await loadStoreFromStorage(that.party.storage);
+          console.log("State", state);
 
-        console.log("State", state);
+          if (state && that.id) {
+            console.log("Sending state to webhook", state);
 
-        if (state && that.id) {
-          console.log("Sending state to webhook", state);
-
-          fetch(that.saveTo, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ state, id: that.id }),
-          })
-            .catch((err) => {
-              console.error("Error hitting /save webhook", err);
+            fetch(that.saveTo, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ state, id: that.id }),
             })
-            .then(() => {
-              console.log("Sent state to webhook");
-            });
+              .catch((err) => {
+                console.error("Error hitting /save webhook", err);
+              })
+              .then(() => {
+                console.log("Sent state to webhook");
+              });
+          }
+        } catch (err) {
+          console.error("Error loading state from storage", err);
+          return;
         }
       })();
     },
