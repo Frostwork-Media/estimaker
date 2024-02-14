@@ -3,7 +3,6 @@ import {
   loadStoreFromStorage,
 } from "tinybase/persisters/persister-partykit-server";
 import debounce from "lodash.debounce";
-import throttle from "lodash.throttle";
 import { Connection, Party } from "partykit/server";
 export default class Server extends TinyBasePartyKitServer {
   id: string;
@@ -19,22 +18,10 @@ export default class Server extends TinyBasePartyKitServer {
   async onMessage(message: string, connection: Connection) {
     await super.onMessage(message, connection);
 
+    const state = await loadStoreFromStorage(this.party.storage);
+
     // Throttled state update
-    sendStateToWebhook(this);
-  }
-
-  onClose() {
-    const connections = this.party.getConnections();
-    // get size of iterator
-    let size = 0;
-    for (const _ of connections) {
-      size++;
-    }
-
-    // If no one in the room, purge from storage
-    if (size === 0) {
-      this.party.storage.deleteAll();
-    }
+    sendStateToWebhook(this.id, state, this.saveTo);
   }
 
   onError(err: Error) {
@@ -42,33 +29,25 @@ export default class Server extends TinyBasePartyKitServer {
   }
 }
 
-// Throttled state update
-const sendStateToWebhook = debounce(
-  throttle(
-    (that: Server) => {
-      (async () => {
-        const state = await loadStoreFromStorage(that.party.storage);
+const sendStateToWebhook = debounce(writeState, 1000, { trailing: true });
 
-        if (state && that.id) {
-          fetch(that.saveTo, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ state, id: that.id }),
-          })
-            .catch((err) => {
-              console.error("Error hitting /save webhook", err);
-            })
-            .then(() => {
-              // console.log("Sent state to webhook");
-            });
-        }
-      })();
+function writeState(
+  id: string,
+  state: Awaited<ReturnType<typeof loadStoreFromStorage>>,
+  saveTo: string
+) {
+  fetch(saveTo, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
     },
-    5000,
-    { trailing: true }
-  ),
-  1000,
-  { trailing: true }
-);
+    body: JSON.stringify({ state, id }),
+  })
+    .catch((err) => {
+      console.error("Error hitting /save webhook", err);
+    })
+    .then((response) => {
+      if (response) console.log(response.status, response.statusText);
+      console.log("Sent state to webhook");
+    });
+}

@@ -7,6 +7,7 @@ import { save, toDatabase } from "db";
  * Eventually need to protect it with a secret.
  */
 const handler: VercelApiHandler = async (req, res) => {
+  console.log("Saving project state to database");
   const { id, state } = req.body;
   if (!id || !state) {
     console.error("Missing id or state");
