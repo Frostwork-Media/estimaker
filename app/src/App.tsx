@@ -85,7 +85,10 @@ function AuthWall({ children }: { children: React.ReactNode }) {
         <Toaster />
       </SignedIn>
       <SignedOut>
-        <RedirectToSignIn />
+        <RedirectToSignIn
+          afterSignInUrl={window.location.pathname}
+          afterSignUpUrl={window.location.pathname}
+        />
       </SignedOut>
     </>
   );
