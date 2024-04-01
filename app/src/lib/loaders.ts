@@ -8,10 +8,8 @@ async function getProject(id: string) {
   return project;
 }
 
-const project: LoaderFunction = async ({ params }) => {
+export const project: LoaderFunction = async ({ params }) => {
   const id = params.id;
   if (!id) throw new Error("No room ID provided!");
   return defer({ project: getProject(id) });
 };
-
-export { project };

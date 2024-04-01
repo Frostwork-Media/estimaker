@@ -17,6 +17,7 @@ import { Toaster } from "./components/ui/toaster";
 import { amplitudeRegisterUser, useAmplitude } from "./lib/analytics";
 import * as loaders from "./lib/loaders";
 import { LogRocket } from "./lib/logrocket";
+import { New } from "./pages/New";
 
 const clerkPubKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
@@ -41,6 +42,10 @@ const router = createBrowserRouter([
         path: ":id",
         loader: loaders.project,
         element: <Project />,
+      },
+      {
+        path: "new",
+        element: <New />,
       },
     ],
   },
