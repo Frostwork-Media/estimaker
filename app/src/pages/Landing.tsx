@@ -2,7 +2,6 @@ import { SignInButton, useAuth } from "@clerk/clerk-react";
 import * as Accordion from "@radix-ui/react-accordion";
 import * as Tabs from "@radix-ui/react-tabs";
 import {
-  IconBrandTwitterFilled,
   IconChevronLeft,
   IconChevronRight,
   IconMinus,
@@ -21,10 +20,10 @@ import {
 import { ReactNode, useCallback, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 
+import { Container } from "@/components/Container.tsx";
+import { LandingFooter } from "@/components/LandingFooter.tsx";
+import { LandingNavbar } from "@/components/LandingNavbar.tsx";
 import { cn } from "@/lib/utils";
-
-const smOrangeLink =
-  "py-1 sm:py-2 px-3 pl-5 bg-orange-500 text-foreground font-bold text-sm rounded-3xl flex items-center gap-1 cursor-pointer hover:bg-orange-600 transition-colors";
 
 const lgBlackButton =
   "cursor-pointer rounded-3xl bg-neutral-900 text-white font-bold px-8 py-2 sm:py-4 mt-8 text-lg sm:text-xl inline-flex gap-2 items-center hover:bg-neutral-800/70 hover:scale-[1.025] transition-all transform-z-0";
@@ -35,35 +34,7 @@ export default function Landing() {
     <>
       <div className="landing-header py-6 pb-12 sm:pb-24 overflow-hidden">
         <Container className="relative text-center z-10 mb-8">
-          <div className="bg-neutral-900 text-white rounded-full w-full max-w-2xl mx-auto p-2 sm:p-5 sm:pl-12 mb-12 sm:mb-20 flex justify-between">
-            <div className="flex items-center">
-              <img src="/logo.svg" className="h-5 w-5 sm:h-7 sm:w-7 mr-1" />
-              <h1 className="text-base sm:text-2xl font-extrabold">
-                estimaker
-              </h1>
-            </div>
-            <div className="flex gap-6">
-              <button
-                className="font-bold text-sm hidden sm:block"
-                onClick={scrollToFeatures}
-              >
-                Features
-              </button>
-              {isSignedIn ? (
-                <Link to="/projects" className={smOrangeLink}>
-                  Go to the app
-                  <IconChevronRight />
-                </Link>
-              ) : (
-                <SignInButton>
-                  <div className={smOrangeLink}>
-                    Try the app
-                    <IconChevronRight />
-                  </div>
-                </SignInButton>
-              )}
-            </div>
-          </div>
+          <LandingNavbar />
           <h2 className="tracking-tight text-4xl sm:text-7xl font-extrabold mb-6 text-wrap-balance leading-tight">
             Visualise Probability with{" "}
             <span className="squiggle">Precision</span>
@@ -223,44 +194,8 @@ export default function Landing() {
           className="mt-12 sm:hidden"
         />
       </div>
-      <div className="bg-neutral-950 text-white py-6 sm:py-32">
-        <Container>
-          <LogoName className="sm:hidden" />
-          <div className="landing-footer-grid">
-            <div>
-              <LogoName className="hidden sm:flex mb-12" />
-              <div className="flex gap-3 items-center mb-3">
-                <SocialLink
-                  href="https://twitter.com/nathanpmyoung"
-                  icon={
-                    <IconBrandTwitterFilled className="w-4 h-4 text-neutral-950" />
-                  }
-                />
-              </div>
-              <span className="text-[12px] text-neutral-400">
-                © {new Date().getFullYear() /* TODO: get from package.json */}{" "}
-                Estimaker. All rights reserved.
-              </span>
-            </div>
-            <div className="mb-12 sm:mb-0">
-              <p className="font-bold mb-1.5">Resources</p>
-              <ul className="text-neutral-400 grid gap-1.5">
-                <li>
-                  <a
-                    href="https://chat.whatsapp.com/BKIVdkX4dQ0Gk3Oy4ZTm0M"
-                    target="_blank"
-                    className={smallWhiteLink}
-                  >
-                    Join the community
-                  </a>
-                </li>
-                <li>GDPR</li>
-                <li>Terms & Privacy</li>
-              </ul>
-            </div>
-          </div>
-        </Container>
-      </div>
+
+      <LandingFooter />
     </>
     // <div className="p-12">
     //   <h1 className="text-3xl font-extrabold mb-6">Estimaker</h1>
@@ -273,16 +208,6 @@ export default function Landing() {
     //   )}
     // </div>
   );
-}
-
-/**
- * Smooth scroll to the features section
- */
-function scrollToFeatures() {
-  const features = document.getElementById("features");
-  if (features) {
-    features.scrollIntoView({ behavior: "smooth" });
-  }
 }
 
 function FeatureTabTrigger({ children, ...props }: Tabs.TabsTriggerProps) {
@@ -354,20 +279,6 @@ function FeatureTabLowerSection({
   );
 }
 
-function Container({
-  children,
-  className,
-}: {
-  children: React.ReactNode;
-  className?: string;
-}) {
-  return (
-    <div className={cn("container mx-auto px-4 max-w-6xl", className)}>
-      {children}
-    </div>
-  );
-}
-
 function Subtitle({
   children,
   className,
@@ -419,7 +330,7 @@ function SubtitleMessage({
     <p
       className={cn(
         "text-base sm:text-2xl text-neutral-600 text-wrap-balance",
-        className
+        className,
       )}
     >
       {children}
@@ -491,21 +402,6 @@ function AccordionItem({
     </Accordion.Item>
   );
 }
-
-function SocialLink({ href, icon }: { href: string; icon: ReactNode }) {
-  return (
-    <a
-      className="w-8 h-8 rounded-full bg-neutral-400 flex justify-center items-center hover:bg-white transition-colors"
-      href={href}
-      target="_blank"
-    >
-      {icon}
-    </a>
-  );
-}
-
-const smallWhiteLink =
-  "text-neutral-400 hover:text-neutral-300 hover:underline";
 
 function Carousel() {
   const slidesRef = useRef<HTMLDivElement>(null);
@@ -614,12 +510,3 @@ function Carousel() {
 
 const nextPrevBtn =
   "w-12 h-12 rounded-full bg-white shadow-md flex justify-center items-center hover:bg-neutral-100 transition-colors";
-
-function LogoName({ className }: { className?: string }) {
-  return (
-    <div className={cn("flex items-center mb-12", className)}>
-      <img src="/logo.svg" className="h-7 w-7 mr-1" />
-      <h1 className="text-2xl font-extrabold">estimaker</h1>
-    </div>
-  );
-}
