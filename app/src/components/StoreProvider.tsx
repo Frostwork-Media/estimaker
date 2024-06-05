@@ -1,5 +1,5 @@
 import PartySocket from "partysocket";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { initialState } from "shared";
 import { createStore } from "tinybase/debug";
 import {
@@ -7,7 +7,10 @@ import {
   useCreatePersister,
   useCreateStore,
 } from "tinybase/debug/ui-react";
-import { createPartyKitPersister } from "tinybase/persisters/persister-partykit-client";
+import {
+  createPartyKitPersister,
+  PartyKitPersister,
+} from "tinybase/persisters/persister-partykit-client";
 
 import { UserPresence } from "@/lib/hooks";
 import { SocketContext } from "@/lib/socketContext";
@@ -37,6 +40,8 @@ export function StoreProvider({
     return socket;
   });
 
+  const [persister, setPersister] = useState<PartyKitPersister | null>(null);
+
   useCreatePersister(
     store,
     (store) =>
@@ -49,11 +54,27 @@ export function StoreProvider({
     [id],
     async (persister) => {
       if (!persister) return;
-      await persister.startAutoSave();
-      await persister.startAutoLoad();
+      setPersister(persister);
+
+      // await persister.startAutoSave();
+      // await persister.startAutoLoad();
       // Is there a way to subscribe to events from the persister?
     }
   );
+
+  useEffect(() => {
+    // start autosave and autoload 5 seconds after the persister is created
+    if (persister) {
+      const t = setTimeout(() => {
+        persister.startAutoSave();
+        persister.startAutoLoad();
+
+        console.log("autosave and autoload started");
+      }, 5000);
+
+      return () => clearTimeout(t);
+    }
+  }, [persister]);
 
   return (
     <Provider store={store}>

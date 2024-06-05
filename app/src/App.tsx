@@ -14,6 +14,7 @@ import Landing from "./pages/Landing";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Project = lazy(() => import("./pages/Project"));
+import { FullPageLoader } from "./components/FullPageLoader";
 import { Toaster } from "./components/ui/toaster";
 import { amplitudeRegisterUser, useAmplitude } from "./lib/analytics";
 import * as loaders from "./lib/loaders";
@@ -65,7 +66,7 @@ export default function App() {
       afterSignUpUrl="/projects"
     >
       <QueryClientProvider client={queryClient}>
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<FullPageLoader />}>
           <RouterProvider router={router} />
         </Suspense>
       </QueryClientProvider>
