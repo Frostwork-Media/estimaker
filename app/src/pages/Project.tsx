@@ -1,5 +1,5 @@
 import type { Project as P } from "db";
-import { Suspense, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { Await, useLoaderData, useParams } from "react-router-dom";
 import { ReactFlowProvider } from "reactflow";
@@ -95,25 +95,26 @@ export default function Page() {
   const presence = useUserPresence();
 
   return (
-    <Suspense fallback={<div>Loading project...</div>}>
-      <Await
-        resolve={data.project}
-        errorElement={<p>We had trouble finding your project.</p>}
-      >
-        {(project) => {
-          return (
-            <StoreProvider
-              id={id}
-              initial={JSON.stringify(project.state)}
-              presence={presence}
-            >
-              <ReactFlowProvider>
-                <Project key={project.id} id={project.id} />
-              </ReactFlowProvider>
-            </StoreProvider>
-          );
-        }}
-      </Await>
-    </Suspense>
+    <Await
+      resolve={data.project}
+      errorElement={<p>We had trouble finding your project.</p>}
+    >
+      {(project) => {
+        if (!project)
+          return <div>An error occurred loading project. Please refresh.</div>;
+
+        return (
+          <StoreProvider
+            id={id}
+            initial={JSON.stringify(project.state)}
+            presence={presence}
+          >
+            <ReactFlowProvider>
+              <Project key={project.id} id={project.id} />
+            </ReactFlowProvider>
+          </StoreProvider>
+        );
+      }}
+    </Await>
   );
 }
