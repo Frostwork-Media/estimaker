@@ -11,7 +11,7 @@ import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
 
 import { queryClient } from "./lib/queryClient";
 import Landing from "./pages/Landing";
-import PrivacyPolicy from "./pages/PrivacyPolicy.tsx";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Project = lazy(() => import("./pages/Project"));
 import { Toaster } from "./components/ui/toaster";
