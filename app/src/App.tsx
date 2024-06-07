@@ -10,9 +10,11 @@ import { lazy, Suspense, useEffect } from "react";
 import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
 
 import { queryClient } from "./lib/queryClient";
-const Landing = lazy(() => import("./pages/Landing"));
+import Landing from "./pages/Landing";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Project = lazy(() => import("./pages/Project"));
+import { FullPageLoader } from "./components/FullPageLoader";
 import { Toaster } from "./components/ui/toaster";
 import { amplitudeRegisterUser, useAmplitude } from "./lib/analytics";
 import * as loaders from "./lib/loaders";
@@ -25,6 +27,10 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <Landing />,
+  },
+  {
+    path: "/privacy",
+    element: <PrivacyPolicy />,
   },
   {
     path: "/projects",
@@ -60,7 +66,7 @@ export default function App() {
       afterSignUpUrl="/projects"
     >
       <QueryClientProvider client={queryClient}>
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<FullPageLoader />}>
           <RouterProvider router={router} />
         </Suspense>
       </QueryClientProvider>

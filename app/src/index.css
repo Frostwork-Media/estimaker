@@ -53,6 +53,7 @@ html {
 }
 
 .landing-header {
+  isolation: isolate;
   background-blend-mode: multiply;
   background-color: #0000;
   background-image: repeating-linear-gradient(
@@ -73,6 +74,8 @@ html {
 }
 
 .landing-header::before {
+  z-index: -1;
+  pointer-events: none;
   content: "";
   position: absolute;
   top: 0;
