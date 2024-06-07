@@ -10,7 +10,8 @@ import { lazy, Suspense, useEffect } from "react";
 import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
 
 import { queryClient } from "./lib/queryClient";
-const Landing = lazy(() => import("./pages/Landing"));
+import Landing from "./pages/Landing";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Project = lazy(() => import("./pages/Project"));
 import { Toaster } from "./components/ui/toaster";
@@ -25,6 +26,10 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <Landing />,
+  },
+  {
+    path: "/privacy",
+    element: <PrivacyPolicy />,
   },
   {
     path: "/projects",
