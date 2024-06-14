@@ -616,7 +616,7 @@ export function useConnectNodes() {
       if (!targetValue) return;
 
       // Naive version: Wrap existing value in parens and multiply
-      const newValue = `(${targetValue}) * ${sourceVariable}`;
+      const newValue = `${targetValue} + ${sourceVariable}`;
 
       // Update the target node with the new value
       store.setCell("nodes", target, "value", newValue);
