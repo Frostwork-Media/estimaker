@@ -6,6 +6,7 @@ import { ReactFlowProvider } from "reactflow";
 import { useTables } from "tinybase/debug/ui-react";
 
 import { Canvas } from "@/components/Canvas";
+import { ProjectProvider } from "@/components/ProjectContextProvider";
 import { ProjectNav } from "@/components/ProjectNav";
 import { Sidebar } from "@/components/Sidebar";
 import { SquiggleContext } from "@/components/SquiggleProvider";
@@ -20,6 +21,7 @@ import {
 } from "@/lib/toNodesAndEdges";
 import { useClientStore } from "@/lib/useClientStore";
 import { useCursorsStore } from "@/lib/useCursorsStore";
+import { useSelectedNodeType } from "@/lib/useSelectedNodeType";
 import { useSquiggleCode } from "@/lib/useSquiggleCode";
 import { useSquiggleRunResult } from "@/lib/useSquiggleRunResult";
 
@@ -30,6 +32,7 @@ function Project({ id }: { id: string }) {
   useAvatar();
 
   const selectedNodes = useClientStore((state) => state.selectedNodes);
+  const nodeType = useSelectedNodeType(selectedNodes?.[0]);
 
   const variableToNodeId = createVariableToNodeId(tables as Tables);
   const edges = createEdges(variableToNodeId, (tables as Tables).nodes);
@@ -39,7 +42,8 @@ function Project({ id }: { id: string }) {
   const user = useUser();
   const code = useSquiggleCode(tables, edges, user.id);
   const sidebarTab = useClientStore((state) => state.sidebarTab);
-  const showSidebar = !!sidebarTab || selectedNodes.length === 1;
+  const showSidebar =
+    !!sidebarTab || (selectedNodes.length === 1 && nodeType !== "image");
 
   const runResult = useSquiggleRunResult(code);
 
@@ -93,6 +97,7 @@ export default function Page() {
   const { id } = useParams<{ id: string }>();
   if (!id) throw new Error("No ID provided");
   const presence = useUserPresence();
+  const isReady = useClientStore((state) => state.isReady);
 
   return (
     <Await
@@ -104,15 +109,19 @@ export default function Page() {
           return <div>An error occurred loading project. Please refresh.</div>;
 
         return (
-          <StoreProvider
-            id={id}
-            initial={JSON.stringify(project.state)}
-            presence={presence}
-          >
-            <ReactFlowProvider>
-              <Project key={project.id} id={project.id} />
-            </ReactFlowProvider>
-          </StoreProvider>
+          <ProjectProvider initialProject={project}>
+            <StoreProvider
+              id={id}
+              initial={JSON.stringify(project.state)}
+              presence={presence}
+            >
+              {isReady && (
+                <ReactFlowProvider>
+                  <Project key={project.id} id={project.id} />
+                </ReactFlowProvider>
+              )}
+            </StoreProvider>
+          </ProjectProvider>
         );
       }}
     </Await>

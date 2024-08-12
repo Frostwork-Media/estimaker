@@ -64,7 +64,8 @@ export function useEstimateSearch(search: string, projectId: string) {
       }
       return estimates as Estimate[];
     },
-    staleTime: Infinity,
+    // Stale time of 5 minutes
+    staleTime: 5 * 60 * 1000,
     enabled: !!search,
   });
 }
@@ -76,7 +77,9 @@ export function useMetaforecastQuestion(slug: string) {
   return useQuery({
     queryKey: ["metaforecast", slug],
     queryFn: () => getMetaforecast(slug),
-    staleTime: Infinity,
+    staleTime: 30 * 1000,
+    // Refetch every 30 seconds
+    refetchInterval: 30 * 1000,
   });
 }
 
@@ -87,6 +90,8 @@ export function useManifoldMarket(id: string) {
   return useQuery({
     queryKey: ["manifold", id],
     queryFn: () => getManifoldMarket(id),
-    staleTime: Infinity,
+    staleTime: 30 * 1000,
+    // Refetch every 30 seconds
+    refetchInterval: 30 * 1000,
   });
 }

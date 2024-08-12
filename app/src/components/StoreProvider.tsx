@@ -7,13 +7,11 @@ import {
   useCreatePersister,
   useCreateStore,
 } from "tinybase/debug/ui-react";
-import {
-  createPartyKitPersister,
-  PartyKitPersister,
-} from "tinybase/persisters/persister-partykit-client";
+import { createPartyKitPersister } from "tinybase/persisters/persister-partykit-client";
 
 import { UserPresence } from "@/lib/hooks";
 import { SocketContext } from "@/lib/socketContext";
+import { setIsReady, useClientStore } from "@/lib/useClientStore";
 
 export function StoreProvider({
   children,
@@ -29,6 +27,7 @@ export function StoreProvider({
   if (!id) throw new Error("No room ID provided");
 
   const store = useCreateStore(() => createStore().setJson(initial));
+  const isReady = useClientStore((state) => state.isReady);
 
   const [socket] = useState(() => {
     const socket = new PartySocket({
@@ -40,9 +39,7 @@ export function StoreProvider({
     return socket;
   });
 
-  const [persister, setPersister] = useState<PartyKitPersister | null>(null);
-
-  useCreatePersister(
+  const persister = useCreatePersister(
     store,
     (store) =>
       createPartyKitPersister(
@@ -51,30 +48,15 @@ export function StoreProvider({
         location.protocol.slice(0, -1) as "http" | "https",
         console.error
       ),
-    [id],
-    async (persister) => {
-      if (!persister) return;
-      setPersister(persister);
-
-      // await persister.startAutoSave();
-      // await persister.startAutoLoad();
-      // Is there a way to subscribe to events from the persister?
-    }
+    [id]
   );
 
   useEffect(() => {
-    // start autosave and autoload 5 seconds after the persister is created
-    if (persister) {
-      const t = setTimeout(() => {
-        persister.startAutoSave();
-        persister.startAutoLoad();
-
-        console.log("autosave and autoload started");
-      }, 5000);
-
-      return () => clearTimeout(t);
-    }
-  }, [persister]);
+    if (!persister || isReady) return;
+    persister.startAutoSave();
+    persister.startAutoLoad();
+    setIsReady();
+  }, [persister, isReady]);
 
   return (
     <Provider store={store}>
