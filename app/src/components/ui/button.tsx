@@ -18,7 +18,7 @@ const button = cva(
       },
     },
     defaultVariants: {
-      color: "inverted",
+      color: "neutral",
       size: "md",
     },
   }
@@ -59,8 +59,8 @@ export const Button = ({
 const iconButton = cva([], {
   variants: {
     size: {
-      md: "w-4 h-4",
-      sm: "w-3 h-3",
+      md: "w-5 h-5",
+      sm: "w-4 h-4",
     },
   },
   defaultVariants: {
@@ -73,11 +73,18 @@ export const IconButton = ({
   isLoading,
   color,
   size,
+  disabled,
   ...props
 }: SharedButtonProps & { icon: typeof Icon24Hours }) => {
   return (
     <button
-      className={cn(button({ color, size }), "p-2 rounded-md")}
+      className={cn(
+        button({ color, size }),
+        "p-2 rounded transition-colors duration-200",
+        disabled && "opacity-50 cursor-not-allowed",
+        !disabled && "hover:bg-opacity-80"
+      )}
+      disabled={disabled || isLoading}
       {...props}
     >
       {isLoading ? (

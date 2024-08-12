@@ -2,6 +2,7 @@ import { useUser } from "@clerk/clerk-react";
 import { useRow } from "tinybase/debug/ui-react";
 
 import { NODE_NAME_EDITOR_ID } from "@/lib/constants";
+import { useSelectedNodeType } from "@/lib/useSelectedNodeType";
 
 import {
   AnyNode,
@@ -24,9 +25,13 @@ export function Sidebar() {
   const selectedNodes = useClientStore((state) => state.selectedNodes);
   const sidebarTab = useClientStore((state) => state.sidebarTab);
 
+  const nodeType = useSelectedNodeType(selectedNodes?.[0]);
+  const showSingleNodeEditor =
+    selectedNodes.length === 1 && !!nodeType && nodeType !== "image";
+
   return (
     <aside className="h-full overflow-auto">
-      {selectedNodes.length === 1 ? (
+      {showSingleNodeEditor ? (
         <SingleNodeEditor key={selectedNodes[0]} id={selectedNodes[0]} />
       ) : sidebarTab === "search" ? (
         <SearchBar />

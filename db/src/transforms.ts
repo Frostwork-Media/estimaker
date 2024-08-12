@@ -9,7 +9,16 @@ type E = Pick<Estimate, "id" | "ownerId" | "description" | "value">;
  */
 export const toDatabase = (projectId: string, state: State): SaveProps => {
   const [tables, values] = state;
-  const { nodes = {}, links = {} } = tables;
+  const { nodes = {}, links = {}, users = {} } = tables;
+
+  // Remove duplicate users
+  const uniqueUsers = Object.values(users).reduce(
+    (acc, user) => {
+      acc[user.id] = user;
+      return acc;
+    },
+    {} as Record<string, (typeof users)[keyof typeof users]>
+  );
 
   const estimates = Object.values(links).reduce<E[]>((acc, link) => {
     const estimateNode = nodes[link.nodeId];
@@ -32,7 +41,7 @@ export const toDatabase = (projectId: string, state: State): SaveProps => {
   return {
     projectId,
     name: values.name,
-    state,
+    state: [{ ...tables, users: uniqueUsers }, values],
     estimates,
   };
 };
