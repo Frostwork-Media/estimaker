@@ -2,6 +2,7 @@ import {
   IconArrowLeft,
   IconDeviceFloppy,
   IconGraph,
+  IconLink,
   IconPencil,
   IconSearch,
 } from "@tabler/icons-react";
@@ -10,6 +11,7 @@ import { useEffect, useMemo } from "react";
 import { useStore, useValue } from "tinybase/debug/ui-react";
 
 import { IconButton } from "@/components/ui/button";
+import { useToast } from "@/components/ui/use-toast";
 import { useSaveProject } from "@/lib/mutations";
 import { useClientStore } from "@/lib/useClientStore";
 import { useProject } from "@/lib/useProject";
@@ -17,6 +19,7 @@ import { useProject } from "@/lib/useProject";
 import { RenameProjectDialog } from "./RenameProjectDialog";
 
 export function ProjectNav({ id }: { id: string }) {
+  const { toast } = useToast();
   const projectName = useValue("name");
   const saveProject = useSaveProject();
 
@@ -59,6 +62,17 @@ export function ProjectNav({ id }: { id: string }) {
     }
   };
 
+  const handleCopyUrl = () => {
+    const projectUrl = `${window.location.origin}/projects/${id}`;
+    navigator.clipboard.writeText(projectUrl).then(() => {
+      toast({
+        title: "URL Copied",
+        description: "Project URL has been copied to clipboard.",
+        duration: 3000,
+      });
+    });
+  };
+
   return (
     <div className="p-2 bg-background border-b border-neutral-300">
       <div className="flex gap-2 justify-between items-center">
@@ -81,6 +95,11 @@ export function ProjectNav({ id }: { id: string }) {
             color={outOfSync ? "red" : "neutral"}
             disabled={!outOfSync || saveProject.isPending}
             isLoading={saveProject.isPending}
+          />
+          <IconButton
+            icon={IconLink}
+            onClick={handleCopyUrl}
+            title="Copy Project URL"
           />
           <IconButton
             icon={IconSearch}
