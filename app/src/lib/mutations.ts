@@ -6,6 +6,7 @@ import { useStore } from "tinybase/debug/ui-react";
 
 import { queryClient } from "./queryClient";
 import { useClientStore } from "./useClientStore";
+import { useSetProject } from "./useProject";
 
 export function useCreateProject() {
   const navigate = useNavigate();
@@ -157,6 +158,35 @@ export function useUpdateProjectNameInDB() {
       }
 
       return res.json() as Promise<{ success: boolean }>;
+    },
+  });
+}
+
+export function useSaveProject() {
+  const setProject = useSetProject();
+  return useMutation({
+    mutationFn: async ({ id, state }: { id: string; state: State }) => {
+      const res = await fetch("/api/projects/save", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id, state }),
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to save project");
+      }
+
+      return res.json() as Promise<
+        { success: true } | { success: false; error: string }
+      >;
+    },
+    onError: (error) => {
+      console.error("Error saving project:", error);
+    },
+    onSuccess: (_, { state }) => {
+      setProject((prev) => ({ ...prev, state }));
     },
   });
 }

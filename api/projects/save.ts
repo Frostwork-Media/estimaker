@@ -8,23 +8,24 @@ import { save, toDatabase } from "db";
  */
 const handler: VercelApiHandler = async (req, res) => {
   console.log("Saving project state to database");
-  const { id, state } = req.body;
-  if (!id || !state) {
-    console.error("Missing id or state");
-    // send a silent 200
-    res.status(200).end();
-    return;
+  try {
+    const { id, state } = req.body;
+    if (!id || !state) {
+      throw new Error("Missing id or state");
+    }
+
+    const db = toDatabase(id, state);
+    const success = await save(db);
+
+    if (!success) {
+      throw new Error("Error saving to database");
+    }
+
+    res.status(200).json({ success: true });
+  } catch (error: any) {
+    console.error(error);
+    res.status(200).json({ success: false, error: error.message });
   }
-
-  const db = toDatabase(id, state);
-  const success = await save(db);
-
-  if (!success) {
-    console.log("Error saving to database");
-  }
-
-  // send a silent 200
-  res.status(200).end();
 };
 
 export default handler;

@@ -1,5 +1,5 @@
 import { VercelApiHandler } from "@vercel/node";
-import { getProject, prisma } from "db";
+import { getProject } from "db";
 import { State } from "shared";
 
 const handler: VercelApiHandler = async (req, res) => {
