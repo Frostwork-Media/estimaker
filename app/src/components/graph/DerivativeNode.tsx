@@ -25,7 +25,7 @@ export function DerivativeNode(props: NodeProps) {
             {props.data.value}
           </p>
         </div>
-        <div className="grid gap-1 p-2">
+        <div className="grid gap-1 p-2 w-full">
           {props.data.medians?.map((median: MedianStoreMedian) => (
             <div
               key={median.userId}
