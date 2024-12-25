@@ -1,49 +1,41 @@
-import { Handle, NodeProps, Position } from "reactflow";
+import { Handle, NodeProps, Position, useEdges } from "reactflow";
+import { useTables } from "tinybase/debug/ui-react";
 
-import { MedianStoreMedian } from "@/lib/createMedianStore";
+import { useUser } from "@/lib/hooks";
+import { useSquiggleCode } from "@/lib/useSquiggleCode";
 
-import { Avatar } from "./Avatar";
+import { ValueRow } from "./ValueRow";
 import { Wrapper } from "./Wrapper";
 
 export function DerivativeNode(props: NodeProps) {
+  const tables = useTables();
+  const edges = useEdges();
+
+  const { id: userId } = useUser();
+  const code = useSquiggleCode(tables, edges, userId, props.data.variableName);
+
   return (
     <>
-      <Handle
-        type="target"
-        position={Position.Top}
-        className="!-top-3 !border-none !w-1 !h-1"
-      />
-      <Wrapper
-        label={props.data.label}
-        variableName={props.data.variableName}
-        selected={!!props.selected}
-        nodeType="derivative"
+      <Handle type="target" position={Position.Top} className="!-top-3 !border-none !w-1 !h-1" />
+      <Wrapper 
+        label={props.data.label} 
+        variableName={props.data.variableName} 
+        selected={!!props.selected} 
+        nodeType="derivative" 
         id={props.id}
       >
-        <div className="mt-2 w-full p-2">
-          <p className="font-mono text-[10px] bg-emerald-100 text-emerald-700 w-full p-1 rounded-full">
-            {props.data.value}
-          </p>
-        </div>
         <div className="grid gap-1 p-2 w-full">
-          {props.data.medians?.map((median: MedianStoreMedian) => (
-            <div
-              key={median.userId}
-              className="flex items-center justify-start text-xs text-left gap-2 bg-emerald-50 rounded-full"
-            >
-              <Avatar avatar={median.avatar} />
-              <span className="text-emerald-700 font-mono tracking-tighter text-[11px] text-center grow pr-6">
-                {median.value.toFixed(2)}
-              </span>
-            </div>
-          ))}
+          <ValueRow 
+            value={props.data.value}
+            variableName={props.data.variableName}
+            bgColor="bg-emerald-50" 
+            textColor="text-emerald-700"
+            modalTitle="Formula"
+            code={code}
+          />
         </div>
       </Wrapper>
-      <Handle
-        type="source"
-        position={Position.Bottom}
-        className="!-bottom-3 !border-none !w-1 !h-1"
-      />
+      <Handle type="source" position={Position.Bottom} className="!-bottom-3 !border-none !w-1 !h-1" />
     </>
   );
 }

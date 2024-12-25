@@ -4,6 +4,7 @@
     "esModuleInterop": true,
     "typeRoots": ["node_modules/@types"],
     "strict": true,
-    "noImplicitAny": true
+    "noImplicitAny": true,
+    "target": "ES2015"
   }
 }

@@ -11,6 +11,7 @@ import { ProjectNav } from "@/components/ProjectNav";
 import { Sidebar } from "@/components/Sidebar";
 import { SquiggleContext } from "@/components/SquiggleProvider";
 import { StoreProvider } from "@/components/StoreProvider";
+import { VariablesTable } from "@/components/VariablesTable";
 import { createMedianStore, MedianStore } from "@/lib/createMedianStore";
 import { useAvatar, useUser, useUserPresence } from "@/lib/hooks";
 import { Tables } from "@/lib/store";
@@ -44,6 +45,13 @@ function Project({ id }: { id: string }) {
   const sidebarTab = useClientStore((state) => state.sidebarTab);
   const showSidebar =
     !!sidebarTab || (selectedNodes.length === 1 && nodeType !== "image");
+  
+  // If a node is selected, override the sidebar tab
+  useEffect(() => {
+    if (selectedNodes.length === 1 && nodeType !== "image") {
+      useClientStore.setState({ sidebarTab: undefined });
+    }
+  }, [selectedNodes, nodeType]);
 
   const runResult = useSquiggleRunResult(code);
 
@@ -54,8 +62,8 @@ function Project({ id }: { id: string }) {
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    const { tables, edges } = JSON.parse(effectProps);
-    createMedianStore(tables as Tables, edges)
+    const { tables, _edges } = JSON.parse(effectProps);
+    createMedianStore(tables as Tables)
       .then(setMedianStore)
       .catch(console.error);
   }, [effectProps]);
@@ -70,10 +78,11 @@ function Project({ id }: { id: string }) {
     cursors,
   });
 
+  const [showTable, setShowTable] = useState(false);
+
   return (
     <SquiggleContext.Provider value={{ ...runResult, code }}>
-      <div className="w-screen h-screen grid grid-rows-[auto_minmax(0,1fr)]">
-        <ProjectNav id={id} />
+      <div className="w-screen h-screen grid grid-rows-[auto_minmax(0,1fr)]">        <ProjectNav id={id} setShowTable={setShowTable} showTable={showTable} />
         <PanelGroup direction="horizontal" autoSaveId="estimaker-size">
           <Panel defaultSize={80} order={1} id="canvas">
             <Canvas nodes={nodes} edges={edges} id={id} />
@@ -82,7 +91,7 @@ function Project({ id }: { id: string }) {
             <>
               <PanelResizeHandle className="w-2 h-full bg-background border-x border-neutral-300" />
               <Panel className="bg-background" order={2} id="sidebar">
-                <Sidebar />
+                {sidebarTab === "variables" ? <VariablesTable /> : <Sidebar />}
               </Panel>
             </>
           )}

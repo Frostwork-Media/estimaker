@@ -2,7 +2,7 @@ import { create } from "zustand";
 
 type ClientStore = {
   selectedNodes: string[];
-  sidebarTab?: "search" | "squiggle";
+  sidebarTab?: "search" | "squiggle" | "variables";
   isReady: boolean;
 };
 

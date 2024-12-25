@@ -1,0 +1,90 @@
+# Estimaker Repository Contents
+
+## Project Overview
+A collaborative estimation tool using Squiggle for calculations. Displays a canvas with nodes and connections between them.
+
+## Directory Structure
+
+### /api
+- prompt.ts: Handles AI prompt processing using Claude
+- upload.ts: Handles file uploads to Vercel Blob storage
+- _auth.ts: Authentication utilities
+- _config.ts: Configuration settings
+- estimates/: Estimate-related endpoints
+- projects/: Project management endpoints
+
+### /app
+Main frontend application
+
+#### Components
+- Canvas.tsx: Main workspace component
+- VariablesTable.tsx: Table view of variables
+- ProjectNav.tsx: Project navigation
+- Sidebar.tsx: Right panel component
+- MultiSelectToolbar.tsx: Selection tools
+- Graph components (graph/):
+  - EstimateNode.tsx
+  - DerivativeNode.tsx
+  - ManifoldNode.tsx
+  - MetaforecastNode.tsx
+  - ImageNode.tsx
+
+#### Libraries
+- store.ts: TinyBase store setup
+- mutations.ts: Data mutation hooks
+- queries.ts: Data query hooks
+- useSquiggleCode.ts: Squiggle integration
+- toNodesAndEdges.tsx: Graph structure utilities
+
+### /db
+Database integration using Prisma
+
+### /multiplayer
+Real-time collaboration using PartyKit
+
+### /shared
+Shared types and utilities
+
+## Key Features
+1. Canvas-based workspace
+2. Real-time collaboration
+3. Squiggle integration
+4. Variables table
+5. Search functionality
+6. Project management
+
+## Dependencies
+- React + TypeScript
+- TinyBase for state management
+- Squiggle for calculations
+- PartyKit for multiplayer
+- Prisma for database
+- Tailwind for styling
+- Vite for building
+
+## Development
+- Uses pnpm for package management
+- TypeScript for type safety
+- Vitest for testing
+- ESLint + Prettier for code style
+
+## File Contents
+
+[Contents of all source files would be listed here, but omitted for brevity]
+
+## Testing
+Tests are written using Vitest
+Example: VariablesTable.spec.tsx tests paste functionality
+
+## Deployment
+- Uses Vercel for hosting
+- Environment variables required:
+  - Database connection
+  - Authentication settings
+  - Storage configuration
+
+## Notes
+- Real-time collaboration implemented
+- Uses modern React patterns
+- Strong TypeScript integration
+- Modular architecture

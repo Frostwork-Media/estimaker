@@ -53,9 +53,11 @@ export function StoreProvider({
 
   useEffect(() => {
     if (!persister || isReady) return;
-    persister.startAutoSave();
     persister.startAutoLoad();
-    setIsReady();
+    setTimeout(() => {
+      persister.startAutoSave();
+      setIsReady();
+    }, 1000);
   }, [persister, isReady]);
 
   return (

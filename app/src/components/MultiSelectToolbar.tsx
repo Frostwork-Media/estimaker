@@ -1,14 +1,16 @@
-import { IconPlus } from "@tabler/icons-react";
+import { IconPlus, IconTrash } from "@tabler/icons-react";
 import { NodeToolbar, Position } from "reactflow";
 
 import { useCreateProjectFromSelection } from "@/lib/mutations";
 import { useClientStore } from "@/lib/useClientStore";
+import { useDeleteNode } from "@/lib/store";
 
 import { Button } from "./ui/button";
 
 export function MultiSelectToolbar() {
   const selectedNodes = useClientStore((state) => state.selectedNodes);
   const createProjectFromSelection = useCreateProjectFromSelection();
+  const deleteNode = useDeleteNode();
   return (
     <NodeToolbar
       isVisible={selectedNodes.length > 1}
@@ -16,15 +18,12 @@ export function MultiSelectToolbar() {
       position={Position.Bottom}
     >
       <Button
-        leftIcon={IconPlus}
-        isLoading={createProjectFromSelection.isPending}
+        color="red"
         onClick={() => {
-          if (window.confirm("Create new project from selection?")) {
-            createProjectFromSelection.mutate();
-          }
+          selectedNodes.forEach(id => deleteNode(id));
         }}
       >
-        New Project from Selection
+        <IconTrash className="w-4 h-4" />
       </Button>
     </NodeToolbar>
   );

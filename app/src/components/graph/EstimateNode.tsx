@@ -3,14 +3,15 @@ import { Handle, Position } from "reactflow";
 import { useUser } from "@/lib/hooks";
 
 import { EstimateNodeProps } from "../../lib/canvasTypes";
-import { Avatar } from "./Avatar";
 import { EstimateSlider } from "./EstimateSlider";
+import { ValueRow } from './ValueRow';
 import { Wrapper } from "./Wrapper";
 
 export function EstimateNode(props: EstimateNodeProps) {
   const links = props.data.links;
   const { id: userId } = useUser();
   const link = links.find((link) => link.owner === userId);
+
   return (
     <>
       <Wrapper
@@ -23,21 +24,18 @@ export function EstimateNode(props: EstimateNodeProps) {
       >
         <div className="grid gap-1 p-2 w-full">
           {link ? <EstimateSlider link={link} /> : null}
-          {props.data.links.map((link) => {
-            return (
-              <div
-                key={link.id}
-                className="flex items-center justify-start text-xs text-left gap-2 bg-indigo-50 rounded-full"
-              >
-                <Avatar
-                  avatar={"presence" in link ? link.presence.avatar : undefined}
-                />
-                <span className="text-indigo-700 font-mono tracking-tighter text-[11px] text-center grow pr-6">
-                  {link.value}
-                </span>
-              </div>
-            );
-          })}
+          
+          {/* Show all estimates with their graphs */}
+          {props.data.links.map((link) => (
+            <ValueRow 
+              key={link.id}
+              value={link.value}
+              variableName={props.data.variableName}
+              avatar={"presence" in link ? link.presence.avatar : undefined}
+              bgColor="bg-indigo-50"
+              textColor="text-indigo-700"
+            />
+          ))}
         </div>
       </Wrapper>
       <Handle

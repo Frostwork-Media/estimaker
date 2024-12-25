@@ -5,6 +5,7 @@ import {
   IconLink,
   IconPencil,
   IconSearch,
+  IconTable,
 } from "@tabler/icons-react";
 import equal from "deep-equal";
 import { useEffect, useMemo } from "react";
@@ -18,7 +19,7 @@ import { useProject } from "@/lib/useProject";
 
 import { RenameProjectDialog } from "./RenameProjectDialog";
 
-export function ProjectNav({ id }: { id: string }) {
+export function ProjectNav({ id, setShowTable, showTable }: { id: string; setShowTable: (show: boolean) => void; showTable: boolean }) {
   const { toast } = useToast();
   const projectName = useValue("name");
   const saveProject = useSaveProject();
@@ -82,7 +83,7 @@ export function ProjectNav({ id }: { id: string }) {
           </a>
           <RenameProjectDialog id={id}>
             <button className="group flex items-center gap-2 font-extrabold text-2xl border-none bg-transparent p-1 focus:outline-none hover:opacity-50">
-              {projectName}
+              {projectName === "New Project" ? "New Project" : projectName}
               <IconPencil className="hidden group-hover:block" />
             </button>
           </RenameProjectDialog>
@@ -100,6 +101,16 @@ export function ProjectNav({ id }: { id: string }) {
             icon={IconLink}
             onClick={handleCopyUrl}
             title="Copy Project URL"
+          />
+          <IconButton
+            icon={IconTable}
+            onClick={() => {
+              useClientStore.setState({
+                sidebarTab: "variables",
+                selectedNodes: [],
+              });
+            }}
+            title="Toggle Variables Table"
           />
           <IconButton
             icon={IconSearch}

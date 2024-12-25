@@ -4,3 +4,4 @@ node_modules
 .env*.local
 .idea
 TODO.md
+app/src/lib/__tests__/useSquiggleCode.test.ts

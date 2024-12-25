@@ -40,11 +40,19 @@ function getResultValue({
 }
 
 export function useSquiggleRunResult(code: string) {
+  
   const runnerState = useRunnerState(code);
 
   const [squiggleOutput, { isRunning }] = useSquiggle({
     code: runnerState.renderedCode,
     executionId: runnerState.executionId,
+  });
+
+  console.log("Raw Squiggle Output:", {
+    output: squiggleOutput?.output,
+    code: squiggleOutput?.code,
+    executionId: squiggleOutput?.executionId,
+    executionTime: squiggleOutput?.executionTime
   });
 
   let resultVariables: result<SqDictValue, SqError> | undefined = undefined,

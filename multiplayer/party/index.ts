@@ -15,6 +15,10 @@ export default class Server extends TinyBasePartyKitServer {
     this.saveTo = party.env.SAVE_ENDPOINT as string;
   }
 
+  async onConnect() {
+    return JSON.stringify({ success: true });
+  }
+
   // async onMessage(message: string, connection: Connection) {
   //   await super.onMessage(message, connection);
 

@@ -2,6 +2,7 @@ import { nanoid } from "nanoid";
 import { useCallback } from "react";
 import { useStore } from "tinybase/debug/ui-react";
 
+import { useUserPresence } from "./hooks";
 import { useClientStore } from "./useClientStore";
 
 type Node = {
@@ -120,6 +121,21 @@ export type Values = {
   name: string;
 };
 
+export interface StoreNode {
+  variableName: string
+  name?: string
+  value?: string
+}
+
+export interface Variable {
+  id: string
+  name: string
+  variableName: string
+  code: string
+  source: string
+  notes: string
+}
+
 function createEstimate({
   uid,
   x,
@@ -143,6 +159,92 @@ function createEstimate({
   };
 
   return estimate;
+}
+
+/**
+ * Bulk create nodes
+ */
+export function useBulkCreateNodes() {
+  const store = useStore();
+  
+  return useCallback((entries: { name: string }[]) => {
+    if (!store) return;
+    
+    store.transaction(() => {
+      entries.forEach(({ name }) => {
+        const uid = nanoid();
+        
+        store.addRow("nodes", {
+          type: "estimate",
+          uid,
+          x: 100,
+          y: 100,
+          name,
+          variableName: getVariableName(store.getTable("nodes") as Tables["nodes"])
+        });
+      });
+    });
+  }, [store]);
+}
+
+/**
+ * Bulk create nodes with links
+ */
+export function useBulkCreateEstimateNodesWithLinks() {
+  const store = useStore();
+  const presence = useUserPresence();
+  
+  return useCallback((entries: { name: string; value?: string }[]) => {
+    if (!store) return;
+    
+    // Calculate grid layout with offset
+    const GRID_SIZE = 200; // Space between nodes
+    const NODES_PER_ROW = 5;
+    const RANDOM_OFFSET = 20; // Maximum random offset
+    
+    store.transaction(() => {
+      entries.forEach(({ name, value }, index) => {
+        // Calculate grid position with random offset
+        const row = Math.floor(index / NODES_PER_ROW);
+        const col = index % NODES_PER_ROW;
+        const baseX = 100 + (col * GRID_SIZE);
+        const baseY = 100 + (row * GRID_SIZE);
+        
+        // Add small random offset to prevent perfect alignment
+        const x = baseX + (Math.random() * RANDOM_OFFSET - RANDOM_OFFSET/2);
+        const y = baseY + (Math.random() * RANDOM_OFFSET - RANDOM_OFFSET/2);
+        
+        const uid = nanoid();
+        
+        // Create the node
+        store.addRow("nodes", {
+          type: "estimate",
+          uid,
+          x,
+          y,
+          name,
+          variableName: getVariableName(store.getTable("nodes") as Tables["nodes"])
+        });
+
+        // If a value was provided, create the link
+        if (value) {
+          // Get the node's ID
+          const nodeId = Object.entries(store.getTable("nodes"))
+            .find(([_, node]) => node.uid === uid)?.[0];
+
+          if (!nodeId) throw new Error("Node ID not found");
+
+          // Create link with the value
+          store.addRow("links", {
+            id: nanoid(),
+            nodeId,
+            owner: presence.id,
+            value
+          });
+        }
+      });
+    });
+  }, [store, presence]);
 }
 
 function createDerivative({
@@ -202,6 +304,8 @@ export function useAddEstimateNode() {
     [store]
   );
 }
+
+
 
 /**
  * Add a Derivative Node to the store

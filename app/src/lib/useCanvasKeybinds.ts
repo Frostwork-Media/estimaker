@@ -57,27 +57,30 @@ export function useCanvasKeybinds() {
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
-      // Check if the user tried to paste, and if so, prevent it.
+      // Only prevent paste if we're not in an input or textarea
       if ((e.ctrlKey || e.metaKey) && e.key === "v") {
-        e.preventDefault();
-        void (async () => {
-          // Check if what is on the clipboard is an image.
-          const clipboardItems = await navigator.clipboard.read();
-          const image = clipboardItems.find((item) => {
-            return item.types.includes("image/png");
-          });
-          // Log it
-          if (image) {
-            const blob = await image.getType("image/png");
-            const file = new File([blob], "image.png", {
-              type: "image/png",
+        const target = e.target as HTMLElement;
+        if (target.tagName !== 'INPUT' && target.tagName !== 'TEXTAREA') {
+          e.preventDefault();
+          void (async () => {
+            // Check if what is on the clipboard is an image.
+            const clipboardItems = await navigator.clipboard.read();
+            const image = clipboardItems.find((item) => {
+              return item.types.includes("image/png");
             });
-            const url = await uploadImage(file);
-            console.log(url);
-          }
+            // Log it
+            if (image) {
+              const blob = await image.getType("image/png");
+              const file = new File([blob], "image.png", {
+                type: "image/png",
+              });
+              const url = await uploadImage(file);
+              console.log(url);
+            }
 
-          // If it is an image, convert it to a blob and then to a file.
-        })();
+            // If it is an image, convert it to a blob and then to a file.
+          })();
+        }
       }
     };
     window.addEventListener("keydown", onKeyDown);
